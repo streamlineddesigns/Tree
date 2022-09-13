@@ -48,6 +48,8 @@ namespace StudioByStorm.Gravity.Player {
         private bool didAtmosphereDash = false;
         private bool didSpaceDash = false;
         private bool canDash = true;
+        private int dashCountAllowed = 2;
+        private int dashCount;
         private float originalScale;
 
         
@@ -318,7 +320,13 @@ namespace StudioByStorm.Gravity.Player {
                 }
 
                 rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
-                canDash = false;
+                
+                if (dashCount < dashCountAllowed) {
+                    dashCount++;
+                } else {
+                    dashCount = 0;
+                    canDash = false;
+                }
             }
 
             dashDirection = Vector2.zero;
@@ -369,7 +377,7 @@ namespace StudioByStorm.Gravity.Player {
                 canDash = true;
             
             //in space & used dash
-            } else if (! isInAtmosphere && ! isOnSurface && didSpaceDash) {
+            } else if (! isInAtmosphere && ! isOnSurface && didSpaceDash && dashCount >= dashCountAllowed) {
                 canDash = false;
             
             //simply in space

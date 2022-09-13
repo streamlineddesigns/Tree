@@ -9,6 +9,7 @@ namespace StudioByStorm.UI {
     {
         public ActionModel ActionModel;
         public Image TravelButtonImage;
+        public Image DragTravelButtonImage;
         public Image GetButtonImage;
         public Image SetButtonImage;
         public Button GetEdgeButton;

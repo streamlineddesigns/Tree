@@ -12,6 +12,7 @@ namespace StudioByStorm {
         public Sprite[] ColoredGetters;
         public Color[] lightColor;
         public Color[] darkColor;
+        public GameObject[] coloredRings;
     }
 
 }

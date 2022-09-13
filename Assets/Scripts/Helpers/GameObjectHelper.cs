@@ -12,8 +12,13 @@ namespace StudioByStorm.Helpers {
         {
             components = (components == null) ? new List<T>() : components;
 
-            if (bNeedsToBeActive && go.activeSelf && go.TryGetComponent<T>(out T a)) {
-                components.Add(a);
+            if (go.TryGetComponent<T>(out T a)) {
+                if (bNeedsToBeActive && go.activeSelf) {
+                    components.Add(a);
+                } else if (! bNeedsToBeActive) {
+                    components.Add(a);
+                }
+                
             }
 
             for (int i = 0; i < go.transform.childCount; i++) {

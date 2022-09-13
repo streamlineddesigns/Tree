@@ -41,6 +41,18 @@ namespace StudioByStorm.Graph {
 
             return null;
         }
+
+        public void Log()
+        {
+            foreach (KeyValuePair<int, List<int>> entry in Nodes) {
+                string data = "ID: " + entry.Key;
+                for (int i = 0; i < Nodes[entry.Key].Count; i++) {
+                    data += ", " + Nodes[entry.Key][i];
+                }
+                Debug.Log(data);
+            }
+            
+        }
     }
 
 }

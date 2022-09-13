@@ -6,6 +6,7 @@ using StudioByStorm.Optimizations;
 using StudioByStorm.ML.Clustering;
 using StudioByStorm.Gravity.Player;
 using StudioByStorm.Graph;
+using StudioByStorm.UI;
 
 namespace StudioByStorm {
 
@@ -13,9 +14,11 @@ namespace StudioByStorm {
     public class GameManager : MonoBehaviour
     {
         public SpatialHashManager SpatialHashManager;
+        public UIController UIController;
         public AdjacencyList AdjacencyList;
         public ColorModel ColorModel;
         public static GameManager Singleton;
+        public ViewRegistry ViewRegistry;
         public NodeRegistry NodeRegistry;
         public EdgeRegistry EdgeRegistry;
         public GameObject Edge;
@@ -35,6 +38,12 @@ namespace StudioByStorm {
             } else {
                 Destroy(this);
             }
+        }
+        
+        public void LevelComplete()
+        {
+            PlayerController.LockMovement(true);
+            UIController.ShowView(ViewName.LevelCompleteView);
         }
                 
         protected void Update()

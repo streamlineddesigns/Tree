@@ -15,6 +15,9 @@ namespace StudioByStorm {
         public GameObject DarkSurface;
         public SpriteRenderer LightColored;
         public SpriteRenderer DarkColored;
+        public Transform[] randomizedTransforms;
+        public SpriteRenderer[] randomizedSpriteRenderer;
+        public Sprite[] randomSprites;
 
         void Start()
         {
@@ -32,12 +35,42 @@ namespace StudioByStorm {
 
         void OnEnable()
         {
-            
+            //randomize rotations of specified transforms
+            for (int i = 0; i < randomizedTransforms.Length; i++) {
+                Vector3 rotation = randomizedTransforms[i].rotation.eulerAngles;
+                rotation.z = UnityEngine.Random.Range(0.0f, 360.0f);
+                randomizedTransforms[i].rotation = Quaternion.Euler(rotation);
+            }
+
+            //randomize sprites of specifies sprite renderers
+            for (int j = 0; j < randomizedSpriteRenderer.Length; j++) {
+                randomizedSpriteRenderer[j].sprite = randomSprites[UnityEngine.Random.Range(0, randomSprites.Length)];
+            }
+
+            //Either show gray scale or color depending on the NodeColor value
+            if (NodeColor == NodeColor.GrayScale) {
+                DisplayGrayScale();
+            } else {
+                DisplayColor();
+                DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
+                LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
+            }
+
+            //add a color ring for the parent nodes
+            if (NodeType == NodeType.Parent && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
+                GameObject coloredRing = Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);
+                coloredRing.transform.position = gameObject.transform.position;
+            }
         }
 
         public void DisplayColor() {
             ColorSurface.SetActive(true);
             DarkSurface.SetActive(false);
+        }
+
+        public void DisplayGrayScale() {
+            ColorSurface.SetActive(false);
+            DarkSurface.SetActive(true);
         }
     }
 

@@ -27,5 +27,36 @@ namespace StudioByStorm {
         SetEdge,
         TravelEdge
     }
+
+    public enum ViewName 
+    {
+        PauseView,
+        StartView,
+        GameView,
+        LevelCompleteView,
+        LevelLostView,
+        ActionView,
+        ResetView,
+        LevelSelectView,
+    }
+
+    public enum ViewType
+    {
+        Screen,
+        Dialog,
+        Popup,
+        Component
+    }
+
+    public enum GameState
+    {
+        GameStart,
+        LevelComplete,
+        LevelRestarted,
+        LevelLost,
+        Playing,
+        Paused,
+        Resumed
+    }
     
 }

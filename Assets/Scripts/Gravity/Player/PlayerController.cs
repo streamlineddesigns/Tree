@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Prime31;
+using DG.Tweening;
 using StudioByStorm.Registries;
 using StudioByStorm.Optimizations;
 
@@ -46,6 +48,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool didAtmosphereDash = false;
         private bool didSpaceDash = false;
         private bool canDash = true;
+        private float originalScale;
 
         
         void Awake()
@@ -60,6 +63,7 @@ namespace StudioByStorm.Gravity.Player {
             rigidbody = transform.GetComponent<Rigidbody2D>();
             rigidbodyContacts = new ContactPoint2D[1];
             currentOffSurfaceTimer = offSurfaceTimer;
+            originalScale = gameObject.transform.localScale.x;
         }
 
         void OnEnable()
@@ -91,6 +95,38 @@ namespace StudioByStorm.Gravity.Player {
         public void LockMovement(bool isLock)
         {
             isMovementLocked = isLock;
+        }
+
+        public TKSwipeRecognizer GetSwipeRecognizer()
+        {
+            return swipeRecognizer;
+        }
+
+        public void DoPathMovement(Vector3[] waypoints)
+        {
+            if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
+                StartCoroutine(TravelMovement(waypoints));
+            } else {
+                StartCoroutine(TravelMovement(waypoints.Reverse().ToArray()));
+            }
+            
+        }
+
+        protected IEnumerator TravelMovement(Vector3[] waypoints)
+        {
+            gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
+            yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+
+            gameObject.transform.DOScale(1.0f, 0.25f);
+
+            for (int i = 0; i < waypoints.Length; i++) {
+                gameObject.transform.DOMove(waypoints[i], 0.1f, false);
+                yield return new WaitUntil(() => gameObject.transform.position == waypoints[i]);
+            }
+
+            gameObject.transform.DOScale(originalScale, 0.25f);
+            gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
+            yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
         }
 
         void Update()

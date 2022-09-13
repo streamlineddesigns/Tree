@@ -85,6 +85,10 @@ namespace StudioByStorm {
 
         public void TravelEdgeButtonDeselect()
         {
+            if (! isTravelButtonClicked) {
+                return;
+            }
+
             isTravelButtonClicked = false;
             ActionView.TravelButtonImage.transform.position = ActionView.DragTravelButtonImage.transform.position;
             //get the current nodes neighbors
@@ -133,6 +137,7 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) ActionModel.CurrentNode.NodeColor];
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;
+            ActionModel.CurrentEdge.turnFabrikOff();
             ActionView.SetEdgeButtonClick(ActionModel.CurrentEdge);
             
 

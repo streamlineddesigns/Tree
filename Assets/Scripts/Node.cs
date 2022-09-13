@@ -15,6 +15,7 @@ namespace StudioByStorm {
         public GameObject DarkSurface;
         public SpriteRenderer LightColored;
         public SpriteRenderer DarkColored;
+        public SpriteRenderer InnerGraphic;
         public Transform[] randomizedTransforms;
         public SpriteRenderer[] randomizedSpriteRenderer;
         public Sprite[] randomSprites;

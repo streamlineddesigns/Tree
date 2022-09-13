@@ -76,7 +76,7 @@ namespace StudioByStorm.Gravity.Player {
             TouchKit.addGestureRecognizer(tapRecognizer);
 
             longPressRecognizer.gestureRecognizedEvent += OnLongPressBegin;
-            longPressRecognizer.allowableMovementCm = 5;
+            longPressRecognizer.allowableMovementCm = 7;
             TouchKit.addGestureRecognizer(longPressRecognizer);
         }
 
@@ -115,14 +115,23 @@ namespace StudioByStorm.Gravity.Player {
         protected IEnumerator TravelMovement(Vector3[] waypoints)
         {
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
+            GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f);
             yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+            GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);
 
             gameObject.transform.DOScale(1.0f, 0.25f);
 
             for (int i = 0; i < waypoints.Length; i++) {
-                gameObject.transform.DOMove(waypoints[i], 0.1f, false);
+                if (i % 2 == 0) {
+                    gameObject.transform.DOMove(waypoints[i], 0.1f, false);
+                } else {
+                    gameObject.transform.DOPath(new Vector3[1]{waypoints[i]}, 0.1f, PathType.Linear);
+                }
                 yield return new WaitUntil(() => gameObject.transform.position == waypoints[i]);
             }
+
+            //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
+            //yield return new WaitUntil(() => gameObject.transform.position == waypoints[waypoints.Length - 1]);
 
             gameObject.transform.DOScale(originalScale, 0.25f);
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);

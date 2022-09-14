@@ -38,6 +38,7 @@ namespace StudioByStorm {
         ActionView,
         ResetView,
         LevelSelectView,
+        LevelSelectButtonView
     }
 
     public enum ViewType

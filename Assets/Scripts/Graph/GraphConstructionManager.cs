@@ -8,13 +8,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using StudioByStorm.Data;
+using StudioByStorm.Config;
+using UnityEngine.SceneManagement;
 
 namespace StudioByStorm.Graph {
 
     public class GraphConstructionManager : MonoBehaviour
     {
+        public LevelConfig LevelConfig;
         public LevelData GlobalLevelData;
-        public string LevelSaveDir = "/Levels";
         public ColorModel ColorModel;
         public GameObject NodePrefab;
         public Transform NodeParent;
@@ -62,6 +64,11 @@ namespace StudioByStorm.Graph {
         public void WhiteButtonClick()
         {
             currentCursorNodeColor = NodeColor.White;
+        }
+
+        public void BackButtonClick()
+        {
+            SceneManager.LoadScene("Main");
         }
 
         public void GrayScaleButtonClick()
@@ -324,7 +331,7 @@ namespace StudioByStorm.Graph {
             for (int i = 0; i < nodePositions.Count; i++) {
                 LayerData CurrentLayerData = new LayerData();
                 if (! Layers.ContainsKey(nodePositions[i].y)) {
-                    Layers.Add(nodePositions[i].y, 0);
+                    Layers.Add(nodePositions[i].y, 1);
                 } else { 
                     Layers[nodePositions[i].y]++;
                 }
@@ -354,11 +361,11 @@ namespace StudioByStorm.Graph {
             GlobalLevelData = LevelData;
             Debug.Log(LevelData.Layers.Count);
 
-            string dir = Application.persistentDataPath + LevelSaveDir;
+            string dir = Application.persistentDataPath;
             
             int LevelFileCountInDir = Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Length;
-            string LevelSaveFilePath = (dir + "/LevelID-" + LevelFileCountInDir + ".json").ToString();
-            
+            string LevelSaveFilePath = (dir + LevelConfig.fileNameAppend + LevelFileCountInDir + LevelConfig.fileNamePrepend).ToString();
+
             Debug.Log(LevelSaveFilePath);
 
             File.WriteAllText(LevelSaveFilePath, JsonConvert.SerializeObject(LevelData, Formatting.Indented, new JsonSerializerSettings

@@ -7,17 +7,21 @@ using StudioByStorm.ML.Clustering;
 using StudioByStorm.Gravity.Player;
 using StudioByStorm.Graph;
 using StudioByStorm.UI;
+using StudioByStorm.Config;
 
 namespace StudioByStorm {
 
 
     public class GameManager : MonoBehaviour
     {
+        public LevelManager LevelManager;
+        public LevelConfig LevelConfig;
         public SpatialHashManager SpatialHashManager;
         public UIController UIController;
         public AdjacencyList AdjacencyList;
         public ColorModel ColorModel;
         public static GameManager Singleton;
+        public ControllerRegistry ControllerRegistry;
         public ColorEdgeRegistry ColorEdgeRegistry;
         public ColorNodeRegistry ColorNodeRegistry;
         public ViewRegistry ViewRegistry;

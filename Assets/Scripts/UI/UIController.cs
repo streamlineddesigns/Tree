@@ -21,6 +21,19 @@ namespace StudioByStorm.UI {
                 PreviousViewScreen.gameObject.SetActive(false);
             }
         }
+
+        public void Close(ViewName ViewName)
+        {
+            View View = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName);
+            View.gameObject.SetActive(false);
+        }
+
+        public void Back()
+        {
+            if (CurrentViewScreen != null && PreviousViewScreen != null) {
+                ShowView(PreviousViewScreen.ViewName);
+            }
+        }
     }
 
 }

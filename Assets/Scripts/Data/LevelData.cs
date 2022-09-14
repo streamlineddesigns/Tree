@@ -5,7 +5,7 @@ using UnityEngine;
 namespace StudioByStorm.Data {
 
     [System.Serializable]
-    public class LevelData : ScriptableObject
+    public struct LevelData
     {
         public List<LayerData> Layers;
     }

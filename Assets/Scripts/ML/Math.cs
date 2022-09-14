@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +45,29 @@ namespace StudioByStorm.ML {
             }
 
             return distance;
+        }
+
+        public static float[] GetCentroid(float[][] data)
+        {
+            if ((data.Select(x => x.Length).Sum() / data.Length != data[0].Length)) {
+                Debug.LogError("Input vectors must be of equal length");
+            }
+
+            float[] centroid = new float[data[0].Length];
+            float[] counter = new float[data[0].Length];
+
+            for (int i = 0; i < data.Length; i++) {
+                for (int j = 0; j < centroid.Length; j++) {
+                    centroid[j] += data[i][j];
+                    counter[j]++;
+                }
+            }
+
+            for (int k = 0; k < centroid.Length; k++) {
+                centroid[k] /= counter[k];
+            }
+
+            return centroid;
         }
     }
 

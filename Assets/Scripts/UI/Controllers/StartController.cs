@@ -1,13 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI.Controllers {
 
-    public class StartController : MonoBehaviour
+    public class StartController : Controller
     {
         public GameObject MockNodes;
+
+        public void StartLevelSelectButtonClick()
+        {
+            GameManager.Singleton.UIController.ShowView(ViewName.LevelSelectView);
+        }
+
+        public void LevelCreatorButtonClick()
+        {
+            SceneManager.LoadScene("Graph");
+        }
 
         public void PlayButtonClick()
         {

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace StudioByStorm.Data {
 
     [System.Serializable]
-    public class LayerData
+    public struct LayerData
     {
         public int nodeCount;
         public List<VectorData> nodePositions;

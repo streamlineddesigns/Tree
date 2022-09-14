@@ -7,6 +7,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using StudioByStorm.Data;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.Optimizations;
 
 namespace StudioByStorm {
 
@@ -64,7 +65,7 @@ namespace StudioByStorm {
             for (int i = 0; i < CurrentLevelData.Layers.Count; i++) {
                 //iterate over nodes in each layer
                 for (int j = 0; j < CurrentLevelData.Layers[i].nodeCount; j++) {
-                    Node currentNode = Instantiate(Node, GameManager.Singleton.SpatialHashManager.nodeParent.transform);
+                    Node currentNode = GameManager.Singleton.NodePool.Get().GetComponent<Node>();//no more Instantiate(Node, GameManager.Singleton.SpatialHashManager.nodeParent.transform);
                     currentNode.gameObject.transform.position = new Vector2(CurrentLevelData.Layers[i].nodePositions[j].x, CurrentLevelData.Layers[i].nodePositions[j].y);
                     nodePositions.Add(new float[2]{currentNode.gameObject.transform.position.x, currentNode.gameObject.transform.position.y});
                     currentNode.ID = ID;

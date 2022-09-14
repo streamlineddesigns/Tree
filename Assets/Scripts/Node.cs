@@ -19,6 +19,7 @@ namespace StudioByStorm {
         public Transform[] randomizedTransforms;
         public SpriteRenderer[] randomizedSpriteRenderer;
         public Sprite[] randomSprites;
+        public GameObject coloredRing;
 
         void Start()
         {
@@ -36,6 +37,19 @@ namespace StudioByStorm {
 
         void OnEnable()
         {
+            StartCoroutine(DelayedEnable());
+        }
+
+        void OnDisable() 
+        {
+            if (coloredRing != null) {
+                coloredRing.SetActive(false);
+            }
+        }
+
+        IEnumerator DelayedEnable()
+        {
+            yield return 0;
             //randomize rotations of specified transforms
             for (int i = 0; i < randomizedTransforms.Length; i++) {
                 Vector3 rotation = randomizedTransforms[i].rotation.eulerAngles;
@@ -59,8 +73,10 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (NodeType == NodeType.Parent && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                GameObject coloredRing = Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);
+                coloredRing = GameManager.Singleton.ColorRingPoolRegistry.TryGetValue(NodeColor).Get();//Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);
+                coloredRing.transform.SetParent(gameObject.transform);
                 coloredRing.transform.position = gameObject.transform.position;
+                coloredRing.SetActive(true);
             }
         }
 

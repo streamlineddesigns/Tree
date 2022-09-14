@@ -25,6 +25,9 @@ namespace StudioByStorm {
 
         public bool Contains(T1 k)
         {
+            if (_Registry == null) {
+                return false;
+            }
             if (_Registry.ContainsKey(k)) {
                 return true;
             }

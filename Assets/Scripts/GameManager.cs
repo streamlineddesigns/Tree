@@ -14,6 +14,8 @@ namespace StudioByStorm {
 
     public class GameManager : MonoBehaviour
     {
+        public ColorRingPoolRegistry ColorRingPoolRegistry;
+        public Pool NodePool;
         public LevelManager LevelManager;
         public LevelConfig LevelConfig;
         public SpatialHashManager SpatialHashManager;
@@ -28,6 +30,7 @@ namespace StudioByStorm {
         public NodeRegistry NodeRegistry;
         public EdgeRegistry EdgeRegistry;
         public GameObject Edge;
+        public GameObject Node;
         public HashData PlayerHashData;
         public GameObject player;
         public PlayerController PlayerController;
@@ -41,6 +44,7 @@ namespace StudioByStorm {
                 GameManager.Singleton.SpatialHashManager.SetPlayerHashData(PlayerHashData);
                 PlayerController = player.GetComponent<PlayerController>();
                 AdjacencyList = new AdjacencyList();
+                NodePool = new Pool(Node, SpatialHashManager.nodeParent.transform, 25);
             } else {
                 Destroy(this);
             }

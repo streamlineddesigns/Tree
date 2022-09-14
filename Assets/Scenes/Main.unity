@@ -19255,7 +19255,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1143133383}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &266041485
 MonoBehaviour:
@@ -46260,7 +46260,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1143133383}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &447432152
 MonoBehaviour:
@@ -120218,6 +120218,7 @@ Transform:
   - {fileID: 260663850}
   - {fileID: 694418557}
   - {fileID: 1588773011}
+  - {fileID: 2092445196}
   - {fileID: 266041484}
   - {fileID: 447432151}
   - {fileID: 2096021897}
@@ -166705,6 +166706,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdfdd8ea264819f418ad3f813554d473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ColorRingPoolRegistry: {fileID: 2092445197}
+  NodePool: {fileID: 0}
   LevelManager: {fileID: 266041485}
   LevelConfig: {fileID: 2096021898}
   SpatialHashManager: {fileID: 447432152}
@@ -166717,6 +166720,7 @@ MonoBehaviour:
   NodeRegistry: {fileID: 67729802}
   EdgeRegistry: {fileID: 798866197}
   Edge: {fileID: 202418507643688041, guid: 6aa66d8f760b78741af3571bc49df9d6, type: 3}
+  Node: {fileID: 1927962968037340813, guid: c1d4b87347696ea448fa84fc06e7828a, type: 3}
   PlayerHashData:
     cellID: {x: 0, y: 0}
     gameObject: {fileID: 0}
@@ -226911,7 +226915,7 @@ MonoBehaviour:
   - {fileID: 8863978078815619631, guid: a2fe901478ae7e947a88edd19ab930b5, type: 3}
   - {fileID: 3405405521148865040, guid: 77b22300f3c38de4ca3bf3a32766ec1d, type: 3}
   - {fileID: 1511183828936039137, guid: 84d1eb704781a18418db69e68f79863a, type: 3}
-  - {fileID: 0}
+  - {fileID: 1511183828936039137, guid: 84d1eb704781a18418db69e68f79863a, type: 3}
 --- !u!1 &1976204987
 GameObject:
   m_ObjectHideFlags: 0
@@ -258949,6 +258953,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2092445195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2092445196}
+  - component: {fileID: 2092445197}
+  m_Layer: 0
+  m_Name: ColorRingPoolRegistry
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2092445196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092445195}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1143133383}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2092445197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092445195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c6ab3dcf84d1e488bb91116ac751ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 1224322505}
+  numberToSpawn: 10
 --- !u!1 &2093784390
 GameObject:
   m_ObjectHideFlags: 0
@@ -259077,7 +259126,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1143133383}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2096021898
 MonoBehaviour:

@@ -2,19 +2,18 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Prime31;
 using DG.Tweening;
 using StudioByStorm.Registries;
 using StudioByStorm.Optimizations;
+using StudioByStorm.UI;
+using Lean.Gui;
+using StudioByStorm.GestureRecognition;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.Gravity.Player {
 
     public class PlayerController : MonoBehaviour
     {
-        private TKSwipeRecognizer swipeRecognizer;
-        private TKTapRecognizer tapRecognizer;
-        private TKLongPressRecognizer longPressRecognizer;
-
         private Surface surface;
         private bool isOnSurface = false;
         private bool isInAtmosphere = false;
@@ -48,16 +47,17 @@ namespace StudioByStorm.Gravity.Player {
         private bool didAtmosphereDash = false;
         private bool didSpaceDash = false;
         private bool canDash = true;
-        private int dashCountAllowed = 2;
+        private int dashCountAllowed = 1;
         private int dashCount;
         private float originalScale;
+
+        protected float JoystickTimerTarget = 0.25f;
+        protected float currentJoystickTimer = 0.0f;
 
         
         void Awake()
         {
-            swipeRecognizer = new TKSwipeRecognizer();
-            tapRecognizer = new TKTapRecognizer();
-            longPressRecognizer = new TKLongPressRecognizer();            
+
         }
 
         void Start()
@@ -70,23 +70,16 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
-            swipeRecognizer.gestureRecognizedEvent += OnSwipe;
-            swipeRecognizer.timeToSwipe = 0.0f;
-            TouchKit.addGestureRecognizer(swipeRecognizer);
-
-            tapRecognizer.gestureRecognizedEvent += OnTap;
-            TouchKit.addGestureRecognizer(tapRecognizer);
-
-            longPressRecognizer.gestureRecognizedEvent += OnLongPressBegin;
-            longPressRecognizer.allowableMovementCm = 7;
-            TouchKit.addGestureRecognizer(longPressRecognizer);
+            GameEventPublisher.OnSwipe += OnSwipe;
+            GameEventPublisher.OnTap += OnTap;
+            GameEventPublisher.OnLongTap += OnLongTap;
         }
 
         void OnDisable()
         {
-            swipeRecognizer.gestureRecognizedEvent -= OnSwipe;
-            tapRecognizer.gestureRecognizedEvent -= OnTap;
-            longPressRecognizer.gestureRecognizedEvent -= OnLongPressBegin;
+            GameEventPublisher.OnSwipe -= OnSwipe;
+            GameEventPublisher.OnTap -= OnTap;
+            GameEventPublisher.OnLongTap -= OnLongTap;
         }
 
         public Vector2 GetSwipeDirection()
@@ -97,11 +90,6 @@ namespace StudioByStorm.Gravity.Player {
         public void LockMovement(bool isLock)
         {
             isMovementLocked = isLock;
-        }
-
-        public TKSwipeRecognizer GetSwipeRecognizer()
-        {
-            return swipeRecognizer;
         }
 
         public void DoPathMovement(Vector3[] waypoints)
@@ -223,25 +211,34 @@ namespace StudioByStorm.Gravity.Player {
                 surface = null;
             }
         }
-        
-        protected void OnSwipe(TKSwipeRecognizer r)
+
+
+
+        protected void OnSwipe(Vector2 Direction)
         {
+            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+            Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
+
+            if (joystickDir.x == 0.0f || joystickDir.y == 0.0f) {
+                return;
+            }
+
             if (isMovementLocked) {
-                swipeDirection = (r.endPoint - r.startPoint).normalized;
+                swipeDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
                 movementDirection = Vector2.zero;
                 return; 
             }
 
             if (isOnSurface) {
-                movementDirection = (r.endPoint - r.startPoint).normalized;
+                movementDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
             } else {
-                dashDirection = (r.endPoint - r.startPoint).normalized;
+                dashDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
             }
 
             SetRelativeForwardDirection();
         }
 
-        protected void OnTap(TKTapRecognizer r) 
+        protected void OnTap(Vector2 tap) 
         {
             if (isMovementLocked) {
                 return; 
@@ -253,7 +250,7 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-        protected void OnLongPressBegin(TKLongPressRecognizer r)
+        protected void OnLongTap(Vector2 tap)
         {
             if (isMovementLocked) {
                 return; 

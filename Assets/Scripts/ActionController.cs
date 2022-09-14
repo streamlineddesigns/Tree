@@ -15,16 +15,20 @@ namespace StudioByStorm {
         public ActionView ActionView;
         public ActionModel ActionModel;
         public bool isTravelButtonClicked;
+        protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
+
+        void Update()
+        {
+            TravelEdgeButtonDrag();
+        }
 
         public void TravelEdgeButtonDrag()
         {
             if (! isTravelButtonClicked || ! ActionView.TravelEdgeButton.interactable) {
                 return;
             }
-            float targetX = DOVirtual.EasedValue(GameManager.Singleton.PlayerController.GetSwipeRecognizer().startPoint.x, GameManager.Singleton.PlayerController.GetSwipeRecognizer().endPoint.x, 0.5f, Ease.Linear);
-            float targetY = DOVirtual.EasedValue(GameManager.Singleton.PlayerController.GetSwipeRecognizer().startPoint.y, GameManager.Singleton.PlayerController.GetSwipeRecognizer().endPoint.y, 0.5f, Ease.Linear);
-            ActionView.TravelButtonImage.transform.position = new Vector2(targetX, targetY);
+            ActionView.TravelButtonImage.transform.position = GameManager.Singleton.MobileInput.StartTouch.normalized;
         }
 
         public void TravelEdgeButtonDragEnd()
@@ -83,7 +87,6 @@ namespace StudioByStorm {
             //GameManager.Singleton.PlayerController.LockMovement(true);
         }
 
-
         public void TravelEdgeButtonDeselect()
         {
             if (! isTravelButtonClicked) {
@@ -97,7 +100,7 @@ namespace StudioByStorm {
             int targetIndex = -1;
             float minDissimiliarity = 1000000.0f;
             //calculate the swipe direction
-            Vector2 swipeDir = GameManager.Singleton.PlayerController.GetSwipeRecognizer().endPoint - GameManager.Singleton.PlayerController.GetSwipeRecognizer().startPoint;
+            Vector2 swipeDir = GameManager.Singleton.MobileInput.SwipeDelta;
             for (int i = 0; i < adjacentNodes.Count; i++) {
                 //calculate the direction to the currentnode
                 Vector2 currentnodeDir = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[i]).gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;

@@ -15,7 +15,9 @@ namespace StudioByStorm.Registries {
         {
             for (int i = 0; i < GameManager.Singleton.ColorModel.coloredRings.Length; i++) {
                 if (GameManager.Singleton.ColorModel.coloredRings[i] != null) {
-                    Add((NodeColor) i, new Pool(GameManager.Singleton.ColorModel.coloredRings[i], parent, numberToSpawn));
+                    Pool Pool = ScriptableObject.CreateInstance<Pool>();
+                    Pool.DependencyInjection(GameManager.Singleton.ColorModel.coloredRings[i], parent, numberToSpawn);
+                    Add((NodeColor) i, Pool);
                 }
             }
             

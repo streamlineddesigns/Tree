@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Lean.Gui;
 
 namespace StudioByStorm.UI {
 
-    public class ActionView : MonoBehaviour
+    public class ActionView : View
     {
+        public LeanJoystick LeanJoyStick;
         public ActionModel ActionModel;
         public Image TravelButtonImage;
         public Image DragTravelButtonImage;
@@ -32,6 +34,8 @@ namespace StudioByStorm.UI {
         public void EnableGetEdgeButton() {
             GetEdgeButton.interactable = true;
             SetActivationColors(GetEdgeButton, GameManager.Singleton.ColorModel.ColoredGetters, GetButtonImage);
+            GetEdgeButton.gameObject.SetActive(true);
+            SetEdgeButton.gameObject.SetActive(false);
         }
 
         public void DisableGetEdgeButton() {
@@ -42,11 +46,14 @@ namespace StudioByStorm.UI {
         public void EnableSetEdgeButton() {
             SetEdgeButton.interactable = true;
             SetActivationColors(SetEdgeButton, GameManager.Singleton.ColorModel.ColoredSetters, SetButtonImage);
+            SetEdgeButton.gameObject.SetActive(true);
+            GetEdgeButton.gameObject.SetActive(false);
         }
 
         public void DisableSetEdgeButton() {
             SetEdgeButton.interactable = false;
             DeactivationColor(SetButtonImage, GameManager.Singleton.ColorModel.ColoredSetters);
+            
         }
 
         protected void SetActivationColors(Button Button, Sprite[] coloredSprites, Image image)

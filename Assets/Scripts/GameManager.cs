@@ -8,6 +8,7 @@ using StudioByStorm.Gravity.Player;
 using StudioByStorm.Graph;
 using StudioByStorm.UI;
 using StudioByStorm.Config;
+using StudioByStorm.GestureRecognition;
 
 namespace StudioByStorm {
 
@@ -16,6 +17,7 @@ namespace StudioByStorm {
     {
         public ColorRingPoolRegistry ColorRingPoolRegistry;
         public Pool NodePool;
+        public MobileInput MobileInput;
         public LevelManager LevelManager;
         public LevelConfig LevelConfig;
         public SpatialHashManager SpatialHashManager;
@@ -44,7 +46,8 @@ namespace StudioByStorm {
                 GameManager.Singleton.SpatialHashManager.SetPlayerHashData(PlayerHashData);
                 PlayerController = player.GetComponent<PlayerController>();
                 AdjacencyList = new AdjacencyList();
-                NodePool = new Pool(Node, SpatialHashManager.nodeParent.transform, 25);
+                NodePool = ScriptableObject.CreateInstance<Pool>();
+                NodePool.DependencyInjection(Node, SpatialHashManager.nodeParent.transform, 25);
             } else {
                 Destroy(this);
             }

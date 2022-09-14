@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace StudioByStorm.Optimizations {
     
-    public class Pool : MonoBehaviour
+    public class Pool : ScriptableObject
     {
         public List<GameObject> pool;
         protected Transform Parent;
         protected GameObject ObjectToPool;
         
-        public Pool(GameObject objectToPool, Transform parent, int initialSize)
+        public void DependencyInjection(GameObject objectToPool, Transform parent, int initialSize)
         {
             ObjectToPool = objectToPool;
             Parent = parent;

@@ -296,6 +296,12 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void Jump()
         {
+            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+            Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
+            if (joystickDir.x != 0.0f || joystickDir.y != 0.0f) {
+                return;
+            }
+
             float force = (isPowerJumping) ? powerJumpForce : jumpForce;
             rigidbody.AddForce(- gravityDirection * force, ForceMode2D.Impulse);
             didJump = true;

@@ -33,6 +33,20 @@ namespace StudioByStorm.Graph {
             }
         }
 
+        public void Remove(int nodeID)
+        {
+            if (Nodes.ContainsKey(nodeID)) {
+                Nodes[nodeID] = new List<int>();
+            }
+        }
+
+        public void Remove(int nodeID, int edgeID)
+        {
+            if (Nodes.ContainsKey(nodeID)) {
+                Nodes[nodeID].Remove(edgeID);
+            }
+        }
+
         public List<int> Get(int nodeID)
         {
             if (Nodes.ContainsKey(nodeID)) {
@@ -40,6 +54,15 @@ namespace StudioByStorm.Graph {
             }
 
             return null;
+        }
+
+        public int Count(int nodeID)
+        {
+            if (Nodes.ContainsKey(nodeID)) {
+                return Nodes[nodeID].Count;
+            }
+
+            return 0;
         }
 
         public void Log()

@@ -58,5 +58,12 @@ namespace StudioByStorm {
         Paused,
         Resumed
     }
+
+    public enum ClickType {
+        Tap = 0,
+        LongPress = 1,
+        PanBegin = 2,
+        PanComplete = 3,
+    }
     
 }

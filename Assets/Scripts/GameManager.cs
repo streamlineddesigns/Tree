@@ -18,6 +18,8 @@ namespace StudioByStorm {
         public AdjacencyList AdjacencyList;
         public ColorModel ColorModel;
         public static GameManager Singleton;
+        public ColorEdgeRegistry ColorEdgeRegistry;
+        public ColorNodeRegistry ColorNodeRegistry;
         public ViewRegistry ViewRegistry;
         public NodeRegistry NodeRegistry;
         public EdgeRegistry EdgeRegistry;

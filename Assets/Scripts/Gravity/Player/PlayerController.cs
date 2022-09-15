@@ -53,6 +53,7 @@ namespace StudioByStorm.Gravity.Player {
 
         protected float JoystickTimerTarget = 0.25f;
         protected float currentJoystickTimer = 0.0f;
+        protected bool lerping;
 
         
         void Awake()
@@ -70,14 +71,14 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
-            GameEventPublisher.OnSwipe += OnSwipe;
+            GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnTap += OnTap;
             GameEventPublisher.OnLongTap += OnLongTap;
         }
 
         void OnDisable()
         {
-            GameEventPublisher.OnSwipe -= OnSwipe;
+            GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnTap -= OnTap;
             GameEventPublisher.OnLongTap -= OnLongTap;
         }
@@ -94,16 +95,15 @@ namespace StudioByStorm.Gravity.Player {
 
         public void DoPathMovement(Vector3[] waypoints)
         {
-            if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
-                StartCoroutine(TravelMovement(waypoints));
-            } else {
-                StartCoroutine(TravelMovement(waypoints.Reverse().ToArray()));
+            if (lerping) {
+                return;
             }
-            
+            StartCoroutine(TravelMovement(waypoints));
         }
 
         protected IEnumerator TravelMovement(Vector3[] waypoints)
         {
+            lerping = true;
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f);
             yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
@@ -126,6 +126,7 @@ namespace StudioByStorm.Gravity.Player {
             gameObject.transform.DOScale(originalScale, 0.25f);
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+            lerping = false;
         }
 
         void Update()
@@ -179,13 +180,20 @@ namespace StudioByStorm.Gravity.Player {
         
         void OnTriggerStay2D(Collider2D collider)
         {
-            if (collider.CompareTag("Surface")) {
+            if (collider.CompareTag("Surface") && surface == null) {
 
                 isOnSurface = true;
                 rigidbody.GetContacts(rigidbodyContacts);
                 lastContactPoint = rigidbodyContacts[0].point;
                 gravityDirection = (lastContactPoint - (Vector2) transform.position).normalized;
             
+            } else if (collider.CompareTag("Surface") && surface != null) {
+
+                isOnSurface = true;
+                Vector2 nearestGravityPoint = getNearestGravityPoint();
+                lastContactPoint = getNearestGravityPoint();
+                gravityDirection = (nearestGravityPoint - (Vector2) transform.position).normalized;
+
             } else if (collider.CompareTag("Atmosphere")) {
                 
                 isInAtmosphere = true;
@@ -212,22 +220,9 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-
-
-        protected void OnSwipe(Vector2 Direction)
+        protected void OnJoystickDirectionChange(Vector2 Direction)
         {
-            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
-            Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
-
-            if (joystickDir.x == 0.0f || joystickDir.y == 0.0f) {
-                return;
-            }
-
-            if (isMovementLocked) {
-                swipeDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
-                movementDirection = Vector2.zero;
-                return; 
-            }
+            Vector2 joystickDir = Direction;
 
             if (isOnSurface) {
                 movementDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;

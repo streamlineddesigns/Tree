@@ -11,8 +11,9 @@ namespace StudioByStorm.EventPublishers {
         public delegate void GameEvent(GameState state);//delegate signature
         public static event GameEvent OnStateChange;//subscribable event
 
-        public delegate void SwipeEvent(Vector2 Direction);//delegate signature
-        public static event SwipeEvent OnSwipe;//subscribable event
+        public delegate void JoystickEvent(Vector2 Direction);//delegate signature
+        public static event JoystickEvent OnJoystickDirectionChange;//subscribable event
+        public static event JoystickEvent OnTravelJoystickDirectionChange;//subscribable event
 
         public delegate void TapEvent(Vector2 position);//delegate signature
         public static event TapEvent OnTap;//subscribable event
@@ -32,9 +33,14 @@ namespace StudioByStorm.EventPublishers {
             OnStateChange(state);
         }
 
-        public static void PublishSwipe(Vector2 Direction)
+        public static void PublishJoystickDirectionChange(Vector2 Direction)
         {
-            OnSwipe(Direction);
+            OnJoystickDirectionChange(Direction);
+        }
+
+        public static void PublishTravelJoystickDirectionChange(Vector2 Direction)
+        {
+            OnTravelJoystickDirectionChange(Direction);
         }
 
         public static void PublishTap(Vector2 Position)

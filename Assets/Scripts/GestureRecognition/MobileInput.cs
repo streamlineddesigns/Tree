@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.UI;
 
 namespace StudioByStorm.GestureRecognition {
 
@@ -16,6 +17,11 @@ namespace StudioByStorm.GestureRecognition {
         public bool SwipeUp { get { return swipeUp; } }
         public bool SwipeDown { get { return swipeDown; } }
         public Vector2 StartTouch { get { return startTouch; } }
+        public Vector2 CurrentJoyStickDirection { get { return currentJoyStickDirection; } }
+        public Vector2 PreviousJoyStickDirection { get { return previousJoyStickDirection; } }
+
+        public Vector2 CurrentTravelJoyStickDirection { get { return currentTravelJoyStickDirection; } }
+        public Vector2 PreviousTravelJoyStickDirection { get { return previousTravelJoyStickDirection; } }
 
         private bool isLive;
         private int tapCount = 0;
@@ -27,7 +33,10 @@ namespace StudioByStorm.GestureRecognition {
 
         private const float DEADZONE = 50.0f;
         private bool longtap, tap, swipeLeft, swipeRight, swipeUp, swipeDown;
-        private Vector2 swipeDelta, startTouch;
+        private Vector2 swipeDelta, startTouch, currentJoyStickDirection, currentTravelJoyStickDirection, previousJoyStickDirection, previousTravelJoyStickDirection;
+
+        public Vector2 BackupStartTouch;
+        public Vector2 BackupEndTouch;
 
         void OnEnable()
         {
@@ -42,8 +51,14 @@ namespace StudioByStorm.GestureRecognition {
         protected void OnStateChange(GameState state)
         {
             if (state == GameState.GameStart) {
-                isLive = true;
+                StartCoroutine(DelayedLive());
             }
+        }
+
+        IEnumerator DelayedLive()
+        {
+            yield return 0;
+            isLive = true;
         }
         
         private void Update ()
@@ -54,43 +69,82 @@ namespace StudioByStorm.GestureRecognition {
             //Resetting all the booleans
             tap = swipeLeft = swipeRight = swipeDown = swipeUp = false;
 
+            //keep track of the joysticks current direction
+            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+            currentJoyStickDirection = actionView.LeanJoyStick.ScaledValue;
+            currentTravelJoyStickDirection = actionView.TravelLeanJoyStick.ScaledValue;
+
+            float minJoyStickDistance = 10000.0f;
+            float minTravelJoyStickDistance = 10000.0f;
+            int joystickIndex = 0;
+            int travelJoystickIndex = 0;
+                                       //UP        RIGHT          DOWN          LEFT
+            Vector3[] KNN = new Vector3[8]{Vector3.up, (Vector3.up + Vector3.right) / 2.0f, Vector3.right, (Vector3.right + -Vector3.up) / 2.0f, -Vector3.up, (-Vector3.up + - Vector3.right) / 2.0f, - Vector3.right, (- Vector3.right + Vector3.up) / 2.0f};
+            for (int i = 0; i < KNN.Length; i++) {
+                float currentJoystickDistance = ML.Math.GetDistance(KNN[i], currentJoyStickDirection);
+                float currentTravelJoystickDistance = ML.Math.GetDistance(KNN[i], currentTravelJoyStickDirection);
+
+                if (currentJoystickDistance < minJoyStickDistance) {
+                    minJoyStickDistance = currentJoystickDistance;
+                    joystickIndex = i;
+                }
+                if (currentTravelJoystickDistance < minTravelJoyStickDistance) {
+                    minTravelJoyStickDistance = currentTravelJoystickDistance;
+                    travelJoystickIndex = i;
+                }
+            }
+
+            //KNN[joystickIndex]//current
+            if (previousJoyStickDirection != (Vector2)KNN[joystickIndex]) {
+                previousJoyStickDirection = KNN[joystickIndex];
+                GameEventPublisher.PublishJoystickDirectionChange(KNN[joystickIndex]);
+            }
+
+            if (previousTravelJoyStickDirection != (Vector2)KNN[travelJoystickIndex]) {
+                previousTravelJoyStickDirection = KNN[travelJoystickIndex];
+                GameEventPublisher.PublishTravelJoystickDirectionChange(KNN[travelJoystickIndex]);
+            }
+
             #region Standalone Inputs
             if (Input.GetMouseButtonDown(0)) {
                 tap = true;
                 startTouch = Input.mousePosition;
+                BackupStartTouch = startTouch;
                 //For double click
                 tapCount++;
             } else if(Input.GetMouseButtonUp(0)) {
                 if (! LongTap) {
                     if (GameEventPublisher.Singleton != null && startTouch != null) {
-                        GameEventPublisher.PublishTap(startTouch);
+                        GameEventPublisher.PublishTap(BackupStartTouch);
                     }
                 }
                 
                 longtap = false;
+                BackupEndTouch = Input.mousePosition;
                 startTouch = swipeDelta = Vector2.zero;
                 longTapTimerStarted = false;
                 longTapTimer = 0.0f;
             }
             #endregion
 
-            #region Mobile Inputs
-            if (Input.touches.Length != 0) {
+            //#region Mobile Inputs
+            /*if (Input.touches.Length != 0) {
                 if (Input.touches[0].phase == TouchPhase.Began) 
                 {
                     tap = true;
 
-                    /* for double click
-                    tapCount++;*/
+                    tapCount++;
 
                     startTouch = Input.touches[0].position;
-                } 
+                    BackupStartTouch = startTouch;
+                }
                 else if(Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled) 
                 {
+                    //BackupEndTouch = Input.touches[0].position;
                     startTouch = swipeDelta = Vector2.zero;
                 }
             } 
-            #endregion
+            #endregion*/
             if (tap) {
                 longTapTimerStarted = true;                    
             }
@@ -128,7 +182,9 @@ namespace StudioByStorm.GestureRecognition {
             if (swipeDelta.magnitude > DEADZONE) 
             {
                 //publish event
-                GameEventPublisher.PublishSwipe(swipeDelta);
+                if (GameEventPublisher.Singleton != null) {
+                    //GameEventPublisher.PublishSwipe(swipeDelta);
+                }
                 //Reset tapCount thats used for double tap
                 tapCount = 0;
 
@@ -153,6 +209,7 @@ namespace StudioByStorm.GestureRecognition {
                         swipeUp = true;
                 }
                 //reset
+                BackupEndTouch = startTouch;
                 startTouch = swipeDelta = Vector2.zero;
             } else {
                 //Double Tap

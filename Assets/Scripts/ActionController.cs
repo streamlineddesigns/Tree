@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using StudioByStorm.UI;
 using StudioByStorm.ML;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm {
 
@@ -17,26 +18,85 @@ namespace StudioByStorm {
         public bool isTravelButtonClicked;
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
+        public bool lerping;
 
         void Update()
         {
-            TravelEdgeButtonDrag();
+            
         }
 
-        public void TravelEdgeButtonDrag()
+        void OnEnable()
         {
-            if (! isTravelButtonClicked || ! ActionView.TravelEdgeButton.interactable) {
-                return;
-            }
-            ActionView.TravelButtonImage.transform.position = GameManager.Singleton.MobileInput.StartTouch.normalized;
+            GameEventPublisher.OnTravelJoystickDirectionChange += OnTravelJoystickDirectionChange;
         }
 
-        public void TravelEdgeButtonDragEnd()
+        void OnDisable()
         {
-            if (! isTravelButtonClicked || ! ActionView.TravelEdgeButton.interactable) {
+            GameEventPublisher.OnTravelJoystickDirectionChange += OnTravelJoystickDirectionChange;
+        }
+        
+        void OnTravelJoystickDirectionChange(Vector2 Direction)
+        {
+            //check the direction of the joystick
+            Vector2 joystickDir = Direction;
+            //get a list of the ids the current node is connected to from the adjacency list
+            List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
+            if (lerping || adjacentNodeIDS == null) {
                 return;
             }
-            ActionView.TravelButtonImage.transform.position = ActionView.DragTravelButtonImage.transform.position;
+            //calculate the directions from the current node to the connected node
+            //do a 1KNN on the list and the directions of the joystick direction
+            int index = -1;
+            float minimumDistance = 1000.0f;
+            Node targetNode = null;
+
+            for (int i = 0; i < adjacentNodeIDS.Count; i++) {
+                int nodeID = adjacentNodeIDS[i];
+                Node connectedNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+                Vector2 directionToConnectedNode = connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
+
+                float connectedNodeDistance = ML.Math.GetDistance(joystickDir, directionToConnectedNode);
+
+                if (connectedNodeDistance < minimumDistance) {
+                    minimumDistance = connectedNodeDistance;
+                    index = nodeID;
+                    targetNode = connectedNode;
+                }
+            }
+
+            //now we need to find the list of edges which are connected to current and target
+            if (index != -1) {
+                Edge currentEdge = ActionModel.CurrentNode.currentEdge;
+                Edge targetNodeEdge = targetNode.currentEdge;
+
+                //which edge connects both together?
+                if (currentEdge.childID == targetNode.ID) {
+                    StartCoroutine(Lerp(currentEdge));
+
+                } else if (targetNodeEdge.childID == ActionModel.CurrentNode.ID) {
+                    StartCoroutine(Lerp(targetNodeEdge));
+                }
+            }
+            
+        }
+
+        IEnumerator Lerp(Edge edge)
+        {
+            Debug.Log("Lerping");
+            lerping = true;
+            Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
+            Vector3 waypointTarget = Vector3.zero;
+
+            if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
+                waypointTarget = waypoints[0];
+                GameManager.Singleton.PlayerController.DoPathMovement(waypoints);
+            } else {
+                waypointTarget = waypoints[waypoints.Length - 1];
+                GameManager.Singleton.PlayerController.DoPathMovement(waypoints.Reverse().ToArray());
+            }
+            
+            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == waypointTarget);
+            lerping = false;
         }
 
         void OnTriggerEnter2D(Collider2D obj)
@@ -52,7 +112,7 @@ namespace StudioByStorm {
             if (obj.TryGetComponent<Node>(out Node Node)) {
                 ActionView.DisableGetEdgeButton();
                 ActionView.DisableSetEdgeButton();
-                ActionView.DisableTravelButton();
+                //ActionView.DisableTravelButton();//$$EXPERMENTAL
             }
         }
 
@@ -72,22 +132,9 @@ namespace StudioByStorm {
             } else {
                 ActionView.DisableSetEdgeButton();
             }
-
-            if ( (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentEdge.parentID != ActionModel.CurrentNode.ID && ActionModel.CurrentNode.NumOfConnections > 0) || (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentNode.NumOfConnections > 1)  || (ActionModel.CurrentEdge == null && ActionModel.CurrentNode.NumOfConnections > 0) ){
-                ActionView.EnableTravelButton();
-            } else {
-                ActionView.DisableTravelButton();
-            }
         }
 
-        public void TravelEdgeButtonClick()
-        {
-            isTravelButtonClicked = true;
-            ActionView.TravelButtonClick();
-            //GameManager.Singleton.PlayerController.LockMovement(true);
-        }
-
-        public void TravelEdgeButtonDeselect()
+        /*public void TravelEdgeButtonDeselect()
         {
             if (! isTravelButtonClicked) {
                 return;
@@ -100,11 +147,11 @@ namespace StudioByStorm {
             int targetIndex = -1;
             float minDissimiliarity = 1000000.0f;
             //calculate the swipe direction
-            Vector2 swipeDir = GameManager.Singleton.MobileInput.SwipeDelta;
+            Vector2 swipeDir = GameManager.Singleton.MobileInput.BackupEndTouch - GameManager.Singleton.MobileInput.BackupStartTouch;
             for (int i = 0; i < adjacentNodes.Count; i++) {
                 //calculate the direction to the currentnode
                 Vector2 currentnodeDir = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[i]).gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
-                float currentDissimilarity = ML.Math.GetDistance(currentnodeDir, swipeDir);
+                float currentDissimilarity = ML.Math.GetDistance(currentnodeDir.normalized, swipeDir.normalized);
                 //find the node whose direction from the current node has the least dissimilarity to the swipe direction
                 if (currentDissimilarity < minDissimiliarity) {
                     targetIndex = i;
@@ -116,7 +163,7 @@ namespace StudioByStorm {
             //send player along edges path
             GameManager.Singleton.PlayerController.DoPathMovement(edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray());
             //GameManager.Singleton.player.transform.position = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[targetIndex]).gameObject.transform.position;
-        }
+        }*/
 
         public void GetEdgeButtonClick()
         {
@@ -162,7 +209,8 @@ namespace StudioByStorm {
             //}$$Experimental: inifinite edge test
 
             if ( (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.parentID != ActionModel.CurrentNode.ID && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor) || (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentNode.NumOfConnections > 1)  || (ActionModel.CurrentEdge == null && ActionModel.CurrentNode.NumOfConnections > 0) ){
-                ActionView.EnableTravelButton();
+                //ActionView.EnableTravelButton();
+                //$$EXPERMENTAL
             }
 
             if (ActionModel.colorMaxConnections.Sum() == ActionModel.ColorConnectionsCount.Sum()) {

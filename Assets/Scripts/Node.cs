@@ -20,24 +20,36 @@ namespace StudioByStorm {
         public SpriteRenderer[] randomizedSpriteRenderer;
         public Sprite[] randomSprites;
         public GameObject coloredRing;
+        public Edge currentEdge;
 
         void Start()
         {
             GameManager.Singleton.NodeRegistry.Add(ID, this);
-            GameManager.Singleton.AdjacencyList.Add(ID);
+            
 
-            Edge currentEdge = Instantiate(GameManager.Singleton.Edge, gameObject.transform.position, Quaternion.identity, GameManager.Singleton.EdgeRegistry.EdgeParent.transform).GetComponent<Edge>();
+            currentEdge = Instantiate(GameManager.Singleton.Edge, gameObject.transform.position, Quaternion.identity, GameManager.Singleton.EdgeRegistry.EdgeParent.transform).GetComponent<Edge>();
+            
+            UpdateEdge();
             currentEdge.gameObject.transform.name = "Edge-ID" + ID;
             currentEdge.parentNode = this;
+            currentEdge.FabrikSolver2D.GetChain(currentEdge.FabrikSolver2D.chainCount).target = GameManager.Singleton.player.transform;
+        }
+
+        void UpdateEdge()
+        {
+            currentEdge.childID = -1;
             currentEdge.parentID = ID;
             currentEdge.EdgeColor = NodeColor;
-            currentEdge.FabrikSolver2D.GetChain(currentEdge.FabrikSolver2D.chainCount).target = GameManager.Singleton.player.transform;
-            GameManager.Singleton.EdgeRegistry.Add(currentEdge.parentID, currentEdge);
+            GameManager.Singleton.EdgeRegistry.Add(ID, currentEdge);
+            GameManager.Singleton.NodeRegistry.Add(ID, this);
+            GameManager.Singleton.AdjacencyList.Add(ID);
         }
 
         void OnEnable()
         {
             StartCoroutine(DelayedEnable());
+            
+            
         }
 
         void OnDisable() 
@@ -45,11 +57,19 @@ namespace StudioByStorm {
             if (coloredRing != null) {
                 coloredRing.SetActive(false);
             }
+            if (currentEdge != null) {
+                currentEdge.gameObject.SetActive(false);
+            }
+            GameManager.Singleton.EdgeRegistry.Remove(ID);
+            GameManager.Singleton.NodeRegistry.Remove(ID);
+            GameManager.Singleton.AdjacencyList.Remove(ID);
         }
 
         IEnumerator DelayedEnable()
         {
             yield return 0;
+            UpdateEdge();
+
             //randomize rotations of specified transforms
             for (int i = 0; i < randomizedTransforms.Length; i++) {
                 Vector3 rotation = randomizedTransforms[i].rotation.eulerAngles;

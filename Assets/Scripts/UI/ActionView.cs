@@ -8,6 +8,7 @@ namespace StudioByStorm.UI {
 
     public class ActionView : View
     {
+        public LeanJoystick TravelLeanJoyStick;
         public LeanJoystick LeanJoyStick;
         public ActionModel ActionModel;
         public Image TravelButtonImage;
@@ -18,18 +19,6 @@ namespace StudioByStorm.UI {
         public Button SetEdgeButton;
         public Button TravelEdgeButton;
         private Dictionary<NodeColor, int> connectedParentsCount = new Dictionary<NodeColor, int>();
-
-        public void EnableTravelButton()
-        {
-            TravelEdgeButton.interactable = true;
-            SetActivationColors(TravelEdgeButton, GameManager.Singleton.ColorModel.ColoredTravelers, TravelButtonImage);
-        }
-
-        public void DisableTravelButton()
-        {
-            TravelEdgeButton.interactable = false;
-            DeactivationColor(TravelButtonImage, GameManager.Singleton.ColorModel.ColoredTravelers);
-        }
 
         public void EnableGetEdgeButton() {
             GetEdgeButton.interactable = true;

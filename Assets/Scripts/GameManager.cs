@@ -72,7 +72,7 @@ namespace StudioByStorm {
             Vector2 cellID = GameManager.Singleton.SpatialHashManager.SpatialHash.GetCellIDForObj(PlayerHashData);
             List<HashData> nearbyNodes = GameManager.Singleton.SpatialHashManager.SpatialHash.GetNearby(cellID);
             List<HashData> nearestNeighbor = KNN.GetKNearestNeighbors(PlayerHashData, nearbyNodes, 1);
-            nearbyNode = nearestNeighbor[0];
+            nearbyNode = (nearestNeighbor[0] != null) ? nearestNeighbor[0] : null;
         }
     }
 

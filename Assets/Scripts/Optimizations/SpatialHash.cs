@@ -32,7 +32,7 @@ namespace StudioByStorm.Optimizations {
         }
         
         public Vector2 GetPosition() {
-            return gameObject.transform.position;
+            return (gameObject != null) ? (Vector2) gameObject.transform.position : Vector2.zero;
         }
     }
 

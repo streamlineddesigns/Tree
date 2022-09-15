@@ -24,8 +24,15 @@ namespace StudioByStorm.Optimizations {
 
         public GameObject Get()
         {
-            GameObject first = pool.First(x => ! x.activeSelf);
-            return (first != null) ? first : IncrementPool();
+            GameObject first = null;// = pool.First(x => ! x.activeSelf);
+            bool foundActive = false;
+            for (int i = 0; i < pool.Count; i++) {
+                if (! pool[i].activeSelf) {
+                    first = pool[i];
+                    foundActive = true;
+                }
+            }
+            return (foundActive) ? first : IncrementPool();
         }
 
         protected GameObject IncrementPool()

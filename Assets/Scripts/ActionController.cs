@@ -19,26 +19,36 @@ namespace StudioByStorm {
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
+        public bool isUp;
+        public Vector2 DownPoint;
+        public Vector2 UpPoint;
 
         void Update()
         {
             
         }
-
-        void OnEnable()
+        
+        public void OnDown()
         {
-            GameEventPublisher.OnTravelJoystickDirectionChange += OnTravelJoystickDirectionChange;
+            isUp = false;
+           DownPoint = Input.mousePosition;
         }
 
-        void OnDisable()
+        public void OnUp()
         {
-            GameEventPublisher.OnTravelJoystickDirectionChange += OnTravelJoystickDirectionChange;
+            isUp = true;
+            UpPoint = Input.mousePosition;
+
+            OnTravelJoystickDirectionChange(Vector2.zero);
         }
         
         void OnTravelJoystickDirectionChange(Vector2 Direction)
         {
+            if (!isUp) {
+                return;
+            }
             //check the direction of the joystick
-            Vector2 joystickDir = Direction;
+            Vector2 joystickDir = UpPoint - DownPoint;
             //get a list of the ids the current node is connected to from the adjacency list
             List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
             if (lerping || adjacentNodeIDS == null) {
@@ -70,11 +80,11 @@ namespace StudioByStorm {
                 Edge targetNodeEdge = targetNode.currentEdge;
 
                 //which edge connects both together?
-                if (currentEdge.childID == targetNode.ID) {
+                if (targetNodeEdge.childID == ActionModel.CurrentNode.ID) {
+                    StartCoroutine(Lerp(targetNodeEdge));
+                } else if (currentEdge.childID == targetNode.ID) {
                     StartCoroutine(Lerp(currentEdge));
 
-                } else if (targetNodeEdge.childID == ActionModel.CurrentNode.ID) {
-                    StartCoroutine(Lerp(targetNodeEdge));
                 }
             }
             
@@ -95,7 +105,7 @@ namespace StudioByStorm {
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints.Reverse().ToArray());
             }
             
-            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == waypointTarget);
+            yield return 0;
             lerping = false;
         }
 

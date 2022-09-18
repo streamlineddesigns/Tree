@@ -75,22 +75,15 @@ namespace StudioByStorm.GestureRecognition {
             currentTravelJoyStickDirection = actionView.TravelLeanJoyStick.ScaledValue;
 
             float minJoyStickDistance = 10000.0f;
-            float minTravelJoyStickDistance = 10000.0f;
             int joystickIndex = 0;
-            int travelJoystickIndex = 0;
                                        //UP        RIGHT          DOWN          LEFT
-            Vector3[] KNN = new Vector3[8]{Vector3.up, (Vector3.up + Vector3.right) / 2.0f, Vector3.right, (Vector3.right + -Vector3.up) / 2.0f, -Vector3.up, (-Vector3.up + - Vector3.right) / 2.0f, - Vector3.right, (- Vector3.right + Vector3.up) / 2.0f};
+            Vector3[] KNN = new Vector3[8]{Vector3.up, (Vector3.up + Vector3.right), Vector3.right, (Vector3.right + -Vector3.up), -Vector3.up, (-Vector3.up + - Vector3.right), - Vector3.right, (- Vector3.right + Vector3.up)};
             for (int i = 0; i < KNN.Length; i++) {
                 float currentJoystickDistance = ML.Math.GetDistance(KNN[i], currentJoyStickDirection);
-                float currentTravelJoystickDistance = ML.Math.GetDistance(KNN[i], currentTravelJoyStickDirection);
 
                 if (currentJoystickDistance < minJoyStickDistance) {
                     minJoyStickDistance = currentJoystickDistance;
                     joystickIndex = i;
-                }
-                if (currentTravelJoystickDistance < minTravelJoyStickDistance) {
-                    minTravelJoyStickDistance = currentTravelJoystickDistance;
-                    travelJoystickIndex = i;
                 }
             }
 
@@ -100,17 +93,11 @@ namespace StudioByStorm.GestureRecognition {
                 GameEventPublisher.PublishJoystickDirectionChange(KNN[joystickIndex]);
             }
 
-            if (previousTravelJoyStickDirection != (Vector2)KNN[travelJoystickIndex]) {
-                previousTravelJoyStickDirection = KNN[travelJoystickIndex];
-                GameEventPublisher.PublishTravelJoystickDirectionChange(KNN[travelJoystickIndex]);
-            }
-
             #region Standalone Inputs
             if (Input.GetMouseButtonDown(0)) {
                 tap = true;
                 startTouch = Input.mousePosition;
                 BackupStartTouch = startTouch;
-                //For double click
                 tapCount++;
             } else if(Input.GetMouseButtonUp(0)) {
                 if (! LongTap) {
@@ -127,24 +114,28 @@ namespace StudioByStorm.GestureRecognition {
             }
             #endregion
 
-            //#region Mobile Inputs
-            /*if (Input.touches.Length != 0) {
-                if (Input.touches[0].phase == TouchPhase.Began) 
-                {
+            #region Mobile Inputs
+            if (Input.touches.Length != 0) {
+                if (Input.touches[0].phase == TouchPhase.Began) {
                     tap = true;
-
-                    tapCount++;
-
                     startTouch = Input.touches[0].position;
                     BackupStartTouch = startTouch;
-                }
-                else if(Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled) 
-                {
-                    //BackupEndTouch = Input.touches[0].position;
+                    tapCount++;
+                } else if(Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled) {
+                    if (! LongTap) {
+                        if (GameEventPublisher.Singleton != null && startTouch != null) {
+                            GameEventPublisher.PublishTap(BackupStartTouch);
+                        }
+                    }
+                    
+                    longtap = false;
+                    BackupEndTouch = Input.mousePosition;
                     startTouch = swipeDelta = Vector2.zero;
+                    longTapTimerStarted = false;
+                    longTapTimer = 0.0f;
                 }
             } 
-            #endregion*/
+            #endregion
             if (tap) {
                 longTapTimerStarted = true;                    
             }

@@ -127981,13 +127981,19 @@ MonoBehaviour:
     roots: []
     aliases: []
     targets: []
-    entries: []
+    entries:
+    - root: {fileID: 0}
+      speed: -1
+      aliases: []
   nonInteractableTransitions:
     speed: -1
     roots: []
     aliases: []
     targets: []
-    entries: []
+    entries:
+    - root: {fileID: 0}
+      speed: -1
+      aliases: []
   onInteractable:
     m_PersistentCalls:
       m_Calls: []
@@ -128025,13 +128031,39 @@ MonoBehaviour:
       aliases: []
   onDown:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 197071776336523295}
+        m_TargetAssemblyTypeName: StudioByStorm.Gravity.Player.PlayerController,
+          Assembly-CSharp
+        m_MethodName: OnJoyStickDown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onSet:
     m_PersistentCalls:
       m_Calls: []
   onUp:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 197071776336523295}
+        m_TargetAssemblyTypeName: StudioByStorm.Gravity.Player.PlayerController,
+          Assembly-CSharp
+        m_MethodName: OnJoyStickUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1265915061
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -176127,7 +176159,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 197071776336523296}
         m_TargetAssemblyTypeName: StudioByStorm.ActionController, Assembly-CSharp
-        m_MethodName: OnDown
+        m_MethodName: OnTravelJoyStickDown
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -176145,7 +176177,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 197071776336523296}
         m_TargetAssemblyTypeName: StudioByStorm.ActionController, Assembly-CSharp
-        m_MethodName: OnUp
+        m_MethodName: OnTravelJoyStickUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -270824,7 +270856,7 @@ Rigidbody2D:
   m_AngularDrag: 1
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -270876,6 +270908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e85e80673c86cf84b9a8a1f96009ca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movementForce: 0.1
+  mockNodeRadius: 0.7
 --- !u!114 &197071776336523296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270894,9 +270928,6 @@ MonoBehaviour:
   isTravelButtonClicked: 0
   thresholdDistanceToBreakOutOfLerp: 0.1
   lerping: 0
-  isUp: 0
-  DownPoint: {x: 0, y: 0}
-  UpPoint: {x: 0, y: 0}
 --- !u!4 &5964727863067087387
 Transform:
   m_ObjectHideFlags: 0

@@ -19,22 +19,22 @@ namespace StudioByStorm {
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
-        public bool isUp;
-        public Vector2 DownPoint;
-        public Vector2 UpPoint;
+        protected bool isUp;
+        protected Vector2 DownPoint;
+        protected Vector2 UpPoint;
 
         void Update()
         {
             
         }
         
-        public void OnDown()
+        public void OnTravelJoyStickDown()
         {
             isUp = false;
-           DownPoint = Input.mousePosition;
+            DownPoint = Input.mousePosition;
         }
 
-        public void OnUp()
+        public void OnTravelJoyStickUp()
         {
             isUp = true;
             UpPoint = Input.mousePosition;

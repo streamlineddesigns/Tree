@@ -37,6 +37,23 @@ namespace StudioByStorm.GestureRecognition {
 
         public Vector2 BackupStartTouch;
         public Vector2 BackupEndTouch;
+        //make these coordinates around a circle
+        protected Vector2[] KNN = new Vector2[16]{new Vector2(0.0f, 1.0f), 
+                                                  new Vector2(0.38f, 0.92f),
+                                                  new Vector2(0.7f, 0.7f),
+                                                  new Vector2(0.92f, 0.38f),
+                                                  new Vector2(1.0f, 0.0f),
+                                                  new Vector2(0.92f, -0.38f),
+                                                  new Vector2(0.7f, -0.7f),
+                                                  new Vector2(0.38f, -0.92f),
+                                                  new Vector2(0.0f, -1.0f),
+                                                  new Vector2(-0.38f, -0.92f),
+                                                  new Vector2(-0.7f, -0.7f),
+                                                  new Vector2(-0.92f, -0.38f),
+                                                  new Vector2(-1.0f, 0.0f),
+                                                  new Vector2(-0.92f, 0.38f),
+                                                  new Vector2(-0.7f, 0.7f),
+                                                  new Vector2(-0.38f, 0.92f)};
 
         void OnEnable()
         {
@@ -76,8 +93,7 @@ namespace StudioByStorm.GestureRecognition {
 
             float minJoyStickDistance = 10000.0f;
             int joystickIndex = 0;
-                                       //UP        RIGHT          DOWN          LEFT
-            Vector3[] KNN = new Vector3[8]{Vector3.up, (Vector3.up + Vector3.right), Vector3.right, (Vector3.right + -Vector3.up), -Vector3.up, (-Vector3.up + - Vector3.right), - Vector3.right, (- Vector3.right + Vector3.up)};
+            
             for (int i = 0; i < KNN.Length; i++) {
                 float currentJoystickDistance = ML.Math.GetDistance(KNN[i], currentJoyStickDirection);
 

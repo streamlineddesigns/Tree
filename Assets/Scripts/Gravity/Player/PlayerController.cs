@@ -14,9 +14,12 @@ namespace StudioByStorm.Gravity.Player {
 
     public class PlayerController : MonoBehaviour
     {
+        public float _movementForce = 0.1f;
+        public float mockNodeRadius = 0.6f;
+
         private Surface surface;
-        private bool isOnSurface = false;
-        private bool isInAtmosphere = false;
+        public bool isOnSurface;
+        public bool isInAtmosphere;
         private float offSurfaceTimer = 0.0f;
         private float currentOffSurfaceTimer;
 
@@ -27,7 +30,7 @@ namespace StudioByStorm.Gravity.Player {
         private Vector2 gravityDirection = Vector2.zero;
         private float gravityForce = 850;
 
-        private bool isMovementLocked;
+        public bool isMovementLocked;
         private bool isUsingDirectionalMovement = true;
         private Vector2 movementDirection = Vector2.zero;
         private Vector2 swipeDirection = Vector2.zero;
@@ -55,6 +58,10 @@ namespace StudioByStorm.Gravity.Player {
         protected float currentJoystickTimer = 0.0f;
         protected bool lerping;
 
+        public bool isJoystickUp = true;
+        protected Vector2 joystickDownPoint;
+        protected Vector2 joystickUpPoint;
+
         
         void Awake()
         {
@@ -72,14 +79,14 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
-            GameEventPublisher.OnTap += OnTap;
+            //GameEventPublisher.OnTap += OnTap;
             GameEventPublisher.OnLongTap += OnLongTap;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
-            GameEventPublisher.OnTap -= OnTap;
+            //GameEventPublisher.OnTap -= OnTap;
             GameEventPublisher.OnLongTap -= OnLongTap;
         }
 
@@ -131,6 +138,7 @@ namespace StudioByStorm.Gravity.Player {
 
         void Update()
         {
+            movementForce = _movementForce;
             StateCleanUp();
         }
 
@@ -220,14 +228,26 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        public void OnJoyStickDown()
+        {
+            isJoystickUp = false;
+            joystickDownPoint = Input.mousePosition;
+        }
+
+        public void OnJoyStickUp()
+        {
+            isJoystickUp = true;
+            joystickUpPoint  = Input.mousePosition;
+        }
+
         protected void OnJoystickDirectionChange(Vector2 Direction)
         {
-            Vector2 joystickDir = Direction;
+            Vector2 joystickDir = Direction;//joystickUpPoint - joystickDownPoint;
 
             if (isOnSurface) {
                 movementDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
             } else {
-                dashDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
+                //dashDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
             }
 
             SetRelativeForwardDirection();
@@ -277,7 +297,12 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void Move()
         {
-            rigidbody.AddForce(transform.right * forwardDirection * movementForce);
+            if (isJoystickUp) {
+                return;
+            }
+            Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.nearbyNode.gameObject.transform.position;
+            Vector2 target = nearbyNodePosition + movementDirection.normalized * mockNodeRadius;
+            rigidbody.DOMove(target, movementForce, false);
         }
 
         protected void ResetMovement()
@@ -293,9 +318,6 @@ namespace StudioByStorm.Gravity.Player {
         {
             ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
             Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
-            if (joystickDir.x != 0.0f || joystickDir.y != 0.0f) {
-                return;
-            }
 
             float force = (isPowerJumping) ? powerJumpForce : jumpForce;
             rigidbody.AddForce(- gravityDirection * force, ForceMode2D.Impulse);

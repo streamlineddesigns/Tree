@@ -30,27 +30,37 @@ namespace StudioByStorm.EventPublishers {
 
         public static void PublishGameStateChange(GameState state)
         {
-            OnStateChange(state);
+            if (OnStateChange != null) {
+                OnStateChange(state);
+            }
         }
 
         public static void PublishJoystickDirectionChange(Vector2 Direction)
         {
-            OnJoystickDirectionChange(Direction);
+            if (OnJoystickDirectionChange != null) {
+                OnJoystickDirectionChange(Direction);
+            }
         }
 
         public static void PublishTravelJoystickDirectionChange(Vector2 Direction)
         {
-            OnTravelJoystickDirectionChange(Direction);
+            if (OnTravelJoystickDirectionChange != null) {
+                OnTravelJoystickDirectionChange(Direction);
+            }
         }
 
         public static void PublishTap(Vector2 Position)
         {
-            OnTap(Position);
+            if (OnTap != null) {
+                OnTap(Position);
+            }
         }
 
         public static void PublishLongTap(Vector2 Position)
         {
-            OnLongTap(Position);
+            if (OnLongTap != null) {
+                OnLongTap(Position);
+            }
         }
     }
 

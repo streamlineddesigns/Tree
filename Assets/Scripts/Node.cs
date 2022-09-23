@@ -27,7 +27,7 @@ namespace StudioByStorm {
             GameManager.Singleton.NodeRegistry.Add(ID, this);
             
 
-            currentEdge = Instantiate(GameManager.Singleton.Edge, gameObject.transform.position, Quaternion.identity, GameManager.Singleton.EdgeRegistry.EdgeParent.transform).GetComponent<Edge>();
+            currentEdge = Instantiate(GameManager.Singleton.LevelManager.Edge, gameObject.transform.position, Quaternion.identity, GameManager.Singleton.EdgeRegistry.EdgeParent.transform).GetComponent<Edge>();
             
             UpdateEdge();
             currentEdge.gameObject.transform.name = "Edge-ID" + ID;

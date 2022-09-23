@@ -22,6 +22,8 @@ namespace StudioByStorm {
         protected bool isUp;
         protected Vector2 DownPoint;
         protected Vector2 UpPoint;
+        private Vector2 jumpJoystickDownPoint;
+        private Vector2 jumpJoystickUpPoint;
 
         void Update()
         {
@@ -92,7 +94,7 @@ namespace StudioByStorm {
 
         IEnumerator Lerp(Edge edge)
         {
-            Debug.Log("Lerping");
+            //Debug.Log("Lerping");
             lerping = true;
             Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
             Vector3 waypointTarget = Vector3.zero;
@@ -144,36 +146,18 @@ namespace StudioByStorm {
             }
         }
 
-        /*public void TravelEdgeButtonDeselect()
+        public void OnJumpJoyStickDown()
         {
-            if (! isTravelButtonClicked) {
-                return;
-            }
+            jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
+        }
 
-            isTravelButtonClicked = false;
-            ActionView.TravelButtonImage.transform.position = ActionView.DragTravelButtonImage.transform.position;
-            //get the current nodes neighbors
-            List<int> adjacentNodes = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
-            int targetIndex = -1;
-            float minDissimiliarity = 1000000.0f;
-            //calculate the swipe direction
-            Vector2 swipeDir = GameManager.Singleton.MobileInput.BackupEndTouch - GameManager.Singleton.MobileInput.BackupStartTouch;
-            for (int i = 0; i < adjacentNodes.Count; i++) {
-                //calculate the direction to the currentnode
-                Vector2 currentnodeDir = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[i]).gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
-                float currentDissimilarity = ML.Math.GetDistance(currentnodeDir.normalized, swipeDir.normalized);
-                //find the node whose direction from the current node has the least dissimilarity to the swipe direction
-                if (currentDissimilarity < minDissimiliarity) {
-                    targetIndex = i;
-                    minDissimiliarity = currentDissimilarity;
-                }
-            }
-            //once that is complete, we need to now determine which edge it is that connects them
-            Edge edge = (GameManager.Singleton.EdgeRegistry.TryGetValue(ActionModel.CurrentNode.ID).childID == GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[targetIndex]).ID) ? GameManager.Singleton.EdgeRegistry.TryGetValue(ActionModel.CurrentNode.ID) : GameManager.Singleton.EdgeRegistry.TryGetValue(adjacentNodes[targetIndex]);
-            //send player along edges path
-            GameManager.Singleton.PlayerController.DoPathMovement(edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray());
-            //GameManager.Singleton.player.transform.position = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodes[targetIndex]).gameObject.transform.position;
-        }*/
+        public void OnJumpJoyStickUp()
+        {
+            jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
+            Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
+            GameManager.Singleton.PlayerController.JumpOverride(dir);
+            ActionView.JumpButtonClick();
+        }
 
         public void GetEdgeButtonClick()
         {

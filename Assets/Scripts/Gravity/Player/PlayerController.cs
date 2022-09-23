@@ -18,8 +18,8 @@ namespace StudioByStorm.Gravity.Player {
         public float mockNodeRadius = 0.6f;
 
         private Surface surface;
-        public bool isOnSurface;
-        public bool isInAtmosphere;
+        private bool isOnSurface;
+        private bool isInAtmosphere;
         private float offSurfaceTimer = 0.0f;
         private float currentOffSurfaceTimer;
 
@@ -30,7 +30,7 @@ namespace StudioByStorm.Gravity.Player {
         private Vector2 gravityDirection = Vector2.zero;
         private float gravityForce = 850;
 
-        public bool isMovementLocked;
+        private bool isMovementLocked;
         private bool isUsingDirectionalMovement = true;
         private Vector2 movementDirection = Vector2.zero;
         private Vector2 swipeDirection = Vector2.zero;
@@ -54,13 +54,13 @@ namespace StudioByStorm.Gravity.Player {
         private int dashCount;
         private float originalScale;
 
-        protected float JoystickTimerTarget = 0.25f;
-        protected float currentJoystickTimer = 0.0f;
-        protected bool lerping;
+        private float JoystickTimerTarget = 0.25f;
+        private float currentJoystickTimer = 0.0f;
+        private bool lerping;
 
-        public bool isJoystickUp = true;
-        protected Vector2 joystickDownPoint;
-        protected Vector2 joystickUpPoint;
+        private bool isJoystickUp = true;
+        private Vector2 joystickDownPoint;
+        private Vector2 joystickUpPoint;
 
         
         void Awake()
@@ -80,19 +80,14 @@ namespace StudioByStorm.Gravity.Player {
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             //GameEventPublisher.OnTap += OnTap;
-            GameEventPublisher.OnLongTap += OnLongTap;
+            //GameEventPublisher.OnLongTap += OnLongTap;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             //GameEventPublisher.OnTap -= OnTap;
-            GameEventPublisher.OnLongTap -= OnLongTap;
-        }
-
-        public Vector2 GetSwipeDirection()
-        {
-            return swipeDirection;
+            //GameEventPublisher.OnLongTap -= OnLongTap;
         }
 
         public void LockMovement(bool isLock)
@@ -228,6 +223,15 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        public void JumpOverride(Vector2 dir)
+        {
+            if (!isJumping && isOnSurface) {
+                isJumping = true;
+                isPowerJumping = true;
+                Jump(dir);
+            }
+        }
+
         public void OnJoyStickDown()
         {
             isJoystickUp = false;
@@ -246,8 +250,6 @@ namespace StudioByStorm.Gravity.Player {
 
             if (isOnSurface) {
                 movementDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
-            } else {
-                //dashDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
             }
 
             SetRelativeForwardDirection();
@@ -312,6 +314,18 @@ namespace StudioByStorm.Gravity.Player {
             } else {
                 movementDirection = Vector2.zero;
             }
+        }
+
+        protected void Jump(Vector2 dir)
+        {
+            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+            Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
+
+            float force = (isPowerJumping) ? powerJumpForce : jumpForce;
+            rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
+            didJump = true;
+            isJumping = false;
+            isPowerJumping = false;
         }
 
         protected void Jump()

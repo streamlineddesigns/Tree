@@ -8,6 +8,7 @@ namespace StudioByStorm.UI {
 
     public class ActionView : View
     {
+        public LeanJoystick JumpJoyStick;
         public LeanJoystick TravelLeanJoyStick;
         public LeanJoystick LeanJoyStick;
         public ActionModel ActionModel;
@@ -97,6 +98,12 @@ namespace StudioByStorm.UI {
         }
 
         public void TravelButtonClick()
+        {
+            
+
+        }
+
+        public void JumpButtonClick()
         {
             
 

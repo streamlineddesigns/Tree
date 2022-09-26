@@ -48,13 +48,11 @@ namespace StudioByStorm.Optimizations {
     {
 		private Dictionary<Vector2, List<T>> cells;
 		private int cellSize;
-        private HashData searchHashData;
 
-        public SpatialHash(int size, HashData hashData)
+        public SpatialHash(int size)
 	    {
             cells = new Dictionary<Vector2, List<T>>();
 			cellSize = size;
-            searchHashData = hashData;
 		}
 
 		public void AddObject(T hashData)
@@ -97,12 +95,12 @@ namespace StudioByStorm.Optimizations {
 
 		public Vector2 GetCellIDForObj(T hashData)
 		{
-            return new Vector2((int)( (hashData.GetPosition().x - searchHashData.GetPosition().x)  / cellSize), (int)( (hashData.GetPosition().y  - searchHashData.GetPosition().y) / cellSize));
+            return new Vector2((int)(hashData.GetPosition().x  / cellSize), (int)(hashData.GetPosition().y / cellSize));
 		}
 
         public Vector2 GetCellIDForObj(GameObject go)
 		{
-            return new Vector2((int)( (go.transform.position.x - searchHashData.GetPosition().x)  / cellSize), (int)( (go.transform.position.y - searchHashData.GetPosition().y)  / cellSize));
+            return new Vector2((int)(go.transform.position.x / cellSize), (int)(go.transform.position.y / cellSize));
 		}
 		
 	}

@@ -10,7 +10,7 @@ using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm {
 
-    public class ActionController : MonoBehaviour
+    public class ActionController : Controller
     {
         public float EdgeDistanceThreshold;
         public ActionView ActionView;
@@ -19,7 +19,8 @@ namespace StudioByStorm {
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
-        protected bool isUp;
+        protected bool travelIsUp;
+        protected bool jumpIsUp;
         protected Vector2 DownPoint;
         protected Vector2 UpPoint;
         private Vector2 jumpJoystickDownPoint;
@@ -27,18 +28,20 @@ namespace StudioByStorm {
 
         void Update()
         {
-            
+            if (! jumpIsUp) {
+                ActionView.OnJumpJoyStickDown();
+            }
         }
         
         public void OnTravelJoyStickDown()
         {
-            isUp = false;
+            travelIsUp = false;
             DownPoint = Input.mousePosition;
         }
 
         public void OnTravelJoyStickUp()
         {
-            isUp = true;
+            travelIsUp = true;
             UpPoint = Input.mousePosition;
 
             OnTravelJoystickDirectionChange(Vector2.zero);
@@ -46,7 +49,7 @@ namespace StudioByStorm {
         
         void OnTravelJoystickDirectionChange(Vector2 Direction)
         {
-            if (!isUp) {
+            if (!travelIsUp) {
                 return;
             }
             //check the direction of the joystick
@@ -111,21 +114,16 @@ namespace StudioByStorm {
             lerping = false;
         }
 
-        void OnTriggerEnter2D(Collider2D obj)
+        public void ManualOnTriggerEnter2D(Node node)
         {
-            if (obj.TryGetComponent<Node>(out Node Node)) {
-                ActionModel.CurrentNode = Node;
-                EnableActionButtons();
-            }
+            ActionModel.CurrentNode = node;
+            EnableActionButtons();
         }
 
-        void OnTriggerExit2D(Collider2D obj)
+        public void ManualOnTriggerExit2D(Node node)
         {
-            if (obj.TryGetComponent<Node>(out Node Node)) {
-                ActionView.DisableGetEdgeButton();
-                ActionView.DisableSetEdgeButton();
-                //ActionView.DisableTravelButton();//$$EXPERMENTAL
-            }
+            ActionView.DisableGetEdgeButton();
+            ActionView.DisableSetEdgeButton();
         }
 
         void EnableActionButtons()
@@ -148,7 +146,9 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickDown()
         {
+            jumpIsUp = false;
             jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
+            
         }
 
         public void OnJumpJoyStickUp()
@@ -156,7 +156,7 @@ namespace StudioByStorm {
             jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
             GameManager.Singleton.PlayerController.JumpOverride(dir);
-            ActionView.JumpButtonClick();
+            ActionView.OnJumpJoyStickUp();
         }
 
         public void GetEdgeButtonClick()
@@ -169,6 +169,7 @@ namespace StudioByStorm {
         public void SetEdgeButtonClick()
         {
             ActionView.DisableSetEdgeButton();
+            GameManager.Singleton.LevelManager.currentLevelEdgeCount++;
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentEdge.parentID, ActionModel.CurrentNode.ID);
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentNode.ID, ActionModel.CurrentEdge.parentID);
             GameManager.Singleton.AdjacencyList.Log();
@@ -199,15 +200,17 @@ namespace StudioByStorm {
             if (GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType == NodeType.Parent).ToArray().Length < 2) {
                 //get new edge
                 GetEdgeButtonClick();
+            } else {
+                GameManager.Singleton.LevelManager.parentColorsConnected[ActionModel.CurrentNode.NodeColor] = true;
             }
-            //}$$Experimental: inifinite edge test
+            //}$$Experimental: allow players to use more than what we know is the max number of edges a color will need
 
             if ( (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.parentID != ActionModel.CurrentNode.ID && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor) || (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentNode.NumOfConnections > 1)  || (ActionModel.CurrentEdge == null && ActionModel.CurrentNode.NumOfConnections > 0) ){
                 //ActionView.EnableTravelButton();
                 //$$EXPERMENTAL
             }
 
-            if (ActionModel.colorMaxConnections.Sum() == ActionModel.ColorConnectionsCount.Sum()) {
+            if (GameManager.Singleton.LevelManager.parentColorsConnected.Where(x => x.Value == true).Count() >= (GameManager.Singleton.LevelManager.currentLevelParentCount / 2) && GameManager.Singleton.LevelManager.currentLevelEdgeCount >= (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2))) {
                 GameManager.Singleton.LevelComplete();
             }
         }

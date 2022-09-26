@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Lean.Gui;
+using StudioByStorm;
 using StudioByStorm.Registries;
 using StudioByStorm.Optimizations;
 using StudioByStorm.UI;
-using Lean.Gui;
 using StudioByStorm.GestureRecognition;
 using StudioByStorm.EventPublishers;
 
@@ -171,6 +172,11 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnTriggerEnter2D(Collider2D collider)
         {
+            if (collider.TryGetComponent<Node>(out Node Node)) {
+                ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+                if (ActionController != null) ActionController.ManualOnTriggerEnter2D(Node);
+            }
+
             if (collider.CompareTag("Surface")) {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
@@ -213,6 +219,11 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnTriggerExit2D(Collider2D collider)
         {
+            if (collider.TryGetComponent<Node>(out Node Node)) {
+                ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+                if (ActionController != null) ActionController.ManualOnTriggerExit2D(Node);
+            }
+
             if (collider.CompareTag("Surface")) {
                 isOnSurface = false;
 

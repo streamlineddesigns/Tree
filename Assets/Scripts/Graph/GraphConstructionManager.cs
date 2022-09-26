@@ -322,10 +322,13 @@ namespace StudioByStorm.Graph {
 
         public void showAdjacencyList()
         {
-            AdjacencyList.Log();
+            AdjacencyList singleEntryAdjacencyList = AdjacencyList.GetWithoutDuplicateEdges();
+            singleEntryAdjacencyList.Log();
 
             LevelData LevelData = new LevelData();
             LevelData.Layers = new List<LayerData>();
+
+            LevelData.AdjacencyListData = singleEntryAdjacencyList.GetAll();
 
             Dictionary<float, int> Layers = new Dictionary<float, int>();
             for (int i = 0; i < nodePositions.Count; i++) {
@@ -359,7 +362,7 @@ namespace StudioByStorm.Graph {
             }
 
             GlobalLevelData = LevelData;
-            Debug.Log(LevelData.Layers.Count);
+            //Debug.Log(LevelData.Layers.Count);
 
             string dir = Application.persistentDataPath;
             

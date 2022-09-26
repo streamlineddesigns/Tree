@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,6 +57,16 @@ namespace StudioByStorm.Graph {
             return null;
         }
 
+        public List<List<int>> GetAll()
+        {
+            return (Nodes != null && Nodes.Count > 0) ? Nodes.Select(x => x.Value).ToList() : null;
+        }
+
+        public List<int> GetKeys()
+        {
+            return (Nodes != null && Nodes.Count > 0) ? Nodes.Select(x => x.Key).ToList() : null;
+        }
+
         public int Count(int nodeID)
         {
             if (Nodes.ContainsKey(nodeID)) {
@@ -63,6 +74,34 @@ namespace StudioByStorm.Graph {
             }
 
             return 0;
+        }
+
+        /*
+         * Going to return new instance that only has one edge id per node connection without duplicates
+         */
+        public AdjacencyList GetWithoutDuplicateEdges()
+        {
+            AdjacencyList AdjacencyListWithoutDuplicates = new AdjacencyList();
+
+            List<int> keys = GetKeys();
+
+            for (int i = 0; i < keys.Count; i++) {
+
+                int currentNodeID = keys[i];
+                List<int> connectedNodeIDs = Get(keys[i]);
+                AdjacencyListWithoutDuplicates.Add(currentNodeID);
+
+                for (int j = 0; j < connectedNodeIDs.Count; j++) {
+                    if (AdjacencyListWithoutDuplicates.Contains(currentNodeID, connectedNodeIDs[j]) || AdjacencyListWithoutDuplicates.Contains(connectedNodeIDs[j], currentNodeID)) {
+                        //do nothing for now
+                    } else {
+                        AdjacencyListWithoutDuplicates.Add(currentNodeID, connectedNodeIDs[j]);
+                    }
+                    
+                }
+            }
+
+            return AdjacencyListWithoutDuplicates;
         }
 
         public void Log()

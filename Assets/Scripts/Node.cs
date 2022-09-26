@@ -72,10 +72,17 @@ namespace StudioByStorm {
 
             //randomize rotations of specified transforms
             for (int i = 0; i < randomizedTransforms.Length; i++) {
+
                 Vector3 rotation = randomizedTransforms[i].rotation.eulerAngles;
                 rotation.z = UnityEngine.Random.Range(0.0f, 360.0f);
                 randomizedTransforms[i].rotation = Quaternion.Euler(rotation);
             }
+
+            Vector3 sharedSurfaceVector = DarkSurface.transform.rotation.eulerAngles;
+            sharedSurfaceVector.z = UnityEngine.Random.Range(0.0f, 360.0f);
+            Quaternion sharedSurfaceRotation = Quaternion.Euler(sharedSurfaceVector);
+            DarkSurface.transform.rotation = sharedSurfaceRotation;
+            ColorSurface.transform.rotation = sharedSurfaceRotation;
 
             //randomize sprites of specifies sprite renderers
             for (int j = 0; j < randomizedSpriteRenderer.Length; j++) {

@@ -8,9 +8,20 @@ namespace StudioByStorm.UI {
 
     public class ActionView : View
     {
+        public float speed = 5.0f;
+        public float pMovementThreshold = 0.1f;
         public LeanJoystick JumpJoyStick;
         public LeanJoystick TravelLeanJoyStick;
         public LeanJoystick LeanJoyStick;
+        public RectTransform JumpJoyStickRect;
+        public RectTransform JumpJoyStickHandleRect;
+        public GameObject pAnchor;
+        public GameObject p2HandleTarget;
+        public GameObject p3HandleTarget;
+        public GameObject p2GO;
+        public GameObject p3GO;
+        public GameObject p2Indicator;
+        public GameObject p3Indicator;
         public ActionModel ActionModel;
         public Image TravelButtonImage;
         public Image DragTravelButtonImage;
@@ -19,7 +30,8 @@ namespace StudioByStorm.UI {
         public Button GetEdgeButton;
         public Button SetEdgeButton;
         public Button TravelEdgeButton;
-        private Dictionary<NodeColor, int> connectedParentsCount = new Dictionary<NodeColor, int>();
+        protected Vector3 previousp0Position;
+        protected Dictionary<NodeColor, int> connectedParentsCount = new Dictionary<NodeColor, int>();
 
         public void EnableGetEdgeButton() {
             GetEdgeButton.interactable = true;
@@ -84,7 +96,8 @@ namespace StudioByStorm.UI {
             //then activate it
             edge.gameObject.SetActive(true);
             //add edge to player
-            GameManager.Singleton.player.GetComponent<ActionController>().ActionModel.CurrentEdge = edge; //$$cyclic dependencies. need a central location for this data seperated from player action and action view
+            ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName) as ActionController;
+            ActionController.ActionModel.CurrentEdge = edge; //$$cyclic dependencies. need a central location for this data seperated from player action and action view
         }
 
         public void SetEdgeButtonClick(Edge edge)
@@ -94,7 +107,8 @@ namespace StudioByStorm.UI {
             //set new target
             edge.FabrikSolver2D.GetChain(edge.FabrikSolver2D.chainCount).target = nearestNode.gameObject.transform;
             //remove edge from player
-            GameManager.Singleton.player.GetComponent<ActionController>().ActionModel.CurrentEdge = null;
+            ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName) as ActionController;
+            ActionController.ActionModel.CurrentEdge = null;
         }
 
         public void TravelButtonClick()
@@ -103,10 +117,57 @@ namespace StudioByStorm.UI {
 
         }
 
-        public void JumpButtonClick()
+        public void OnJumpJoyStickDown()
+        {
+            //get positions
+            Vector3 p0 = JumpJoyStickHandleRect.gameObject.transform.localPosition;
+            if (ML.Math.GetDistance(p0, previousp0Position) > pMovementThreshold) {
+                previousp0Position = p0;
+            } else {
+                return;
+            }
+            
+            Vector3 p1 = pAnchor.transform.localPosition;
+            Vector3 dir = (p1 - p0).normalized;
+
+            float angle2 = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            Quaternion q2 = Quaternion.AngleAxis(angle2, Vector3.forward);
+            pAnchor.transform.rotation = Quaternion.Slerp(pAnchor.transform.rotation, q2, Time.deltaTime * speed);
+
+            Vector3 p2TargetPosition = dir - (pAnchor.transform.up * 100.0f);
+            Vector3 p3TargetPosition = dir + (pAnchor.transform.up * 100.0f);
+
+            p2GO.transform.localPosition = p2TargetPosition;
+            p3GO.transform.localPosition = p3TargetPosition;
+
+
+            //set indicator rotations
+            Vector3 p2dir = (p2TargetPosition - p0).normalized;
+            float angleIndicator2 = Mathf.Atan2(p2dir.y, p2dir.x) * Mathf.Rad2Deg;
+            Quaternion qIndicator2 = Quaternion.AngleAxis(angleIndicator2, Vector3.forward);
+            p2Indicator.transform.rotation = Quaternion.Slerp(pAnchor.transform.rotation, qIndicator2, Time.deltaTime * speed);
+            
+            Vector3 p3dir = (p3TargetPosition - p0).normalized;
+            float angleIndicator3 = Mathf.Atan2(p3dir.y, p3dir.x) * Mathf.Rad2Deg;
+            Quaternion qIndicator3 = Quaternion.AngleAxis(angleIndicator3, Vector3.forward);
+            p3Indicator.transform.rotation = Quaternion.Slerp(pAnchor.transform.rotation, qIndicator3, Time.deltaTime * speed);
+
+
+
+            //set inidicator positions
+            p2Indicator.transform.localPosition = p2TargetPosition - p2Indicator.transform.right * 75f;
+            p3Indicator.transform.localPosition = p3TargetPosition - p3Indicator.transform.right * 75f;
+
+            //set indicator size
+            float p2Distance = ML.Math.GetDistance((Vector2) p0, (Vector2) p2TargetPosition);
+            float p3Distance = ML.Math.GetDistance((Vector2) p0, (Vector2) p3TargetPosition);
+            p2Indicator.transform.localScale = new Vector3(p2Distance, p2Indicator.transform.localScale.y, p2Indicator.transform.localScale.z);
+            p3Indicator.transform.localScale = new Vector3(p3Distance, p3Indicator.transform.localScale.y, p3Indicator.transform.localScale.z);
+        }
+
+        public void OnJumpJoyStickUp()
         {
             
-
         }
     }
 

@@ -8,6 +8,7 @@ namespace StudioByStorm.Data {
     public struct LevelData
     {
         public List<LayerData> Layers;
+        public List<List<int>> AdjacencyListData;
     }
 
 }

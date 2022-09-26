@@ -32,7 +32,7 @@ namespace StudioByStorm.Optimizations {
 
         protected void GenerateSpatialHash()
         {
-            SpatialHash = new SpatialHash<HashData>(cellSize, PlayerHashData);
+            SpatialHash = new SpatialHash<HashData>(cellSize);
         }
 
         protected void GenerateHashData()

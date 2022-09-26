@@ -66,5 +66,10 @@ namespace StudioByStorm {
         PanBegin = 2,
         PanComplete = 3,
     }
+
+    public enum HashDataType {
+        Node,
+        Boid
+    }
     
 }

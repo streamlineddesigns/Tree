@@ -104,6 +104,11 @@ namespace StudioByStorm.Graph {
             return AdjacencyListWithoutDuplicates;
         }
 
+        public void Clear()
+        {
+            Nodes = new Dictionary<int, List<int>>();
+        }
+
         public void Log()
         {
             foreach (KeyValuePair<int, List<int>> entry in Nodes) {

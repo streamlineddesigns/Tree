@@ -45,13 +45,13 @@ namespace StudioByStorm.Gravity.Player {
         private float powerJumpForce = 11f;
 
         private Vector2 dashDirection = Vector2.zero;
-        private float spaceDashForce = 7f;
+        private float spaceDashForce = 9f;
         private Vector2 minimumSpaceVelocity = new Vector2(0.25f, 0.25f);
-        private float atmosphereDashForce = 5f;
+        private float atmosphereDashForce = 7f;
         private bool didAtmosphereDash = false;
         private bool didSpaceDash = false;
         private bool canDash = true;
-        private int dashCountAllowed = 1;
+        private int extraDashCountAllowed = 0;
         private int dashCount;
         private float originalScale;
 
@@ -86,7 +86,7 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnDisable()
         {
-            GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
+            GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
             //GameEventPublisher.OnTap -= OnTap;
             //GameEventPublisher.OnLongTap -= OnLongTap;
         }
@@ -240,6 +240,9 @@ namespace StudioByStorm.Gravity.Player {
                 isJumping = true;
                 isPowerJumping = true;
                 Jump(dir);
+
+            } else {
+                dashDirection = dir;
             }
         }
 
@@ -363,15 +366,15 @@ namespace StudioByStorm.Gravity.Player {
                     dashForce = spaceDashForce;
                     didSpaceDash = true;
                 }
-
-                rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
                 
-                if (dashCount < dashCountAllowed) {
+                if (dashCount < extraDashCountAllowed) {
                     dashCount++;
                 } else {
                     dashCount = 0;
                     canDash = false;
                 }
+
+                rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
             }
 
             dashDirection = Vector2.zero;
@@ -422,7 +425,7 @@ namespace StudioByStorm.Gravity.Player {
                 canDash = true;
             
             //in space & used dash
-            } else if (! isInAtmosphere && ! isOnSurface && didSpaceDash && dashCount >= dashCountAllowed) {
+            } else if (! isInAtmosphere && ! isOnSurface && didSpaceDash && dashCount >= extraDashCountAllowed) {
                 canDash = false;
             
             //simply in space

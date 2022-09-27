@@ -18,7 +18,9 @@ namespace StudioByStorm.Optimizations {
 
             pool = new List<GameObject>(initialSize);
             for (int i = 0; i < initialSize; i++) {
-                pool.Add(Instantiate(objectToPool, parent));
+                GameObject objToPool = Instantiate(objectToPool, parent);
+                objToPool.SetActive(false);
+                pool.Add(objToPool);
             }
         }
 
@@ -33,6 +35,13 @@ namespace StudioByStorm.Optimizations {
                 }
             }
             return (foundActive) ? first : IncrementPool();
+        }
+
+        public void DeactivateAll()
+        {
+            for (int i = 0; i < pool.Count; i++) {
+                pool[i].SetActive(false);
+            }
         }
 
         protected GameObject IncrementPool()

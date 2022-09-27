@@ -32,7 +32,6 @@ namespace StudioByStorm {
             UpdateEdge();
             currentEdge.gameObject.transform.name = "Edge-ID" + ID;
             currentEdge.parentNode = this;
-            currentEdge.FabrikSolver2D.GetChain(currentEdge.FabrikSolver2D.chainCount).target = GameManager.Singleton.player.transform;
         }
 
         void UpdateEdge()
@@ -40,6 +39,8 @@ namespace StudioByStorm {
             currentEdge.childID = -1;
             currentEdge.parentID = ID;
             currentEdge.EdgeColor = NodeColor;
+            currentEdge.FabrikSolver2D.GetChain(currentEdge.FabrikSolver2D.chainCount).target = GameManager.Singleton.player.transform;
+            currentEdge.transform.position = gameObject.transform.position;
             GameManager.Singleton.EdgeRegistry.Add(ID, currentEdge);
             GameManager.Singleton.NodeRegistry.Add(ID, this);
             GameManager.Singleton.AdjacencyList.Add(ID);

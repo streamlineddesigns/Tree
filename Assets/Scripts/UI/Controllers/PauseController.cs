@@ -14,6 +14,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             Time.timeScale = 1.0f;
             MockNodes.SetActive(true);
+            GameManager.Singleton.CameraController.ResetToOriginalPosition();
             for (int i = 0; i < nodeParent.transform.childCount; i++) {
                 nodeParent.transform.GetChild(i).gameObject.SetActive(false);//$$use pooling system so this is worthwhile
             }

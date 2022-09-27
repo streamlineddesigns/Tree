@@ -21,6 +21,7 @@ namespace StudioByStorm {
         public bool lerping;
         protected bool travelIsUp;
         protected bool jumpIsUp;
+        protected bool jumpIsUpSafetySwitch;
         protected Vector2 DownPoint;
         protected Vector2 UpPoint;
         private Vector2 jumpJoystickDownPoint;
@@ -146,17 +147,28 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickDown()
         {
+            jumpIsUpSafetySwitch = true;
             jumpIsUp = false;
             jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
-            
         }
 
         public void OnJumpJoyStickUp()
         {
+            jumpIsUpSafetySwitch = false;
+            StartCoroutine(DeplayedJumpIsUp());
             jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
             GameManager.Singleton.PlayerController.JumpOverride(dir);
             ActionView.OnJumpJoyStickUp();
+        }
+
+        //this just allows our animations to fade out for a quater of an extra second
+        IEnumerator DeplayedJumpIsUp()
+        {
+            yield return new WaitForSeconds(0.25f);
+            if (! jumpIsUpSafetySwitch) {
+                jumpIsUp = true;
+            }
         }
 
         public void GetEdgeButtonClick()

@@ -36,6 +36,7 @@ namespace StudioByStorm {
         public GameObject player;
         public PlayerController PlayerController;
         public HashData nearbyNode;
+        public CameraController CameraController;
         
         protected void Awake()
         {
@@ -69,7 +70,7 @@ namespace StudioByStorm {
             Vector2 cellID = GameManager.Singleton.SpatialHashManager.SpatialHash.GetCellIDForObj(PlayerHashData);
             List<HashData> nearbyNodes = GameManager.Singleton.SpatialHashManager.SpatialHash.GetNearby(cellID);
             List<HashData> nearestNeighbor = KNN.GetKNearestNeighbors(PlayerHashData, nearbyNodes, 1);
-            nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : null;
+            nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : nearbyNode;
         }
     }
 

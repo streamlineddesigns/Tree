@@ -8,6 +8,8 @@ using Newtonsoft.Json.Serialization;
 using StudioByStorm.Data;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
+using StudioByStorm.Graph;
+using StudioByStorm;
 
 namespace StudioByStorm {
 
@@ -77,8 +79,19 @@ namespace StudioByStorm {
             Debug.Log("Loaded Saved LevelData: " + LevelSaveFilePath);
         }
 
+        protected void CleanUpOnGameStart()
+        {
+            GameManager.Singleton.AdjacencyList.Clear();
+            EdgeRendererPool.DeactivateAll();
+            NodePool.DeactivateAll();
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            actionController.ActionModel.CurrentEdge = null;
+        }
+
         protected void GameStart()
         {
+            CleanUpOnGameStart();
+
             nodePositions = new List<float[]>();
             
             int ID = 0;
@@ -95,6 +108,7 @@ namespace StudioByStorm {
                     if (! parentColorsConnected.ContainsKey(currentNode.NodeColor)) {
                         parentColorsConnected.Add(currentNode.NodeColor, false);
                     }
+                    currentNode.NumOfConnections = 0;
                     currentNode.NodeType = CurrentLevelData.Layers[i].nodeTypes[j];
                     currentNode.gameObject.SetActive(true);
                     currentLevelParentCount = (currentNode.NodeType == NodeType.Parent) ? currentLevelParentCount + 1 : currentLevelParentCount;

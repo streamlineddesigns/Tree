@@ -50,13 +50,7 @@ namespace StudioByStorm {
                 Destroy(this);
             }
         }
-        
-        public void LevelComplete()
-        {
-            PlayerController.LockMovement(true);
-            UIController.ShowView(ViewName.LevelCompleteView);
-        }
-                
+                        
         protected void Update()
         {
             SetNearbyNode();
@@ -70,7 +64,7 @@ namespace StudioByStorm {
             Vector2 cellID = GameManager.Singleton.SpatialHashManager.SpatialHash.GetCellIDForObj(PlayerHashData);
             List<HashData> nearbyNodes = GameManager.Singleton.SpatialHashManager.SpatialHash.GetNearby(cellID);
             List<HashData> nearestNeighbor = KNN.GetKNearestNeighbors(PlayerHashData, nearbyNodes, 1);
-            nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : nearbyNode;
+            nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : nearbyNode;///try setting to null again and see if that fixes level 2 bug
         }
     }
 

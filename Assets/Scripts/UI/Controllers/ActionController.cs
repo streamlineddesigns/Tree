@@ -50,7 +50,7 @@ namespace StudioByStorm {
         
         void OnTravelJoystickDirectionChange(Vector2 Direction)
         {
-            if (!travelIsUp) {
+            if (!travelIsUp || !GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) {
                 return;
             }
             //check the direction of the joystick
@@ -223,7 +223,7 @@ namespace StudioByStorm {
             }
 
             if (GameManager.Singleton.LevelManager.parentColorsConnected.Where(x => x.Value == true).Count() >= (GameManager.Singleton.LevelManager.currentLevelParentCount / 2) && GameManager.Singleton.LevelManager.currentLevelEdgeCount >= (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2))) {
-                GameManager.Singleton.LevelComplete();
+                GameEventPublisher.PublishGameStateChange(GameState.LevelComplete);
             }
         }
     }

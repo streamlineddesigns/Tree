@@ -13,13 +13,15 @@ namespace StudioByStorm.UI.Controllers {
         public void HomeButtonClick()
         {
             Time.timeScale = 1.0f;
-            MockNodes.SetActive(true);
+            /*MockNodes.SetActive(true);
             GameManager.Singleton.CameraController.ResetToOriginalPosition();
             for (int i = 0; i < nodeParent.transform.childCount; i++) {
                 nodeParent.transform.GetChild(i).gameObject.SetActive(false);//$$use pooling system so this is worthwhile
             }
             GameManager.Singleton.player.SetActive(false);
-            GameManager.Singleton.UIController.ShowView(ViewName.StartView);
+            GameManager.Singleton.UIController.ShowView(ViewName.StartView);*/
+
+            SceneManager.LoadScene("Main");//$$Testing just a temporary fix. Not a permanent solution. The system that resets everything after a level is left isnt workinng so this should do it too
         }
 
         public void ResumeButtonClick()

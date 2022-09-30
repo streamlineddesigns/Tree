@@ -11,10 +11,15 @@ namespace StudioByStorm.UI.Controllers {
     {
         public GameObject LevelSelectButtonGO;
         public GameObject LevelButtonSpawnLocation;
+
+        void Start()
+        {
+            StartCoroutine(DelayedEnable());
+        }
         
         void OnEnable()
         {
-            StartCoroutine(DelayedEnable());
+            
         }
 
         IEnumerator DelayedEnable()

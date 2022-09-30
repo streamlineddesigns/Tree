@@ -80,15 +80,21 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
-            //GameEventPublisher.OnTap += OnTap;
-            //GameEventPublisher.OnLongTap += OnLongTap;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
-            //GameEventPublisher.OnTap -= OnTap;
-            //GameEventPublisher.OnLongTap -= OnLongTap;
+        }
+
+        public bool isPlayerGrounded() 
+        {
+            return isOnSurface;
+        }
+
+        public bool isPlayerInAtmosphere()
+        {
+            return isInAtmosphere;
         }
 
         public void LockMovement(bool isLock)
@@ -267,30 +273,6 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             SetRelativeForwardDirection();
-        }
-
-        protected void OnTap(Vector2 tap) 
-        {
-            if (isMovementLocked) {
-                return; 
-            }
-
-            if (!isJumping && isOnSurface) {
-                isJumping = true;
-                isPowerJumping = false;
-            }
-        }
-
-        protected void OnLongTap(Vector2 tap)
-        {
-            if (isMovementLocked) {
-                return; 
-            }
-
-            if (!isJumping && isOnSurface) {
-                isJumping = true;
-                isPowerJumping = true;
-            }
         }
 
         protected void ApplyGravityFailSafe()

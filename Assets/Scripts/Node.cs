@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StudioByStorm.Registries;
+using DG.Tweening;
 
 namespace StudioByStorm {
 
@@ -109,13 +110,21 @@ namespace StudioByStorm {
         }
 
         public void DisplayColor() {
+            //ColorSurface.SetActive(true);
+            //DarkSurface.SetActive(false);
             ColorSurface.SetActive(true);
-            DarkSurface.SetActive(false);
+            LightColored.DOFade(1, 3);
+            DarkColored.DOFade(1, 3);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 3);
         }
 
         public void DisplayGrayScale() {
-            ColorSurface.SetActive(false);
+            //ColorSurface.SetActive(false);
+            //DarkSurface.SetActive(true);
             DarkSurface.SetActive(true);
+            LightColored.DOFade(0, 3);
+            DarkColored.DOFade(0, 3);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 3);
         }
     }
 

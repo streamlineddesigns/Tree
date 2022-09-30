@@ -77,10 +77,27 @@ namespace StudioByStorm.Optimizations {
 		public List<T> GetNearby(Vector2 cellID)
 		{
             if (cells.ContainsKey(cellID)) {
-                return cells[cellID];
+                //return cells[cellID];
             }
 
-            return null;
+            List<T> nearby = new List<T>();
+            List<Vector2> nearbyCellIDList = new List<Vector2>(){ new Vector2(cellID.x, cellID.y),//current
+                                                                  new Vector2(cellID.x + 1, cellID.y),//right
+															      new Vector2(cellID.x - 1, cellID.y),//left 
+															      new Vector2(cellID.x, cellID.y + 1),//up
+															      new Vector2(cellID.x, cellID.y - 1),//down 
+															      new Vector2(cellID.x + 1, cellID.y + 1),//upper right diag 
+															      new Vector2(cellID.x + 1, cellID.y - 1),//lower right diag
+															      new Vector2(cellID.x - 1, cellID.y - 1), //bottom left diag
+															      new Vector2(cellID.x - 1, cellID.y + 1) };//upper left diag
+			
+			for (int i = 0; i < nearbyCellIDList.Count; i++) {
+				if (cells.ContainsKey(nearbyCellIDList[i])) {
+					nearby.AddRange(cells[nearbyCellIDList[i]]);
+				}
+			}
+
+			return nearby;
 		}
 
 		private void Insert(Vector2 cellID, T hashData)

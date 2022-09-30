@@ -38,6 +38,8 @@ namespace StudioByStorm.Graph {
         private Dictionary<Vector3, GameObject> nodeGameObjects = new Dictionary<Vector3, GameObject>();
         private List<LineRenderer> edgeLineRenderers = new List<LineRenderer>();
         public AdjacencyList AdjacencyList = new AdjacencyList();
+        protected bool playerSetPositionSwitch = false;
+        public Vector3 playerPosition;
 
         protected void Awake()
         {
@@ -74,6 +76,11 @@ namespace StudioByStorm.Graph {
         public void GrayScaleButtonClick()
         {
             currentCursorNodeColor = NodeColor.GrayScale;
+        }
+        
+        public void AssignPlayerPositionClick()
+        {
+            playerSetPositionSwitch = true;
         }
 
         protected void Start()
@@ -132,6 +139,11 @@ namespace StudioByStorm.Graph {
         {
             setTappedGameObject(r.startTouchLocation());
             editTappedGameObject();
+
+            if (tappedGameObject != null && playerSetPositionSwitch) {
+                playerPosition = tappedGameObject.transform.position * 7.0f;
+                playerSetPositionSwitch = false;
+            }
         }
 
         protected void Update()
@@ -329,6 +341,7 @@ namespace StudioByStorm.Graph {
             LevelData.Layers = new List<LayerData>();
 
             LevelData.AdjacencyListData = singleEntryAdjacencyList.GetAll();
+            LevelData.PlayerStartPosition = playerPosition;
 
             Dictionary<float, int> Layers = new Dictionary<float, int>();
             for (int i = 0; i < nodePositions.Count; i++) {

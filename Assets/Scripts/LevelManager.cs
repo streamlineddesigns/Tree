@@ -54,10 +54,23 @@ namespace StudioByStorm {
 
         public void OnStateChange(GameState state)
         {
-            if (state == GameState.GameStart) {
-                LoadLevel();
-                GameStart();
+            switch(state) {
+                case GameState.GameStart :
+                    LoadLevel();
+                    GameStart();
+                    break;
+
+                case GameState.LevelComplete :
+                    OnLevelComplete();
+                    break;
             }
+        }
+
+        protected void OnLevelComplete()
+        {
+            GameManager.Singleton.PlayerController.LockMovement(true);
+            GameManager.Singleton.UIController.ShowView(ViewName.LevelCompleteView);
+            GameManager.Singleton.FXManager.LaunchFireWork();
         }
 
         public void LoadLevel()
@@ -82,6 +95,7 @@ namespace StudioByStorm {
         protected void CleanUpOnGameStart()
         {
             GameManager.Singleton.AdjacencyList.Clear();
+            GameManager.Singleton.FXManager.FireworksPool.DeactivateAll();
             EdgeRendererPool.DeactivateAll();
             NodePool.DeactivateAll();
             ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
@@ -111,6 +125,7 @@ namespace StudioByStorm {
                     currentNode.NumOfConnections = 0;
                     currentNode.NodeType = CurrentLevelData.Layers[i].nodeTypes[j];
                     currentNode.gameObject.SetActive(true);
+                    currentNode.gameObject.name = "Node-" +ID;
                     currentLevelParentCount = (currentNode.NodeType == NodeType.Parent) ? currentLevelParentCount + 1 : currentLevelParentCount;
                     currentLevelNodeCount++;
                     ID++;
@@ -120,9 +135,8 @@ namespace StudioByStorm {
             SetEdgeRenderers();
 
             float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
-            GameManager.Singleton.player.transform.position = new Vector2(coords[0], coords[1]);
-            GameManager.Singleton.FXManager.SeaDust.transform.position = new Vector2(coords[0], coords[1]);
-
+            GameManager.Singleton.player.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
+            GameManager.Singleton.FXManager.SeaDust.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
         }
 
         protected void SetEdgeRenderers()

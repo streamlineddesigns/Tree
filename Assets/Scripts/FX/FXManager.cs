@@ -1,6 +1,8 @@
-using UnityEngine;
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
 
@@ -8,16 +10,25 @@ namespace StudioByStorm.FX {
 
     public class FXManager : MonoBehaviour
     {
+        public Transform FXParent;
+        public SpatialHash<HashData> SpatialHash;
+        //Sea Dust FX
         public GameObject SeaDust;
+        //Boids FX
         public GameObject BoidPrefab;
-        public Transform BoidParent;
         public BoidConfig BoidConfig;
         public Transform[] BoidTargets;
-        public SpatialHash<HashData> SpatialHash;
+        [HideInInspector]
         public Pool BoidPool;
-        protected int poolSize = 20;
+        //Fireworks FX
+        public GameObject FireWorkPrefab;
+        [HideInInspector]
+        public Pool FireworksPool;
+        
+        protected int fireworkPoolSize = 5;
+        protected int boidPoolSize = 20;
         protected int colorCount = 4;
-        protected int boidPerColor = 4;
+        protected int boidPerColor = 8;
 
         void Awake()
         {
@@ -25,7 +36,10 @@ namespace StudioByStorm.FX {
             SpatialHash = new SpatialHash<HashData>(cellsize);
             
             BoidPool = ScriptableObject.CreateInstance<Pool>();
-            BoidPool.DependencyInjection(BoidPrefab, BoidParent, poolSize);
+            BoidPool.DependencyInjection(BoidPrefab, FXParent, boidPoolSize);
+
+            FireworksPool  = ScriptableObject.CreateInstance<Pool>();
+            FireworksPool.DependencyInjection(FireWorkPrefab, FXParent, fireworkPoolSize);
         }
 
         void Start()
@@ -44,6 +58,35 @@ namespace StudioByStorm.FX {
                 }
             }
         }
+
+        IEnumerator DelayedLaunchFireWork()
+        {
+            Vector3 targetPosition = GameManager.Singleton.player.transform.position;
+            int fireworksToLaunch = 3;
+            float offset = 2.0f;
+            float offsetX = targetPosition.x;
+            float offsetY = targetPosition.y;
+            float timeBetweenLaunches = 0.25f;
+
+            for (int i = 0; i < fireworksToLaunch; i++) {
+                GameObject firework = FireworksPool.Get();
+                Vector3 currentTargetPosition = targetPosition;
+                offsetX += UnityEngine.Random.Range(-offset, offset);
+                offsetY += UnityEngine.Random.Range(-offset, offset);
+                currentTargetPosition.x = offsetX;
+                currentTargetPosition.y = offsetY;
+                firework.transform.position = currentTargetPosition;
+                firework.SetActive(true);
+                yield return new WaitForSeconds(timeBetweenLaunches);
+            }
+        }
+
+        public void LaunchFireWork()
+        {
+            StartCoroutine(DelayedLaunchFireWork());
+        }
+
+        
     }
 
 }

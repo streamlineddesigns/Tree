@@ -24,7 +24,21 @@ namespace StudioByStorm.FX {
         public GameObject FireWorkPrefab;
         [HideInInspector]
         public Pool FireworksPool;
+        //Node FX
+        public GameObject NodeWindInPrefab;
+        [HideInInspector]
+        public Pool NodeWindInPool;
+        public GameObject NodeRippleInPrefab;
+        [HideInInspector]
+        public Pool NodeRippleInPool;
+        //EdgeFX
+        public GameObject EdgeLightPrefab;
+        [HideInInspector]
+        public Pool EdgeLightPool;
         
+        protected int edgeLightPoolSize = 3;
+        protected int nodeRippleInPoolSize = 3;
+        protected int nodeWindInPoolSize = 3;
         protected int fireworkPoolSize = 5;
         protected int boidPoolSize = 20;
         protected int colorCount = 4;
@@ -38,8 +52,17 @@ namespace StudioByStorm.FX {
             BoidPool = ScriptableObject.CreateInstance<Pool>();
             BoidPool.DependencyInjection(BoidPrefab, FXParent, boidPoolSize);
 
-            FireworksPool  = ScriptableObject.CreateInstance<Pool>();
+            FireworksPool = ScriptableObject.CreateInstance<Pool>();
             FireworksPool.DependencyInjection(FireWorkPrefab, FXParent, fireworkPoolSize);
+
+            NodeWindInPool = ScriptableObject.CreateInstance<Pool>();
+            NodeWindInPool.DependencyInjection(NodeWindInPrefab, FXParent, nodeWindInPoolSize);
+
+            NodeRippleInPool = ScriptableObject.CreateInstance<Pool>();
+            NodeRippleInPool.DependencyInjection(NodeRippleInPrefab, FXParent, nodeRippleInPoolSize);
+
+            EdgeLightPool = ScriptableObject.CreateInstance<Pool>();
+            EdgeLightPool.DependencyInjection(EdgeLightPrefab, FXParent, edgeLightPoolSize);
         }
 
         void Start()

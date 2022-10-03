@@ -19,6 +19,8 @@ namespace StudioByStorm.Graph {
         public LevelData GlobalLevelData;
         public ColorModel ColorModel;
         public GameObject NodePrefab;
+        public GameObject UserPositionPrefab;
+        protected GameObject UserPositionGameObject;
         public Transform NodeParent;
         public Transform EdgeParent;
         public Material lineRendererMaterial;
@@ -46,6 +48,12 @@ namespace StudioByStorm.Graph {
             tapRecognizer = new TKTapRecognizer();
             longPressRecognizer = new TKLongPressRecognizer();
             panRecognizer = new TKPanRecognizer();
+        }
+
+        protected void Start()
+        {
+            UserPositionGameObject = Instantiate(UserPositionPrefab, Vector3.zero, Quaternion.identity, NodeParent);
+            UserPositionGameObject.SetActive(false);
         }
 
         public void BlueButtonClick()
@@ -81,11 +89,6 @@ namespace StudioByStorm.Graph {
         public void AssignPlayerPositionClick()
         {
             playerSetPositionSwitch = true;
-        }
-
-        protected void Start()
-        {
-            
         }
 
         protected void OnEnable()
@@ -142,6 +145,8 @@ namespace StudioByStorm.Graph {
 
             if (tappedGameObject != null && playerSetPositionSwitch) {
                 playerPosition = tappedGameObject.transform.position * 7.0f;
+                UserPositionGameObject.transform.position = tappedGameObject.transform.position;
+                UserPositionGameObject.SetActive(true);
                 playerSetPositionSwitch = false;
             }
         }
@@ -388,6 +393,8 @@ namespace StudioByStorm.Graph {
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
+
+            SceneManager.LoadScene("Graph");
         }
 
         protected void moveRow()

@@ -187,6 +187,10 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
+                
+                //$$jiggle the node
+                //Vector3 dir = (collider.gameObject.transform.position - gameObject.transform.position).normalized * 0.03f;
+                //collider.gameObject.transform.DOPunchPosition(dir, 0.5f, 1, 0.3f, false);
 
             } else if (collider.CompareTag("Atmosphere")) {
                 //CameraController.SetTarget(collider.gameObject.transform);
@@ -298,6 +302,7 @@ namespace StudioByStorm.Gravity.Player {
             if (isJoystickUp) {
                 return;
             }
+            //Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.player.transform.position;//$$Testing could make it like this if we wanted player to be able to just move on flat ground
             Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.nearbyNode.gameObject.transform.position;
             Vector2 target = nearbyNodePosition + movementDirection.normalized * mockNodeRadius;
             rigidbody.DOMove(target, movementForce, false);

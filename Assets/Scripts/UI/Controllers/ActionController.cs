@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using StudioByStorm.UI;
 using StudioByStorm.ML;
+using StudioByStorm.FX;
 using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm {
@@ -103,15 +104,32 @@ namespace StudioByStorm {
             Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
             Vector3 waypointTarget = Vector3.zero;
 
+            //activate node wind/ripple FX
+            GameObject NodeWindIn = GameManager.Singleton.FXManager.NodeWindInPool.Get();
+            GameObject NodeRippleIn = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
+            
+            Node StartNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID);
+            Vector3 targetRotation = StartNode.InnerGraphic.gameObject.transform.localEulerAngles;
+            targetRotation.z += 720.0f;
+            StartNode.InnerGraphic.gameObject.transform.DORotate(targetRotation, 1.0f, RotateMode.LocalAxisAdd);
+            NodeWindIn.transform.position = StartNode.gameObject.transform.position;
+            NodeWindIn.SetActive(true);
+
+            //if the starting waypoint is closer to the player than the last one, then use the current order
             if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
                 waypointTarget = waypoints[0];
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints);
+
+            //otherwise, if the last waypoint is closer than the first, use the reverse order
             } else {
                 waypointTarget = waypoints[waypoints.Length - 1];
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints.Reverse().ToArray());
             }
             
-            yield return 0;
+            
+            NodeRippleIn.transform.position = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID).gameObject.transform.position : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID).gameObject.transform.position;
+            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == NodeRippleIn.transform.position);
+            NodeRippleIn.SetActive(true);
             lerping = false;
         }
 
@@ -178,6 +196,38 @@ namespace StudioByStorm {
             ActionView.GetEdgeButtonClick();
         }
 
+        protected IEnumerator EdgeLightFXTravel(Edge currentEdge)
+        {
+            //$$jiggle the edge
+            Vector3 edgeTarget = Vector3.zero;
+            edgeTarget.y += 0.3f;
+            currentEdge.gameObject.transform.DOPunchPosition(edgeTarget, 0.4f, 1, 0.3f, false);
+
+            yield return 0;
+
+            Vector3[] waypoints = currentEdge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
+            int lightsToTravel = 4;
+
+            for (int k = 0; k < lightsToTravel; k++) {
+                GameObject edgeLightFX = GameManager.Singleton.FXManager.EdgeLightPool.Get();
+                edgeLightFX.SetActive(true);
+                edgeLightFX.GetComponent<EdgeLight>().SetColor(GameManager.Singleton.ColorModel.lightColor[(int)currentEdge.EdgeColor]);
+
+                //send light along path :)
+                for (int i = 0; i < waypoints.Length; i++) {
+                    edgeLightFX.transform.DOMove(waypoints[i], 0.03f, false);
+                    yield return new WaitUntil(() => edgeLightFX.transform.position == waypoints[i]);
+                }
+                edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.03f, false);
+                edgeLightFX.SetActive(false);
+
+                //edgeTarget = Vector3.zero;
+                //edgeTarget.x += 0.1f;
+                //currentEdge.gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 1, 0.1f, false);
+            }
+            
+        }
+
         public void SetEdgeButtonClick()
         {
             ActionView.DisableSetEdgeButton();
@@ -196,6 +246,8 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;
             ActionModel.CurrentEdge.turnFabrikOff();
+            
+            StartCoroutine(EdgeLightFXTravel(ActionModel.CurrentEdge));
 
             GameManager.Singleton.ColorNodeRegistry.Add(ActionModel.CurrentNode.NodeColor, GameManager.Singleton.NodeRegistry.TryGetValue(ActionModel.CurrentEdge.parentID));
             GameManager.Singleton.ColorNodeRegistry.Add(ActionModel.CurrentNode.NodeColor, GameManager.Singleton.NodeRegistry.TryGetValue(ActionModel.CurrentEdge.childID));

@@ -104,16 +104,16 @@ namespace StudioByStorm {
             Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
             Vector3 waypointTarget = Vector3.zero;
 
-            //activate node wind/ripple FX
-            GameObject NodeWindIn = GameManager.Singleton.FXManager.NodeWindInPool.Get();
-            GameObject NodeRippleIn = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
+            //activate node ripple FX
+            GameObject NodeRippleInStart = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
+            GameObject NodeRippleInEnd = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
             
             Node StartNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID);
-            Vector3 targetRotation = StartNode.InnerGraphic.gameObject.transform.localEulerAngles;
-            targetRotation.z += 720.0f;
-            StartNode.InnerGraphic.gameObject.transform.DORotate(targetRotation, 1.0f, RotateMode.LocalAxisAdd);
-            NodeWindIn.transform.position = StartNode.gameObject.transform.position;
-            NodeWindIn.SetActive(true);
+            Vector3 StartNodeTargetRotation = StartNode.InnerGraphic.gameObject.transform.localEulerAngles;
+            StartNodeTargetRotation.z -= 720.0f;
+            StartNode.InnerGraphic.gameObject.transform.DORotate(StartNodeTargetRotation, 1.0f, RotateMode.LocalAxisAdd);
+            NodeRippleInStart.transform.position = StartNode.gameObject.transform.position;
+            NodeRippleInStart.SetActive(true);
 
             //if the starting waypoint is closer to the player than the last one, then use the current order
             if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
@@ -125,11 +125,14 @@ namespace StudioByStorm {
                 waypointTarget = waypoints[waypoints.Length - 1];
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints.Reverse().ToArray());
             }
-            
-            
-            NodeRippleIn.transform.position = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID).gameObject.transform.position : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID).gameObject.transform.position;
-            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == NodeRippleIn.transform.position);
-            NodeRippleIn.SetActive(true);
+
+            Node EndNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID);
+            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == EndNode.gameObject.transform.position);
+            Vector3 EndNodeTargetRotation = EndNode.InnerGraphic.gameObject.transform.localEulerAngles;
+            EndNodeTargetRotation.z += 720.0f;
+            EndNode.InnerGraphic.gameObject.transform.DORotate(EndNodeTargetRotation, 1.0f, RotateMode.LocalAxisAdd);
+            NodeRippleInEnd.transform.position = EndNode.gameObject.transform.position;
+            NodeRippleInEnd.SetActive(true);
             lerping = false;
         }
 
@@ -200,8 +203,8 @@ namespace StudioByStorm {
         {
             //$$jiggle the edge
             Vector3 edgeTarget = Vector3.zero;
-            edgeTarget.y += 0.3f;
-            currentEdge.gameObject.transform.DOPunchPosition(edgeTarget, 0.4f, 1, 0.3f, false);
+            edgeTarget.y += 0.2f;
+            currentEdge.gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 0, 0.2f, false);
 
             yield return 0;
 

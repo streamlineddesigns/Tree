@@ -130,11 +130,11 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
-            //yield return new WaitUntil(() => gameObject.transform.position == waypoints[waypoints.Length - 1]);
 
             gameObject.transform.DOScale(originalScale, 0.25f);
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+            GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f).OnComplete(() => {GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);});
             lerping = false;
         }
 
@@ -189,8 +189,9 @@ namespace StudioByStorm.Gravity.Player {
                 surface = collider.gameObject.GetComponent<Surface>();
                 
                 //$$jiggle the node
-                //Vector3 dir = (collider.gameObject.transform.position - gameObject.transform.position).normalized * 0.03f;
-                //collider.gameObject.transform.DOPunchPosition(dir, 0.5f, 1, 0.3f, false);
+                //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);
+                //collider.gameObject.transform.DOPunchPosition(dir, 0.25f, 0, 0.25f, false);
+                //collider.gameObject.transform.DOLocalMove(dir, 0.1f, false).OnComplete(() => {collider.gameObject.transform.DOLocalMove(-dir, 0.1f, false);});
 
             } else if (collider.CompareTag("Atmosphere")) {
                 //CameraController.SetTarget(collider.gameObject.transform);

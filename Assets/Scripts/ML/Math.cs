@@ -69,6 +69,30 @@ namespace StudioByStorm.ML {
 
             return centroid;
         }
+
+        public static Bounds ComputeAABB(List<Vector3> points)
+        {
+            if (points.Count == 0)
+            {
+                Debug.LogError("Cannot compute AABB from an empty list.");
+                return new Bounds();
+            }
+
+            Vector3 min = points[0];
+            Vector3 max = points[0];
+
+            foreach (Vector3 point in points)
+            {
+                min = Vector3.Min(min, point);
+                max = Vector3.Max(max, point);
+            }
+
+            Vector3 center = (min + max) / 2;
+            Vector3 size = max - min;
+
+            return new Bounds(center, size);
+        }
+
     }
 
 }

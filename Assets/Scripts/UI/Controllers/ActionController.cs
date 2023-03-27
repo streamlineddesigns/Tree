@@ -21,28 +21,113 @@ namespace StudioByStorm {
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
         protected bool travelIsUp;
+        protected bool travelsearching = false;
         protected bool jumpIsUp;
         protected bool jumpIsUpSafetySwitch;
         protected Vector2 DownPoint;
         protected Vector2 UpPoint;
         private Vector2 jumpJoystickDownPoint;
         private Vector2 jumpJoystickUpPoint;
+        public Material glowingMaterial;
+        public Material originalMaterial;
+        protected Edge currentSelectedEdge;
 
         void Update()
         {
             if (! jumpIsUp) {
                 ActionView.OnJumpJoyStickDown();
             }
+
+            if (travelsearching && ActionModel.CurrentNode !=  null && GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) {
+                edgeSelectionCheck();
+            } else {
+                if (currentSelectedEdge != null) {
+                    //set the current selected back to original material
+                    for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
+                        currentSelectedEdge.LinkSpriteRenderers[i].material = originalMaterial;
+                    }
+
+                    currentSelectedEdge = null;
+                }
+            }
+        }
+
+        protected void edgeSelectionCheck()
+        {
+            Vector2 tempUpPoint = Input.mousePosition;
+            //check the direction of the joystick
+            Vector2 joystickDir = tempUpPoint - DownPoint;
+            //get a list of the ids the current node is connected to from the adjacency list
+            List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
+            if (adjacentNodeIDS == null) {
+                return;
+            }
+            //calculate the directions from the current node to the connected node
+            //do a 1KNN on the list and the directions of the joystick direction
+            int index = -1;
+            float minimumDistance = 1000.0f;
+            Node targetNode = null;
+
+            for (int i = 0; i < adjacentNodeIDS.Count; i++) {
+                int nodeID = adjacentNodeIDS[i];
+                Node connectedNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+                Vector2 directionToConnectedNode = connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
+
+                float connectedNodeDistance = ML.Math.GetDistance(joystickDir, directionToConnectedNode);
+
+                if (connectedNodeDistance < minimumDistance) {
+                    minimumDistance = connectedNodeDistance;
+                    index = nodeID;
+                    targetNode = connectedNode;
+                }
+            }
+
+            Edge tempEdge = ActionModel.CurrentNode.currentEdge;
+
+            //now we need to find the list of edges which are connected to current and target
+            if (index != -1) {
+                Edge currentEdge = ActionModel.CurrentNode.currentEdge;
+                Edge targetNodeEdge = targetNode.currentEdge;
+
+                //which edge connects both together?
+                if (targetNodeEdge.childID == ActionModel.CurrentNode.ID) {
+                    tempEdge = targetNodeEdge;
+                } else if (currentEdge.childID == targetNode.ID) {
+                    tempEdge = currentEdge;
+                }
+            }
+
+            if (tempEdge.childID != -1 && currentSelectedEdge != tempEdge) {
+
+                //if there was all ready a selected edge
+                if (currentSelectedEdge != null) {
+                    //set the current selected back to original material
+                    for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
+                        currentSelectedEdge.LinkSpriteRenderers[i].material = originalMaterial;
+                    }
+                }
+                
+
+                //set the new selected edge
+                currentSelectedEdge = tempEdge;
+
+                //set the new selected to glowing material
+                for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
+                    currentSelectedEdge.LinkSpriteRenderers[i].material = glowingMaterial;
+                }
+            }
         }
         
         public void OnTravelJoyStickDown()
         {
+            travelsearching = true;
             travelIsUp = false;
             DownPoint = Input.mousePosition;
         }
 
         public void OnTravelJoyStickUp()
         {
+            travelsearching = false;
             travelIsUp = true;
             UpPoint = Input.mousePosition;
 
@@ -100,6 +185,7 @@ namespace StudioByStorm {
         IEnumerator Lerp(Edge edge)
         {
             //Debug.Log("Lerping");
+            
             lerping = true;
             Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
             Vector3 waypointTarget = Vector3.zero;

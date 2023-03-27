@@ -31,7 +31,7 @@ namespace StudioByStorm.FX.Boids {
             float angle = Random.Range(0, 2 * Mathf.PI);
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle) + GameManager.Singleton.FXManager.BoidConfig.baseRotation);
             velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            targetID = Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
+            targetID = 0;//Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
             
             HashData = new HashData(gameObject, this);
             GameManager.Singleton.FXManager.SpatialHash.AddObject(HashData);
@@ -93,7 +93,7 @@ namespace StudioByStorm.FX.Boids {
             if (GameManager.Singleton.FXManager.BoidTargets != null && GameManager.Singleton.FXManager.BoidTargets.Length > 0) {
                 Vector3 offsetToTarget = (GameManager.Singleton.FXManager.BoidTargets[targetID].position - transform.position);
                 if (offsetToTarget.x < 0.5f && offsetToTarget.y < 0.5f) {
-                    targetID = Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
+                    targetID = (targetID >= GameManager.Singleton.FXManager.BoidTargets.Length) ? 0 : targetID + 1; //Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
                 } else {
                     targetVector = Steer(offsetToTarget.normalized * GameManager.Singleton.FXManager.BoidConfig.maxSpeed / 2);
                 }

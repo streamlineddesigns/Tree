@@ -78,7 +78,13 @@ namespace StudioByStorm {
             string json = "";
             string fileLine;
 
-            string dir = Application.persistentDataPath;
+            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
+            if (! Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
+            if (! Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
             string LevelSaveFilePath = (dir + GameManager.Singleton.LevelConfig.fileNameAppend + currentLevelID + GameManager.Singleton.LevelConfig.fileNamePrepend).ToString();
             System.IO.StreamReader file = new System.IO.StreamReader(LevelSaveFilePath);  
             while((fileLine = file.ReadLine()) != null)  

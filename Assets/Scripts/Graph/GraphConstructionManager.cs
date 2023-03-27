@@ -379,11 +379,25 @@ namespace StudioByStorm.Graph {
                 LevelData.Layers.Add(LayerData);
             }
 
+            List<float[]> positions = new List<float[]>();
+            //iterate over each layer
+            for (int i = 0; i < LevelData.Layers.Count; i++) {
+                //iterate over each layers nodes
+                for (int j = 0; j < LevelData.Layers[i].nodePositions.Count; j++) {
+                    positions.Add(new float[3]{LevelData.Layers[i].nodePositions[j].x, LevelData.Layers[i].nodePositions[j].y, LevelData.Layers[i].nodePositions[j].z});
+                }
+            }
+            float[] centroid = ML.Math.GetCentroid(positions.ToArray());
+            Vector3 nodeCentroid = new Vector3(centroid[0], centroid[1], centroid[2]);
+            LevelData.Centroid = nodeCentroid;
+
             GlobalLevelData = LevelData;
             //Debug.Log(LevelData.Layers.Count);
 
-            string dir = Application.persistentDataPath;
-            
+            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
+            if (! Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
             int LevelFileCountInDir = Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Length;
             string LevelSaveFilePath = (dir + LevelConfig.fileNameAppend + LevelFileCountInDir + LevelConfig.fileNamePrepend).ToString();
 

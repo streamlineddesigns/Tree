@@ -116,7 +116,7 @@ namespace StudioByStorm.Graph {
                 for (int i = 0; i < Nodes[entry.Key].Count; i++) {
                     data += ", " + Nodes[entry.Key][i];
                 }
-                Debug.Log(data);
+                //Debug.Log(data);
             }
             
         }

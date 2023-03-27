@@ -10,6 +10,7 @@ namespace StudioByStorm.Data {
         public List<LayerData> Layers;
         public List<List<int>> AdjacencyListData;
         public Vector3 PlayerStartPosition;
+        public Vector3 Centroid;
     }
 
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using StudioByStorm.Config;
 
 namespace StudioByStorm.UI.Controllers {
 
@@ -11,6 +12,7 @@ namespace StudioByStorm.UI.Controllers {
     {
         public GameObject LevelSelectButtonGO;
         public GameObject LevelButtonSpawnLocation;
+        public LevelConfig LevelConfig;
 
         void Start()
         {
@@ -25,7 +27,10 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator DelayedEnable()
         {
             yield return 0;
-            string dir = Application.persistentDataPath;
+            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
+            if (! Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
             int LevelFileCountInDir = Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Length;
 
             for (int i = 0; i < LevelFileCountInDir; i++) {

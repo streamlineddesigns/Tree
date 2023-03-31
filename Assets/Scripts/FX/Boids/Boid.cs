@@ -10,7 +10,7 @@ namespace StudioByStorm.FX.Boids {
         public Vector2 cellID;
         public NodeColor Color;
         public SpriteRenderer SpriteRenderer;
-        protected int targetID;
+        public int targetID;
         protected Rect bounds;
         protected List<Boid> nearbyBoids;
         protected Vector2 acceleration;
@@ -31,7 +31,7 @@ namespace StudioByStorm.FX.Boids {
             float angle = Random.Range(0, 2 * Mathf.PI);
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle) + GameManager.Singleton.FXManager.BoidConfig.baseRotation);
             velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            targetID = 0;//Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
+            targetID = 0;
             
             HashData = new HashData(gameObject, this);
             GameManager.Singleton.FXManager.SpatialHash.AddObject(HashData);
@@ -92,8 +92,8 @@ namespace StudioByStorm.FX.Boids {
         {
             if (GameManager.Singleton.FXManager.BoidTargets != null && GameManager.Singleton.FXManager.BoidTargets.Length > 0) {
                 Vector3 offsetToTarget = (GameManager.Singleton.FXManager.BoidTargets[targetID].position - transform.position);
-                if (offsetToTarget.x < 0.5f && offsetToTarget.y < 0.5f) {
-                    targetID = (targetID >= GameManager.Singleton.FXManager.BoidTargets.Length) ? 0 : targetID + 1; //Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
+                if (offsetToTarget.x < 0.1f && offsetToTarget.y < 0.1f) {
+                    targetID = (targetID >= GameManager.Singleton.FXManager.BoidTargets.Length - 1) ? 0 : targetID + 1; //Random.Range(0, GameManager.Singleton.FXManager.BoidTargets.Length);
                 } else {
                     targetVector = Steer(offsetToTarget.normalized * GameManager.Singleton.FXManager.BoidConfig.maxSpeed / 2);
                 }
@@ -170,10 +170,10 @@ namespace StudioByStorm.FX.Boids {
          */
         protected void WrapAround()
         {
-            if (transform.position.x < GameManager.Singleton.player.transform.position.x - 20f) transform.position = new Vector2(GameManager.Singleton.player.transform.position.x + 15f, GameManager.Singleton.player.transform.position.y);
-            if (transform.position.y < GameManager.Singleton.player.transform.position.y - 20f) transform.position = new Vector2(GameManager.Singleton.player.transform.position.x, GameManager.Singleton.player.transform.position.y + 15f);
-            if (transform.position.x > GameManager.Singleton.player.transform.position.x + 20f) transform.position = new Vector2(GameManager.Singleton.player.transform.position.x - 15f, GameManager.Singleton.player.transform.position.y);
-            if (transform.position.y > GameManager.Singleton.player.transform.position.y + 20f) transform.position = new Vector2(GameManager.Singleton.player.transform.position.x, GameManager.Singleton.player.transform.position.y - 15f);
+            if (transform.position.x < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 40f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 40f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
+            if (transform.position.y < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 30f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 30f);
+            if (transform.position.x > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 40f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 40f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
+            if (transform.position.y > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 30f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 30f);
         }
 
     }

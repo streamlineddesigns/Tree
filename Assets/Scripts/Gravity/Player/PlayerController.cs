@@ -17,6 +17,8 @@ namespace StudioByStorm.Gravity.Player {
     {
         public float _movementForce = 0.1f;
         public float mockNodeRadius = 0.6f;
+        public GameObject JumpIndicator;
+        public GameObject boostIndicator;
 
         private Surface surface;
         private bool isOnSurface;
@@ -363,6 +365,11 @@ namespace StudioByStorm.Gravity.Player {
                 }
 
                 rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
+
+                //set boost indication
+                boostIndicator.GetComponent<Animator>().SetTrigger("Scale");
+                float angle = Mathf.Atan2(-dashDirection.y, -dashDirection.x) * Mathf.Rad2Deg;
+                boostIndicator.transform.parent.rotation = Quaternion.Euler(0, 0, angle);
             }
 
             dashDirection = Vector2.zero;

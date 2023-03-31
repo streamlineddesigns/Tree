@@ -142,7 +142,7 @@ namespace StudioByStorm {
 
             float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
             GameManager.Singleton.player.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
-            GameManager.Singleton.FXManager.SeaDust.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
+            GameManager.Singleton.FXManager.SeaDust.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
         }
 
         protected void SetEdgeRenderers()

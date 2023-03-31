@@ -102,10 +102,24 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (NodeType == NodeType.Parent && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                coloredRing = GameManager.Singleton.ColorRingPoolRegistry.TryGetValue(NodeColor).Get();//Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);
-                coloredRing.transform.SetParent(gameObject.transform);
-                coloredRing.transform.position = gameObject.transform.position;
-                coloredRing.SetActive(true);
+                AddColorRing();
+            }
+        }
+
+        public void AddColorRing(bool ScaleInRing = false)
+        {
+            coloredRing = GameManager.Singleton.ColorRingPoolRegistry.TryGetValue(NodeColor).Get();//Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);
+            coloredRing.transform.SetParent(gameObject.transform);
+            coloredRing.transform.position = gameObject.transform.position;
+            coloredRing.SetActive(true);
+            if (ScaleInRing) {
+                
+                GameObject firstChild = coloredRing.transform.GetChild(0).gameObject;;
+                Vector3 targetScale = firstChild.transform.localScale;
+                for (int i = 0; i < coloredRing.transform.childCount; i++) {
+                    coloredRing.transform.GetChild(i).localScale = Vector3.zero;
+                    coloredRing.transform.GetChild(i).DOScale(targetScale, 3f).SetEase(Ease.InOutCubic);
+                }
             }
         }
 

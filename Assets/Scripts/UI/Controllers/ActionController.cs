@@ -8,6 +8,7 @@ using StudioByStorm.UI;
 using StudioByStorm.ML;
 using StudioByStorm.FX;
 using StudioByStorm.EventPublishers;
+using Lean.Gui;
 
 namespace StudioByStorm {
 
@@ -17,6 +18,7 @@ namespace StudioByStorm {
         public ActionView ActionView;
         public ActionModel ActionModel;
         public bool isTravelButtonClicked;
+        public bool isJumpIndicatorOn;
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
@@ -31,6 +33,8 @@ namespace StudioByStorm {
         public Material glowingMaterial;
         public Material originalMaterial;
         protected Edge currentSelectedEdge;
+        public LeanJoystick JumpJoyStick;
+        public float jumpScaling = 0.75f;
 
         void Update()
         {
@@ -49,6 +53,19 @@ namespace StudioByStorm {
 
                     currentSelectedEdge = null;
                 }
+            }
+
+            if (isJumpIndicatorOn) {
+                // Calculate the angle between the direction and the X axis
+                float angle = Mathf.Atan2(JumpJoyStick.ScaledValue.y, JumpJoyStick.ScaledValue.x) * Mathf.Rad2Deg;
+
+                // Rotate the object around the Z axis to match the direction
+                GameManager.Singleton.PlayerController.JumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+
+                GameManager.Singleton.PlayerController.JumpIndicator.transform.position = GameManager.Singleton.PlayerController.gameObject.transform.position;
+
+                Vector3 magnitude = new Vector3 (JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling);
+                GameManager.Singleton.PlayerController.JumpIndicator.transform.localScale = magnitude;
             }
         }
 
@@ -254,9 +271,13 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickDown()
         {
+            //$$HERE
             jumpIsUpSafetySwitch = true;
             jumpIsUp = false;
             jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
+
+            isJumpIndicatorOn = true;
+            GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
         }
 
         public void OnJumpJoyStickUp()
@@ -267,6 +288,9 @@ namespace StudioByStorm {
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
             GameManager.Singleton.PlayerController.JumpOverride(dir);
             ActionView.OnJumpJoyStickUp();
+
+            isJumpIndicatorOn = false;
+            GameManager.Singleton.PlayerController.JumpIndicator.SetActive(false);
         }
 
         //this just allows our animations to fade out for a quater of an extra second
@@ -295,7 +319,7 @@ namespace StudioByStorm {
             yield return 0;
 
             Vector3[] waypoints = currentEdge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
-            int lightsToTravel = 4;
+            int lightsToTravel = 3;
 
             for (int k = 0; k < lightsToTravel; k++) {
                 GameObject edgeLightFX = GameManager.Singleton.FXManager.EdgeLightPool.Get();
@@ -355,6 +379,10 @@ namespace StudioByStorm {
                 GetEdgeButtonClick();
             } else {
                 GameManager.Singleton.LevelManager.parentColorsConnected[ActionModel.CurrentNode.NodeColor] = true;
+                Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent).ToArray();
+                for (int i = 0; i < nodes.Length; i++) {
+                    nodes[i].AddColorRing(true);
+                }
             }
             //}$$Experimental: allow players to use more than what we know is the max number of edges a color will need
 

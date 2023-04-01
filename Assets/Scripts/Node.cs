@@ -16,6 +16,7 @@ namespace StudioByStorm {
         public GameObject DarkSurface;
         public SpriteRenderer LightColored;
         public SpriteRenderer DarkColored;
+        public SpriteRenderer[] Hairs;
         public SpriteRenderer InnerGraphic;
         public Transform[] randomizedTransforms;
         public SpriteRenderer[] randomizedSpriteRenderer;
@@ -98,11 +99,19 @@ namespace StudioByStorm {
                 DisplayColor();
                 DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
                 LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
+                DisplayHairColor();
             }
 
             //add a color ring for the parent nodes
             if (NodeType == NodeType.Parent && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
                 AddColorRing();
+            }
+        }
+
+        public void DisplayHairColor()
+        {
+            for (int i = 0; i < Hairs.Length; i++) {
+                Hairs[i].color = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
             }
         }
 
@@ -129,6 +138,9 @@ namespace StudioByStorm {
             ColorSurface.SetActive(true);
             LightColored.DOFade(1, 3);
             DarkColored.DOFade(1, 3);
+            for (int i = 0; i < Hairs.Length; i++) {
+                Hairs[i].DOFade(1, 3);
+            }
             DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 3);
         }
 
@@ -138,6 +150,9 @@ namespace StudioByStorm {
             DarkSurface.SetActive(true);
             LightColored.DOFade(0, 3);
             DarkColored.DOFade(0, 3);
+            for (int i = 0; i < Hairs.Length; i++) {
+                Hairs[i].DOFade(0, 3);
+            }
             DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 3);
         }
     }

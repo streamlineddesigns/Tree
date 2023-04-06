@@ -81,7 +81,7 @@ namespace StudioByStorm.UI.Controllers {
 
             //reset action controller state
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
-            if (ActionController.ActionModel.CurrentEdge != null) {
+            if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.EdgeColor == inputColor) {
                 ActionController.ActionModel.CurrentEdge.gameObject.SetActive(false);
                 ActionController.ActionModel.CurrentEdge.parentNode.NumOfConnections--;
                 ActionController.ActionModel.CurrentEdge = null;

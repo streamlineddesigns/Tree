@@ -42,7 +42,7 @@ namespace StudioByStorm {
             float counter = 0;
             while(counter < 16) {
                 counter++;
-                transform.Rotate(new Vector3(0, 0, 3));
+                transform.Rotate(new Vector3(0, 0, 2));
                 yield return new WaitForSeconds(0.016f);
             }
 
@@ -51,7 +51,7 @@ namespace StudioByStorm {
             counter = 0;
             while(counter < 16) {
                 counter++;
-                transform.Rotate(new Vector3(0, 0, -3));
+                transform.Rotate(new Vector3(0, 0, -2));
                 yield return new WaitForSeconds(0.016f);
             }
 
@@ -63,7 +63,7 @@ namespace StudioByStorm {
             float counter = 0;
             while(counter < 16) {
                 counter++;
-                transform.Rotate(new Vector3(0, 0, -3));
+                transform.Rotate(new Vector3(0, 0, -2));
                 yield return new WaitForSeconds(0.016f);
             }
 
@@ -72,7 +72,7 @@ namespace StudioByStorm {
             counter = 0;
             while(counter < 16) {
                 counter++;
-                transform.Rotate(new Vector3(0, 0, 3));
+                transform.Rotate(new Vector3(0, 0, 2));
                 yield return new WaitForSeconds(0.016f);
             }
 

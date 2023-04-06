@@ -307,7 +307,8 @@ namespace StudioByStorm.Gravity.Player {
             }
             //Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.player.transform.position;//$$Testing could make it like this if we wanted player to be able to just move on flat ground
             Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.nearbyNode.gameObject.transform.position;
-            Vector2 target = nearbyNodePosition + movementDirection.normalized * mockNodeRadius;
+            Vector2 target = nearbyNodePosition + movementDirection.normalized * mockNodeRadius;//$$TODOsget nearby surface gravity point, and get its distance from the nearby node and use that instead of mockNodeRadius.
+            
             rigidbody.DOMove(target, movementForce, false);
         }
 

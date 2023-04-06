@@ -24,9 +24,12 @@ namespace StudioByStorm {
         public GameObject coloredRing;
         public Edge currentEdge;
 
+        protected NodeType OriginalNodeType;
+        protected NodeColor OriginalNodeColor;
+
         void Start()
         {
-            GameManager.Singleton.NodeRegistry.Add(ID, this);
+            //GameManager.Singleton.NodeRegistry.Add(ID, this);
             
 
             currentEdge = Instantiate(GameManager.Singleton.LevelManager.Edge, gameObject.transform.position, Quaternion.identity, GameManager.Singleton.EdgeRegistry.EdgeParent.transform).GetComponent<Edge>();
@@ -51,18 +54,21 @@ namespace StudioByStorm {
         void OnEnable()
         {
             StartCoroutine(DelayedEnable());
-            
-            
         }
 
         void OnDisable() 
         {
-            if (coloredRing != null) {
+            if (coloredRing != null && NodeType != NodeType.Parent) {
                 coloredRing.SetActive(false);
             }
             if (currentEdge != null) {
                 currentEdge.gameObject.SetActive(false);
             }
+            
+            NodeType = OriginalNodeType;
+            NodeColor = OriginalNodeColor;
+            NumOfConnections = 0;
+
             GameManager.Singleton.EdgeRegistry.Remove(ID);
             GameManager.Singleton.NodeRegistry.Remove(ID);
             GameManager.Singleton.AdjacencyList.Remove(ID);
@@ -72,6 +78,9 @@ namespace StudioByStorm {
         {
             yield return 0;
             UpdateEdge();
+
+            OriginalNodeType = NodeType;
+            OriginalNodeColor = NodeColor;
 
             //randomize rotations of specified transforms
             for (int i = 0; i < randomizedTransforms.Length; i++) {
@@ -103,7 +112,7 @@ namespace StudioByStorm {
             }
 
             //add a color ring for the parent nodes
-            if (NodeType == NodeType.Parent && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
+            if (NodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
                 AddColorRing();
             }
         }

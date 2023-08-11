@@ -14,20 +14,20 @@ namespace StudioByStorm.Graph {
             Nodes = adjacencyList.GetRaw();
         }
 
-        public void Search(int start, int end)
+        public void Search(int start, int end, List<int> excluded)
         {
-            var paths = FindAllPaths(start, end);
+            var paths = FindAllPaths(start, end, excluded);
             foreach (var path in paths)
             {
                 Debug.Log(string.Join(" -> ", path));
             }
         }
-        
-        private List<List<int>> FindAllPaths(int start, int end)
+
+        public List<List<int>> FindAllPaths(int start, int end, List<int> excludedNodes)
         {
             List<List<int>> allPaths = new List<List<int>>();
             List<int> currentPath = new List<int>();
-            HashSet<int> visited = new HashSet<int>();
+            HashSet<int> visited = new HashSet<int>(excludedNodes); // initialize with excluded nodes
 
             DFS(start, end, visited, currentPath, allPaths);
 
@@ -60,7 +60,6 @@ namespace StudioByStorm.Graph {
             visited.Remove(current);
             currentPath.RemoveAt(currentPath.Count - 1);
         }
-
     }
 
 }

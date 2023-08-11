@@ -17,7 +17,7 @@ namespace StudioByStorm.PCG {
         {
             FindAllColorsInGraphConstructionManager();
 
-            DFSPathsExclude DFSPathsExclude = new DFSPathsExclude(GraphConstructionManager.AdjacencyList);
+            DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList);
 
             for (int j = 0; j < allColors.Count; j++) {
                 //get the current color to operate on
@@ -36,7 +36,7 @@ namespace StudioByStorm.PCG {
                 }
 
                 //search
-                DFSPathsExclude.Search(NodeIDs[0], NodeIDs[1], excludedNodeIds);
+                DFSPaths.Search(NodeIDs[0], NodeIDs[1], excludedNodeIds);
             }
         }
 

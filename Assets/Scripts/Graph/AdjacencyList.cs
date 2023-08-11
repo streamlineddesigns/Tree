@@ -48,6 +48,11 @@ namespace StudioByStorm.Graph {
             }
         }
 
+        public Dictionary<int, List<int>> GetRaw()
+        {
+            return Nodes;
+        }
+
         public List<int> Get(int nodeID)
         {
             if (Nodes.ContainsKey(nodeID)) {
@@ -116,7 +121,7 @@ namespace StudioByStorm.Graph {
                 for (int i = 0; i < Nodes[entry.Key].Count; i++) {
                     data += ", " + Nodes[entry.Key][i];
                 }
-                //Debug.Log(data);
+                Debug.Log(data);
             }
             
         }

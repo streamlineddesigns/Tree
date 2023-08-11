@@ -44,6 +44,10 @@ namespace StudioByStorm.UI.Controllers {
 
                 case GameState.LevelComplete :
                     break;
+
+                case GameState.LevelExited :
+                    LevelExited();
+                    break;
             }
         }
 
@@ -114,6 +118,14 @@ namespace StudioByStorm.UI.Controllers {
         protected void GameStart()
         {
             Centroid.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+        }
+
+        protected void LevelExited()
+        {
+            ResetBlueButtonClick();
+            ResetGreenButtonClick();
+            ResetPurpleButtonClick();
+            ResetWhiteButtonClick();
         }
     }
 

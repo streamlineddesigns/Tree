@@ -111,9 +111,13 @@ namespace StudioByStorm {
                 DisplayHairColor();
             }
 
+
+
             //add a color ring for the parent nodes
             if (NodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
                 AddColorRing();
+            } else if (coloredRing != null && NodeType == NodeType.Parent) {
+                coloredRing.SetActive(true);
             }
         }
 

@@ -340,7 +340,8 @@ namespace StudioByStorm.Graph {
         public void showAdjacencyList()
         {
             AdjacencyList singleEntryAdjacencyList = AdjacencyList.GetWithoutDuplicateEdges();
-            singleEntryAdjacencyList.Log();
+            AdjacencyList.Log();
+            //singleEntryAdjacencyList.Log();
 
             LevelData LevelData = new LevelData();
             LevelData.Layers = new List<LayerData>();
@@ -394,7 +395,7 @@ namespace StudioByStorm.Graph {
             GlobalLevelData = LevelData;
             //Debug.Log(LevelData.Layers.Count);
 
-            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
+            string dir = Application.persistentDataPath + "/" + LevelConfig.subfolder;
             if (! Directory.Exists(dir)) {
                 Directory.CreateDirectory(dir);
             }

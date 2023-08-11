@@ -58,7 +58,8 @@ namespace StudioByStorm {
         LevelLost,
         Playing,
         Paused,
-        Resumed
+        Resumed,
+        LevelExited,
     }
 
     public enum ClickType {

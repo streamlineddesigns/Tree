@@ -10,7 +10,7 @@ namespace StudioByStorm.PCG {
     {
         [SerializeField] private GraphConstructionManager GraphConstructionManager;
 
-        private Dictionary<NodeColor, List<int>> NodeColorToNodeIDs = new Dictionary<NodeColor, List<int>>();
+        private Dictionary<NodeColor, List<int>> NodeColorToNodeIDs;
         private List<NodeColor> allColors;
 
         public void Search()
@@ -24,6 +24,10 @@ namespace StudioByStorm.PCG {
                 NodeColor colorKey = allColors[j];
                 //get the node ID's of the current color
                 List<int> NodeIDs = NodeColorToNodeIDs[colorKey];
+                if (NodeIDs.Count != 2) {
+                    Debug.LogError("There should be 2 of each color on the graph!!");
+                    return;
+                }
 
                 //create a list of node IDS to exlude from search ie if they are not grayscale && not the same color
                 List<int> excludedNodeIds = new List<int>();
@@ -42,6 +46,8 @@ namespace StudioByStorm.PCG {
 
         private void FindAllColorsInGraphConstructionManager()
         {
+            NodeColorToNodeIDs = new Dictionary<NodeColor, List<int>>();
+
             //iterate over all of nodeColors.. these are the nodes placed on the level creator
             for (int i = 0; i < GraphConstructionManager.nodeColors.Count; i++) {
 

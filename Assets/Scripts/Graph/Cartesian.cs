@@ -8,23 +8,28 @@ namespace StudioByStorm.Graph {
 
     public class Cartesian
     {
-        public void Get()
-        {
-            var listOfLists = new List<List<string>>
-            {
-                new List<string> { "A1", "A2" },
-                new List<string> { "B1", "B2" },
-                new List<string> { "C1", "C2" },
-                new List<string> { "D1", "D2" }
-            };
+        private bool IsDebugging;
 
-            foreach (var combination in CartesianProduct(listOfLists))
-            {
-                Debug.Log(string.Join(", ", combination));
-            }
+        public Cartesian(bool isDebugging = false)
+        {
+            IsDebugging = isDebugging;
         }
 
-        public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(IEnumerable<IEnumerable<T>> sequences)
+        public IEnumerable<IEnumerable<T>> GetCartesianProduct<T>(IEnumerable<IEnumerable<T>> listOfLists)
+        {
+            IEnumerable<IEnumerable<T>> combinations = CartesianProduct(listOfLists);
+
+            if (IsDebugging) {
+                foreach (var combination in combinations)
+                {
+                    Debug.Log(string.Join(", ", combination));
+                }
+            }
+
+            return combinations;
+        }
+
+        private IEnumerable<IEnumerable<T>> CartesianProduct<T>(IEnumerable<IEnumerable<T>> sequences)
         {
             IEnumerable<IEnumerable<T>> tempProduct = new[] { Enumerable.Empty<T>() };
 

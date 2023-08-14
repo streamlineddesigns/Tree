@@ -7,23 +7,30 @@ namespace StudioByStorm.Graph {
 
     public class DFSPaths
     {
-        protected Dictionary<int, List<int>> Nodes;
+        private Dictionary<int, List<int>> Nodes;
+        private bool IsDebugging;
 
-        public DFSPaths(AdjacencyList adjacencyList)
+        public DFSPaths(AdjacencyList adjacencyList, bool isDebugging = false)
         {
             Nodes = adjacencyList.GetRaw();
+            IsDebugging = isDebugging;
         }
 
-        public void Search(int start, int end, List<int> excluded)
+        public List<List<int>> Search(int start, int end, List<int> excluded)
         {
-            var paths = FindAllPaths(start, end, excluded);
-            foreach (var path in paths)
-            {
-                Debug.Log(string.Join(" -> ", path));
+            List<List<int>> paths = FindAllPaths(start, end, excluded);
+
+            if (IsDebugging) {
+                foreach (var path in paths)
+                {
+                    Debug.Log(string.Join(" -> ", path));
+                }
             }
+            
+            return paths;
         }
 
-        public List<List<int>> FindAllPaths(int start, int end, List<int> excludedNodes)
+        private List<List<int>> FindAllPaths(int start, int end, List<int> excludedNodes)
         {
             List<List<int>> allPaths = new List<List<int>>();
             List<int> currentPath = new List<int>();

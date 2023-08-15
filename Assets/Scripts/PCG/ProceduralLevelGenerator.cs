@@ -15,18 +15,21 @@ namespace StudioByStorm.PCG {
         private List<NodeColor> allColors;
         //stores color: all paths
         private Dictionary<NodeColor, List<List<int>>> NodeColorToAllPaths;
-        //stores all path combinations
+        //stores all path combinations. index refers to inner list inside NodeColorToAllPaths, not NodeColor
         private List<List<int>> cartesianPathIndexCombinations;
-
-        public List<List<List<int>>> allSolutions;
+        //stores the path combinations of potential solutions built from the cartesian path index combinations
+        private List<List<List<int>>> allPotentialSolutions;
+        //stores the path combinations that actually solve the level
+        private List<List<List<int>>> workingSolutions;
 
         public void Search()
         {
             FindAllColorsInGraphConstructionManager();
             FindAllColorPaths();
-            GetCartesianProductOfAllPaths();
-            CreateAllSolutionsFromPathIndexCombinations();
+            GetCartesianProductOfAllPathsIntoPathIndexCombinations();
+            CreateAllPotentialSolutionsFromPathIndexCombinations();
             FindSolutions();
+            DisplayWorkingSolutions();
         }
 
         private void FindAllColorsInGraphConstructionManager()
@@ -87,7 +90,7 @@ namespace StudioByStorm.PCG {
             }
         }
 
-        private void GetCartesianProductOfAllPaths()
+        private void GetCartesianProductOfAllPathsIntoPathIndexCombinations()
         {
             List<List<int>> listOfColorToAllPathsIndexs = new List<List<int>>();
             
@@ -110,9 +113,9 @@ namespace StudioByStorm.PCG {
             cartesianPathIndexCombinations = Cartesian.GetCartesianProduct(listOfColorToAllPathsIndexs).Select(x => x.ToList()).ToList();
         }
 
-        private void CreateAllSolutionsFromPathIndexCombinations()
+        private void CreateAllPotentialSolutionsFromPathIndexCombinations()
         {
-            allSolutions = new List<List<List<int>>>();
+            allPotentialSolutions = new List<List<List<int>>>();
 
             //iterate over all possible combinations of solutions
             for (int i = 0; i < cartesianPathIndexCombinations.Count; i++) {
@@ -121,7 +124,7 @@ namespace StudioByStorm.PCG {
                 List<List<int>> potentialSolution = new List<List<int>>();
 
                 for (int j = 0; j < cartesianPathIndexCombinations[i].Count; j++) {
-
+                    //one path per color will go into potential solution
                     NodeColor colorKey = allColors[j];
                     int PathIndex = cartesianPathIndexCombinations[i][j];
                     //a list of connected nodes by color i.e a path
@@ -129,19 +132,58 @@ namespace StudioByStorm.PCG {
                     potentialSolution.Add(partialSolution);
                 }
 
-                allSolutions.Add(potentialSolution);
+                allPotentialSolutions.Add(potentialSolution);
             }
         }
 
         private void FindSolutions()
         {
-            for (int k = 0; k < allSolutions.Count; k++) {
-                for (int l = 0; l < allSolutions[k].Count; l++) {
+            workingSolutions = new List<List<List<int>>>();
+
+            for (int k = 0; k < allPotentialSolutions.Count; k++) {
+
+                Dictionary<int, int> usedNodeIds = new Dictionary<int, int>();
+                bool workingSolution = true;
+
+                for (int l = 0; l < allPotentialSolutions[k].Count; l++) {
                     
-                    if (allSolutions[k].Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count) {
-                        Debug.Log(string.Join(" -> ", allSolutions[k][l]));
+                    //the number of nodes in all paths for a solution needs to equal the number of existing nodes in the level i.e. all nodes must be used
+                    //the number of nodes per path must also be greater than 2
+                    if (allPotentialSolutions[k].Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count && allPotentialSolutions[k][l].Count > 2) {
+                        
+                        //iterate over all nodes
+                        for (int m = 0; m < allPotentialSolutions[k][l].Count; m++) {
+                            //get the node id
+                            int NodeID = allPotentialSolutions[k][l][m];
+                            //working solutions have paths where nodes are ONLY used once
+                            if (usedNodeIds.ContainsKey(NodeID)) {
+                                workingSolution = false;
+                                break;
+                            } else {
+                                //keep track of the Node ID to ensure it's only used once
+                                usedNodeIds.Add(NodeID, NodeID);
+                            }
+                        }
+
+                    } else {
+                        workingSolution = false;
+                        break;
                     }
-                    
+                }
+
+                if (workingSolution) {
+                    workingSolutions.Add(allPotentialSolutions[k]);
+                }
+            }
+        }
+
+        private void DisplayWorkingSolutions()
+        {
+            Debug.Log("Total Solutions: " + workingSolutions.Count);
+
+            for (int k = 0; k < workingSolutions.Count; k++) {
+                for (int l = 0; l < workingSolutions[k].Count; l++) {
+                    Debug.Log(string.Join(" -> ", workingSolutions[k][l]));
                 }
             }
         }

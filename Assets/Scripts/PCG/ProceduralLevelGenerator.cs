@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,12 +25,82 @@ namespace StudioByStorm.PCG {
 
         public void Search()
         {
-            FindAllColorsInGraphConstructionManager();
-            FindAllColorPaths();
-            GetCartesianProductOfAllPathsIntoPathIndexCombinations();
-            CreateAllPotentialSolutionsFromPathIndexCombinations();
-            FindSolutions();
+            int numberOfSolutions = 0;
+
+            while (numberOfSolutions == 0) {
+
+                bool isThereAPathForEachColor = false;
+
+                while (! isThereAPathForEachColor) {
+                    PlaceRandomColors();
+                    FindAllColorsInGraphConstructionManager();
+                    FindAllColorPaths();
+                    isThereAPathForEachColor = IsThereAPathForEachColor();
+                }
+                
+                GetCartesianProductOfAllPathsIntoPathIndexCombinations();
+                CreateAllPotentialSolutionsFromPathIndexCombinations();
+                FindSolutions();
+                numberOfSolutions = workingSolutions.Count;
+            }
+
             DisplayWorkingSolutions();
+        }
+
+        private bool PlaceRandomColors()
+        {
+            //reset all nodes to grey
+            for (int i = 0; i < GraphConstructionManager.nodeColors.Count; i++) {
+                int nodeIndex = i;
+                GraphConstructionManager.nodeColors[nodeIndex] = NodeColor.GrayScale;
+                GraphConstructionManager.nodeGameObjectReferences[nodeIndex].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)NodeColor.GrayScale];
+            }
+
+            
+            //retrieve all available NodeColors
+            List<NodeColor> availableColors = new List<NodeColor>();
+            foreach (NodeColor nc in Enum.GetValues(typeof(NodeColor))) {
+                if (nc != NodeColor.GrayScale) {
+                    availableColors.Add(nc);
+                }
+            }
+
+            //color shuffling
+            int nodeCount = GraphConstructionManager.nodeColors.Count;
+            int minimumNodesPerPath = 3;
+            int requiredNumberOfColorsToPlace = (nodeCount >= 12) ? 4 : (nodeCount >= 9) ? 3 : (nodeCount >= 6) ? 2 : (nodeCount >= 3) ? 1 : 0;
+            if (requiredNumberOfColorsToPlace <= 0) {
+                Debug.LogError("You need to place more nodes!! Can't make a level without at least " + minimumNodesPerPath + " nodes!");
+                return false;
+            }
+            List<NodeColor> colorsBeingUsed = new List<NodeColor>();
+            //shuffle available colors
+            List<NodeColor> shuffledColors = new Shuffle().FisherYates(availableColors);
+            //add the required number of colors to colorsBeingUsed list
+            for (int j = 0; j < requiredNumberOfColorsToPlace; j++) {
+                //add 2 of each color
+                colorsBeingUsed.Add(shuffledColors[j]);
+                colorsBeingUsed.Add(shuffledColors[j]);
+            }
+
+            int colorsPlaced = 0;              //requiredNumberOfColorsToPlace * 2 because 2 of each color gets placed
+            int totalColorNodesRequiredToPlace = requiredNumberOfColorsToPlace * 2;
+
+            for (int k = 0; k < colorsBeingUsed.Count; k++) {
+                //Debug.Log(colorsBeingUsed[k].ToString());
+            }
+
+            while(colorsPlaced < totalColorNodesRequiredToPlace) {
+                int randomNodeID = UnityEngine.Random.Range(0, GraphConstructionManager.nodeColors.Count);
+                if (GraphConstructionManager.nodeColors[randomNodeID] == NodeColor.GrayScale) {
+                    NodeColor currentColor = colorsBeingUsed[colorsPlaced];
+                    GraphConstructionManager.nodeColors[randomNodeID] = currentColor;
+                    GraphConstructionManager.nodeGameObjectReferences[randomNodeID].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)currentColor];
+                    colorsPlaced++;
+                }
+            }
+
+            return true;
         }
 
         private void FindAllColorsInGraphConstructionManager()
@@ -58,11 +129,14 @@ namespace StudioByStorm.PCG {
 
             //this is all the colors in the NodeColorToNodeIDs dictionary
             allColors = NodeColorToNodeIDs.Keys.ToList();
+
+            Debug.Log("All Colors Count: " + allColors.Count);
         }
 
         private void FindAllColorPaths () {
+            bool isDebugging = true;
             NodeColorToAllPaths = new Dictionary<NodeColor, List<List<int>>>();
-            DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList, false);
+            DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList, isDebugging);
 
             for (int j = 0; j < allColors.Count; j++) {
                 //get the current color to operate on
@@ -90,6 +164,34 @@ namespace StudioByStorm.PCG {
             }
         }
 
+        private bool IsThereAPathForEachColor()
+        {
+            bool isThereAPathForEachColor = true;
+            List<bool> longEnoughChecks = new List<bool>{false, false, false, false};
+            bool isThereALongEnoughPathForEachColor = true;
+
+            for (int i = 0; i < allColors.Count; i++) {
+                NodeColor colorKey = allColors[i];
+                if (NodeColorToAllPaths[colorKey].Count <= 0) {
+                    isThereAPathForEachColor = false;
+                }
+
+                for (int j = 0; j < NodeColorToAllPaths[colorKey].Count; j++) {
+                    if (NodeColorToAllPaths[colorKey][j].Count >= 3) {
+                        longEnoughChecks[i] = true;
+                    }
+                }
+                
+            }
+
+            isThereALongEnoughPathForEachColor = (longEnoughChecks.Where(x => x == true).ToList().Count == allColors.Count);
+
+            Debug.Log("Is There A Path For Each Color: " + isThereAPathForEachColor);
+            Debug.Log("Is There A Long Enough Path For Each Color: " + isThereALongEnoughPathForEachColor);
+
+            return (isThereAPathForEachColor && isThereALongEnoughPathForEachColor);
+        }
+
         private void GetCartesianProductOfAllPathsIntoPathIndexCombinations()
         {
             List<List<int>> listOfColorToAllPathsIndexs = new List<List<int>>();
@@ -109,7 +211,8 @@ namespace StudioByStorm.PCG {
             }
             
             //matches the path indexs from NodeColorToAllPaths to lists of combinations of paths
-            Cartesian Cartesian = new Cartesian(false);
+            bool isDebugging = false;
+            Cartesian Cartesian = new Cartesian(isDebugging);
             cartesianPathIndexCombinations = Cartesian.GetCartesianProduct(listOfColorToAllPathsIndexs).Select(x => x.ToList()).ToList();
         }
 

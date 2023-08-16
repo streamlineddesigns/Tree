@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace StudioByStorm.Graph {
+namespace StudioByStorm.PCG {
 
     public class Cartesian
     {

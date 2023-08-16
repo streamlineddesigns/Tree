@@ -37,6 +37,7 @@ namespace StudioByStorm.Graph {
         public NodeColor currentCursorNodeColor = NodeColor.GrayScale;
         public List<NodeColor> nodeColors = new List<NodeColor>();
         public List<Vector3> nodePositions = new List<Vector3>();
+        public List<GameObject> nodeGameObjectReferences = new List<GameObject>();
         private Dictionary<Vector3, GameObject> nodeGameObjects = new Dictionary<Vector3, GameObject>();
         private List<LineRenderer> edgeLineRenderers = new List<LineRenderer>();
         public AdjacencyList AdjacencyList = new AdjacencyList();
@@ -243,6 +244,7 @@ namespace StudioByStorm.Graph {
             GameObject nodeGameObject = Instantiate(NodePrefab, cellPosition, Quaternion.identity, NodeParent);
             nodeGameObject.GetComponent<SpriteRenderer>().color = ColorModel.lightColor[(int)nodeColors[nodePositions.Count - 1]];
             nodeGameObjects.Add(cellPosition, nodeGameObject);
+            nodeGameObjectReferences.Add(nodeGameObject);
             IncrementRowPopulationCount();
         }
 
@@ -254,6 +256,7 @@ namespace StudioByStorm.Graph {
                 nodePositions.Remove(cellPosition);
                 AdjacencyList.Remove(index);
                 nodeColors.RemoveAt(index);
+                nodeGameObjectReferences.RemoveAt(index);
                 GameObject nodeReference = nodeGameObjects[cellPosition];
                 nodeGameObjects.Remove(cellPosition);
                 Destroy(nodeReference);

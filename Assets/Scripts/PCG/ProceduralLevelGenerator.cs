@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using StudioByStorm.Graph;
 
@@ -9,6 +11,7 @@ namespace StudioByStorm.PCG {
 
     public class ProceduralLevelGenerator : MonoBehaviour
     {
+        public int attempts = 0;
         [SerializeField] private GraphConstructionManager GraphConstructionManager;
         //stores color: node ids that are the input color
         private Dictionary<NodeColor, List<int>> NodeColorToNodeIDs;
@@ -25,13 +28,22 @@ namespace StudioByStorm.PCG {
 
         public void Search()
         {
+            StartCoroutine(DelayedSearch());
+        }
+
+        IEnumerator DelayedSearch()
+        {
             int numberOfSolutions = 0;
 
             while (numberOfSolutions == 0) {
 
+                createAdjacencyList();
+
                 bool isThereAPathForEachColor = false;
 
                 while (! isThereAPathForEachColor) {
+                    yield return null;
+                    attempts++;
                     PlaceRandomColors();
                     FindAllColorsInGraphConstructionManager();
                     FindAllColorPaths();
@@ -45,6 +57,23 @@ namespace StudioByStorm.PCG {
             }
 
             DisplayWorkingSolutions();
+        }
+
+        private void createAdjacencyList()
+        {
+            int nodeCount = GraphConstructionManager.nodePositions.Count;
+
+            for (int i = 0; i < GraphConstructionManager.nodePositions.Count; i++) {
+                for (int j = 0; j < GraphConstructionManager.nodePositions.Count; j++) {
+                    if (i == j) {
+                        continue;
+                    }
+
+                    if (Vector3.Distance(GraphConstructionManager.nodePositions[i], GraphConstructionManager.nodePositions[j]) <= 1.5f) {
+                        GraphConstructionManager.addToAdjacencyList(i, j);
+                    }
+                }
+            }
         }
 
         private bool PlaceRandomColors()
@@ -100,6 +129,7 @@ namespace StudioByStorm.PCG {
                 }
             }
 
+            Debug.Log("PlaceRandomColors COMPLETED");
             return true;
         }
 
@@ -134,9 +164,10 @@ namespace StudioByStorm.PCG {
         }
 
         private void FindAllColorPaths () {
-            bool isDebugging = true;
+            bool isDebugging = false;
             NodeColorToAllPaths = new Dictionary<NodeColor, List<List<int>>>();
             DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList, isDebugging);
+            int pathCount = 0;
 
             for (int j = 0; j < allColors.Count; j++) {
                 //get the current color to operate on
@@ -161,7 +192,10 @@ namespace StudioByStorm.PCG {
                 //search
                 List<List<int>> paths = DFSPaths.Search(NodeIDs[0], NodeIDs[1], excludedNodeIds);
                 NodeColorToAllPaths.Add(colorKey, paths);
+                pathCount += paths.Count;
             }
+
+            Debug.Log("FindAllColorPaths - pathCount: " + pathCount);
         }
 
         private bool IsThereAPathForEachColor()
@@ -214,6 +248,9 @@ namespace StudioByStorm.PCG {
             bool isDebugging = false;
             Cartesian Cartesian = new Cartesian(isDebugging);
             cartesianPathIndexCombinations = Cartesian.GetCartesianProduct(listOfColorToAllPathsIndexs).Select(x => x.ToList()).ToList();
+
+            Debug.Log("listOfColorToAllPathsIndexs count: " + listOfColorToAllPathsIndexs.Count);
+            Debug.Log("cartesianPathIndexCombinations count: " + cartesianPathIndexCombinations.Count);
         }
 
         private void CreateAllPotentialSolutionsFromPathIndexCombinations()
@@ -241,9 +278,15 @@ namespace StudioByStorm.PCG {
 
         private void FindSolutions()
         {
+            bool foundASolution = false;
             workingSolutions = new List<List<List<int>>>();
 
-            for (int k = 0; k < allPotentialSolutions.Count; k++) {
+            Parallel.For(0, allPotentialSolutions.Count, (k, state) => {
+
+                //this is just for testing, only want to find 1 solution for now, but more at a later point
+                if (foundASolution) {
+                    state.Break();
+                }
 
                 Dictionary<int, int> usedNodeIds = new Dictionary<int, int>();
                 bool workingSolution = true;
@@ -276,8 +319,9 @@ namespace StudioByStorm.PCG {
 
                 if (workingSolution) {
                     workingSolutions.Add(allPotentialSolutions[k]);
+                    foundASolution = true;
                 }
-            }
+            });
         }
 
         private void DisplayWorkingSolutions()

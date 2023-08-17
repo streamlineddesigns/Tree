@@ -293,6 +293,7 @@ namespace StudioByStorm.Graph {
             if (panBeginGameObject != null && panCompleteGameObject != null) {
                 index1 = nodePositions.IndexOf(panBeginGameObject.transform.position);//start node
                 index2 = nodePositions.IndexOf(panCompleteGameObject.transform.position);//end node;
+                //Debug.Log("Edge length is: " + Vector3.Distance(panBeginGameObject.transform.position, panCompleteGameObject.transform.position));
             }
 
             if (hasNode(position) && ! delete && !hasEdgeInAdjacencyList(index1, index2) && index1 != index2) {
@@ -330,7 +331,7 @@ namespace StudioByStorm.Graph {
             return false;
         }
 
-        protected void addToAdjacencyList(int index1, int index2)
+        public void addToAdjacencyList(int index1, int index2)
         {
             if (! AdjacencyList.Contains(index1, index2)) {
                 AdjacencyList.Add(index1, index2);
@@ -372,6 +373,7 @@ namespace StudioByStorm.Graph {
                 LayerData.nodeColors = new List<NodeColor>();
                 LayerData.nodeTypes = new List<NodeType>();
                 for (int k = 0; k < layerNodeCount; k++) {
+                    //we don't want the nodes to be spread out on a 1.0f , 1.0f grid, but rather, 7 times this size
                     Vector3 scaled = nodePositions[index] * 7.0f;
                     VectorData pos = new VectorData(scaled);
                     LayerData.nodePositions.Add(pos);

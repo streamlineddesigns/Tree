@@ -36,9 +36,8 @@ namespace StudioByStorm.PCG {
             int numberOfSolutions = 0;
 
             while (numberOfSolutions == 0) {
-
+                yield return null;
                 createAdjacencyList();
-
                 bool isThereAPathForEachColor = false;
 
                 while (! isThereAPathForEachColor) {
@@ -49,6 +48,7 @@ namespace StudioByStorm.PCG {
                     FindAllColorPaths();
                     isThereAPathForEachColor = IsThereAPathForEachColor();
                 }
+
                 
                 GetCartesianProductOfAllPathsIntoPathIndexCombinations();
                 CreateAllPotentialSolutionsFromPathIndexCombinations();
@@ -238,7 +238,10 @@ namespace StudioByStorm.PCG {
                 List<int> indexs = new List<int>();
                 //add the index of the paths
                 for (int j = 0; j < paths.Count; j++) {
-                    indexs.Add(j);
+                    //only include paths longer than 2 nodes each
+                    if (paths[j].Count > 2) {
+                        indexs.Add(j);
+                    }
                 }
 
                 listOfColorToAllPathsIndexs.Add(indexs);
@@ -258,7 +261,8 @@ namespace StudioByStorm.PCG {
             allPotentialSolutions = new List<List<List<int>>>();
 
             //iterate over all possible combinations of solutions
-            for (int i = 0; i < cartesianPathIndexCombinations.Count; i++) {
+            Parallel.For(0, cartesianPathIndexCombinations.Count, (i, state) => {
+            //for (int i = 0; i < cartesianPathIndexCombinations.Count; i++) {
 
                 //a set of paths i.e. potential solution to level
                 List<List<int>> potentialSolution = new List<List<int>>();
@@ -272,8 +276,13 @@ namespace StudioByStorm.PCG {
                     potentialSolution.Add(partialSolution);
                 }
 
-                allPotentialSolutions.Add(potentialSolution);
-            }
+                //only include a potential solution if the sum of the node's in all paths equals the total number of nodes. ie. all nodes are used in level
+                if (potentialSolution.Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count) {
+                    allPotentialSolutions.Add(potentialSolution);
+                }
+            });
+
+            Debug.Log("allPotentialSolutions count: " + allPotentialSolutions.Count);
         }
 
         private void FindSolutions()
@@ -283,40 +292,31 @@ namespace StudioByStorm.PCG {
 
             Parallel.For(0, allPotentialSolutions.Count, (k, state) => {
 
-                //this is just for testing, only want to find 1 solution for now, but more at a later point
-                if (foundASolution) {
-                    state.Break();
-                }
-
                 Dictionary<int, int> usedNodeIds = new Dictionary<int, int>();
                 bool workingSolution = true;
 
                 for (int l = 0; l < allPotentialSolutions[k].Count; l++) {
-                    
-                    //the number of nodes in all paths for a solution needs to equal the number of existing nodes in the level i.e. all nodes must be used
-                    //the number of nodes per path must also be greater than 2
-                    if (allPotentialSolutions[k].Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count && allPotentialSolutions[k][l].Count > 2) {
-                        
-                        //iterate over all nodes
-                        for (int m = 0; m < allPotentialSolutions[k][l].Count; m++) {
-                            //get the node id
-                            int NodeID = allPotentialSolutions[k][l][m];
-                            //working solutions have paths where nodes are ONLY used once
-                            if (usedNodeIds.ContainsKey(NodeID)) {
-                                workingSolution = false;
-                                break;
-                            } else {
-                                //keep track of the Node ID to ensure it's only used once
-                                usedNodeIds.Add(NodeID, NodeID);
-                            }
+                            
+                    //iterate over all nodes
+                    for (int m = 0; m < allPotentialSolutions[k][l].Count; m++) {
+                        //get the node id
+                        int NodeID = allPotentialSolutions[k][l][m];
+                        //working solutions have paths where nodes are ONLY used once
+                        if (usedNodeIds.ContainsKey(NodeID)) {
+                            workingSolution = false;
+                            break;
+                        } else {
+                            //keep track of the Node ID to ensure it's only used once
+                            usedNodeIds.Add(NodeID, NodeID);
                         }
+                    }
 
-                    } else {
-                        workingSolution = false;
+                    if (! workingSolution) {
                         break;
                     }
                 }
 
+            
                 if (workingSolution) {
                     workingSolutions.Add(allPotentialSolutions[k]);
                     foundASolution = true;

@@ -42,6 +42,7 @@ namespace StudioByStorm {
         ZoomView,
         ChapterRowView,
         CutSceneSelectButtonView,
+        CutSceneView,
     }
 
     public enum ViewType

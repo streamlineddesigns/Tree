@@ -21,15 +21,10 @@ namespace StudioByStorm.UI.Controllers {
 
         void Start()
         {
-            StartCoroutine(DelayedEnable());
+            StartCoroutine(DelayedStart());
         }
         
-        void OnEnable()
-        {
-            
-        }
-
-        IEnumerator DelayedEnable()
+        IEnumerator DelayedStart()
         {
             yield return 0;
 
@@ -85,7 +80,9 @@ namespace StudioByStorm.UI.Controllers {
 
         public void CutSceneSelectButtonClick(int ID, int chapterID)
         {
-            
+            CutSceneController CutSceneController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.CutSceneView) as CutSceneController;
+            GameManager.Singleton.UIController.Back();
+            CutSceneController.ShowCutScene(ID, chapterID);
         }
     }
 

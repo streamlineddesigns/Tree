@@ -9,7 +9,7 @@ namespace StudioByStorm {
     {        
         public ViewName ViewName;
 
-        void OnEnable()
+        public void OnEnable()
         {
             StartCoroutine(DelayedEnable());
         }
@@ -20,9 +20,9 @@ namespace StudioByStorm {
             GameManager.Singleton.ControllerRegistry.Add(ViewName, this);
         }
 
-        void OnDisable()
+        public void OnDisable()
         {
-            GameManager.Singleton.ControllerRegistry.Add(ViewName, this);
+            GameManager.Singleton.ControllerRegistry.Remove(ViewName);
         }
     }
 

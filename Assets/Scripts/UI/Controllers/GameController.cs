@@ -13,11 +13,13 @@ namespace StudioByStorm.UI.Controllers {
 
         void OnEnable()
         {
+            base.OnEnable();
             GameEventPublisher.OnStateChange += OnStateChange;
         }
 
         void OnDisable()
         {
+            base.OnDisable();
             GameEventPublisher.OnStateChange -= OnStateChange;
         }
 

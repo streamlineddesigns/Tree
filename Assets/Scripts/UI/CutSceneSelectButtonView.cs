@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 namespace StudioByStorm.UI {
 
-    public class LevelSelectButtonView : View
+    public class CutSceneSelectButtonView : View
     {
         public int ID;
         public int ChapterID;
-        public Text[] levelNumberText;
     }
 
 }

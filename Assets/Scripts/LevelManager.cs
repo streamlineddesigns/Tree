@@ -10,11 +10,13 @@ using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
 using StudioByStorm.Graph;
 using StudioByStorm;
+using StudioByStorm.Data.LevelChapters;
 
 namespace StudioByStorm {
 
     public class LevelManager: MonoBehaviour
     {
+        public Chapters levelChapters;
         public int currentLevelNodeCount;
         public int currentLevelEdgeCount;
         public int currentLevelParentCount;
@@ -26,6 +28,7 @@ namespace StudioByStorm {
         public List<Node> CurrentLevel = new List<Node>();
         public LevelData CurrentLevelData;
         public int currentLevelID;
+        public int currentChapterID;
         protected Pool NodePool;
         protected Pool EdgeRendererPool;
         protected List<float[]> nodePositions;
@@ -75,27 +78,9 @@ namespace StudioByStorm {
 
         public void LoadLevel()
         {
-            string json = "";
-            string fileLine;
-
-            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
-            if (! Directory.Exists(dir)) {
-                Directory.CreateDirectory(dir);
-            }
-            if (! Directory.Exists(dir)) {
-                Directory.CreateDirectory(dir);
-            }
-            string LevelSaveFilePath = (dir + GameManager.Singleton.LevelConfig.fileNameAppend + currentLevelID + GameManager.Singleton.LevelConfig.fileNamePrepend).ToString();
-            System.IO.StreamReader file = new System.IO.StreamReader(LevelSaveFilePath);  
-            while((fileLine = file.ReadLine()) != null)  
-            {  
-                json += fileLine;
-            }
-
-            file.Close();
-
-            CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(json);
-            Debug.Log("Loaded Saved LevelData: " + LevelSaveFilePath);
+            TextAsset currentLevelTextAsset = levelChapters.chapters[currentChapterID].levels[currentLevelID].levelFile;
+            CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(currentLevelTextAsset.text);
+            Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);
         }
 
         protected void CleanUpOnGameStart()

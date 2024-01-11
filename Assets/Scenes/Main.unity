@@ -20526,6 +20526,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd690169db49aa347909a6f48b33a2c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelChapters:
+    chapters:
+    - heading: Chapter I
+      subHeading: Chapter I
+      cutScenes:
+      - message: 
+      - message: 
+      - message: 
+      levels:
+      - levelFile: {fileID: 4900000, guid: b135e16d3505bc049b72ad9d17e1cb42, type: 3}
+      - levelFile: {fileID: 4900000, guid: bfcc2715e6eddf1429ecb678cd2f3558, type: 3}
+      - levelFile: {fileID: 4900000, guid: 0e7aec74beee0594780588ad2086a7af, type: 3}
+      - levelFile: {fileID: 4900000, guid: a7b44561d89e8e243a07f1496f31223a, type: 3}
+      - levelFile: {fileID: 4900000, guid: 3d8da0935822a134db38570bf43d3c66, type: 3}
+      - levelFile: {fileID: 4900000, guid: 0d9a4da3c121b104192d2190b366dd5c, type: 3}
+      - levelFile: {fileID: 4900000, guid: 421da9bcb34448d46aa26d7a3c81af9a, type: 3}
+      - levelFile: {fileID: 4900000, guid: b9796fe87161c0141811b43350bbde74, type: 3}
+      - levelFile: {fileID: 4900000, guid: b3b1e4c91e9bc6242851be5c626692d1, type: 3}
+    - heading: Chapter II
+      subHeading: Chapter II
+      cutScenes:
+      - message: 
+      - message: 
+      - message: 
+      levels:
+      - levelFile: {fileID: 4900000, guid: 00fc653a7525e4949967f558672b3b43, type: 3}
+      - levelFile: {fileID: 4900000, guid: 537f6135c5d73f44f9f98c7262267ff5, type: 3}
+      - levelFile: {fileID: 4900000, guid: 8ac97418012f2154d8b0046d75e05775, type: 3}
+      - levelFile: {fileID: 4900000, guid: 5ef753c3bd435fd439289a819cc8c2a3, type: 3}
+      - levelFile: {fileID: 4900000, guid: 5c710547096e5854d822aa8a66b03dac, type: 3}
+      - levelFile: {fileID: 4900000, guid: 5090bb2c3879c5e47aed139fd6a93a55, type: 3}
+      - levelFile: {fileID: 4900000, guid: 445a1c3e98dccfe48be3794e070c8e7c, type: 3}
+      - levelFile: {fileID: 4900000, guid: 608900938a5d8e84ea0b4dbcf23cbde8, type: 3}
+      - levelFile: {fileID: 4900000, guid: 519c118398e72d141885744d9c315629, type: 3}
   currentLevelNodeCount: 0
   currentLevelEdgeCount: 0
   currentLevelParentCount: 0
@@ -20539,6 +20573,7 @@ MonoBehaviour:
     PlayerStartPosition: {x: 0, y: 0, z: 0}
     Centroid: {x: 0, y: 0, z: 0}
   currentLevelID: 0
+  currentChapterID: 0
 --- !u!1 &276761194
 GameObject:
   m_ObjectHideFlags: 0
@@ -98393,7 +98428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 0.84313726}
+  m_Color: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -125049,8 +125084,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ViewName: 7
   LevelSelectButtonGO: {fileID: 7006224473115002919, guid: ca8c6d8d7b0b99e49afe05421220f593, type: 3}
-  LevelButtonSpawnLocation: {fileID: 2060595267}
+  CutSceneSelectButtonGO: {fileID: 7006224473115002919, guid: b18f3a943262dd54a9ba5c187a29c002, type: 3}
+  LevelRowGO: {fileID: 474593472478537973, guid: 0d5ad01dc48f75d4cab10103612fd251, type: 3}
+  ChapterRowGO: {fileID: 474593472478537973, guid: 5baa91b0673077542afe7f89eef81c0d, type: 3}
+  ViewportContentSpawnLocation: {fileID: 2060595267}
   LevelConfig: {fileID: 2096021898}
+  romanNumerals:
+  - 
+  - I
+  - II
+  - III
+  - IV
+  - V
+  - VI
+  - VII
+  - VIII
+  - IX
 --- !u!1 &1152218853
 GameObject:
   m_ObjectHideFlags: 0
@@ -142760,7 +142809,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: World 1
+  m_Text: 
 --- !u!222 &1296099572
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -167574,7 +167623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19215688, g: 0.19215688, b: 0.19215688, a: 0.7058824}
+  m_Color: {r: 0.19215688, g: 0.19215688, b: 0.19215688, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -262833,9 +262882,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2060595268}
+  - component: {fileID: 2060595270}
   - component: {fileID: 2060595269}
   m_Layer: 5
-  m_Name: LevelSelectButtonSpawnLocation
+  m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262870,21 +262920,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 2060595267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
+--- !u!114 &2060595270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060595267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 30
-    m_Right: 0
+    m_Left: 25
+    m_Right: 25
     m_Top: 75
-    m_Bottom: 30
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 75, y: 75}
-  m_Spacing: {x: 15, y: 15}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+    m_Bottom: 75
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
 --- !u!1 &2061831488
 GameObject:
   m_ObjectHideFlags: 0
@@ -279636,6 +279702,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6228859580625721476, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8320743398400624240, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
       propertyPath: m_Name
       value: MainPlayer

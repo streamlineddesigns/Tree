@@ -5,14 +5,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using StudioByStorm.Config;
+using StudioByStorm.Data.LevelChapters;
 
 namespace StudioByStorm.UI.Controllers {
 
     public class LevelSelectController : Controller
     {
         public GameObject LevelSelectButtonGO;
-        public GameObject LevelButtonSpawnLocation;
+        public GameObject CutSceneSelectButtonGO;
+        public GameObject LevelRowGO;
+        public GameObject ChapterRowGO;
+        public GameObject ViewportContentSpawnLocation;
         public LevelConfig LevelConfig;
+        public List<string> romanNumerals;
 
         void Start()
         {
@@ -27,29 +32,60 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator DelayedEnable()
         {
             yield return 0;
-            string dir = Application.persistentDataPath + "/" + GameManager.Singleton.LevelConfig.subfolder;
-            if (! Directory.Exists(dir)) {
-                Directory.CreateDirectory(dir);
-            }
-            int LevelFileCountInDir = Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Length;
 
-            for (int i = 0; i < LevelFileCountInDir; i++) {
-                GameObject go = Instantiate(LevelSelectButtonGO, LevelButtonSpawnLocation.transform);
-                LevelSelectButtonView LevelSelectButtonView = go.GetComponent<LevelSelectButtonView>();
-                LevelSelectButtonView.GetComponent<Button>().onClick.AddListener(delegate { LevelSelectButtonClick(LevelSelectButtonView.ID); });
-                for (int j = 0; j < LevelSelectButtonView.levelNumberText.Length; j++) {
-                    LevelSelectButtonView.ID = i;
-                    LevelSelectButtonView.levelNumberText[j].text = (i + 1).ToString();
+            for (int i = 0; i < GameManager.Singleton.LevelManager.levelChapters.chapters.Count; i++) {
+                Chapter currentChapter = GameManager.Singleton.LevelManager.levelChapters.chapters[i];
+
+                //place chapter heading and subheading ie chapterrowview
+                GameObject chapterrowgo = Instantiate(ChapterRowGO, ViewportContentSpawnLocation.transform);
+                ChapterRowView ChapterRowView = chapterrowgo.GetComponent<ChapterRowView>();
+                ChapterRowView.headingText.text = currentChapter.heading;
+                ChapterRowView.subHeadingText.text = currentChapter.subHeading;
+
+                int levelID = 0;
+                int ChapterID = i;
+
+                for (int j = 0; j < currentChapter.cutScenes.Count; j++) {
+                    int cutSceneID = j;
+                    //place a level row 
+                    GameObject levelrowgo = Instantiate(LevelRowGO, ViewportContentSpawnLocation.transform);
+                    //place a cut scene button 
+                    GameObject cutsceneselectbuttongo = Instantiate(CutSceneSelectButtonGO, levelrowgo.transform);
+                    CutSceneSelectButtonView CutSceneSelectButtonView = cutsceneselectbuttongo.GetComponent<CutSceneSelectButtonView>();
+                    CutSceneSelectButtonView.GetComponent<Button>().onClick.AddListener(delegate { CutSceneSelectButtonClick(CutSceneSelectButtonView.ID, CutSceneSelectButtonView.ChapterID); });
+                    CutSceneSelectButtonView.ID = cutSceneID;
+                    CutSceneSelectButtonView.ChapterID = ChapterID;
+
+                    //place 3 level select buttons
+                    for (int k = 0; k < 3; k++) {
+                        GameObject levelselectbuttongo = Instantiate(LevelSelectButtonGO, levelrowgo.transform);
+                        LevelSelectButtonView LevelSelectButtonView = levelselectbuttongo.GetComponent<LevelSelectButtonView>();
+                        LevelSelectButtonView.GetComponent<Button>().onClick.AddListener(delegate { LevelSelectButtonClick(LevelSelectButtonView.ID, LevelSelectButtonView.ChapterID); });
+                        //set text and data for level select button
+                        for (int l = 0; l < LevelSelectButtonView.levelNumberText.Length; l++) {
+                            LevelSelectButtonView.ID = levelID;
+                            LevelSelectButtonView.ChapterID = ChapterID;
+                            LevelSelectButtonView.levelNumberText[l].text = romanNumerals[levelID + 1];
+                        }
+
+                        levelID++;
+                    }
                 }
             }
         }
 
-        public void LevelSelectButtonClick(int ID)
+        public void LevelSelectButtonClick(int ID, int chapterID)
         {
             GameManager.Singleton.LevelManager.currentLevelID = ID;
+            GameManager.Singleton.LevelManager.currentChapterID = chapterID;
             StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;
             GameManager.Singleton.UIController.Back();
             StartController.PlayButtonClick();
+        }
+
+        public void CutSceneSelectButtonClick(int ID, int chapterID)
+        {
+            
         }
     }
 

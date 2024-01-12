@@ -71,6 +71,7 @@ namespace StudioByStorm {
 
         protected void OnLevelComplete()
         {
+            SaveProgress();
             GameManager.Singleton.PlayerController.LockMovement(true);
             GameManager.Singleton.UIController.ShowView(ViewName.LevelCompleteView);
             GameManager.Singleton.FXManager.LaunchFireWork();
@@ -81,6 +82,13 @@ namespace StudioByStorm {
             TextAsset currentLevelTextAsset = levelChapters.chapters[currentChapterID].levels[currentLevelID].levelFile;
             CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(currentLevelTextAsset.text);
             Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);
+        }
+
+        private void SaveProgress()
+        {
+            string key = (currentChapterID + "-" + currentLevelID);
+            GameManager.Singleton.ProgressManager.UpdateLevel(key, 3);
+            GameManager.Singleton.ProgressManager.Save();
         }
 
         protected void CleanUpOnGameStart()

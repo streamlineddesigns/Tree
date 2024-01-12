@@ -9,6 +9,14 @@ namespace StudioByStorm.UI {
     {
         public int ID;
         public int ChapterID;
+        public Image progressImage;
+
+        public void SetProgress(bool completionValue, Color completionColor)
+        {
+            if (completionValue) {
+                progressImage.color = completionColor;
+            }
+        }
     }
 
 }

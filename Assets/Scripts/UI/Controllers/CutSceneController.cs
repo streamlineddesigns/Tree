@@ -67,9 +67,17 @@ namespace StudioByStorm.UI.Controllers {
 
         public void ContinueButtonClick()
         {
+            SaveProgress();
             int levelID = currentCutSceneID * 3;
             LevelSelectController LevelSelectController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelSelectView) as LevelSelectController;
             LevelSelectController.LevelSelectButtonClick(levelID, currentChapterID);
+        }
+
+        private void SaveProgress()
+        {
+            string key = (currentChapterID + "-" + currentCutSceneID);
+            GameManager.Singleton.ProgressManager.UpdateCutScene(key, true);
+            GameManager.Singleton.ProgressManager.Save();
         }
     }
 

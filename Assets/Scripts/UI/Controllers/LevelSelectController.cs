@@ -18,6 +18,7 @@ namespace StudioByStorm.UI.Controllers {
         public GameObject ViewportContentSpawnLocation;
         public LevelConfig LevelConfig;
         public List<string> romanNumerals;
+        public Color completionColor;
 
         void Start()
         {
@@ -50,6 +51,10 @@ namespace StudioByStorm.UI.Controllers {
                     CutSceneSelectButtonView.GetComponent<Button>().onClick.AddListener(delegate { CutSceneSelectButtonClick(CutSceneSelectButtonView.ID, CutSceneSelectButtonView.ChapterID); });
                     CutSceneSelectButtonView.ID = cutSceneID;
                     CutSceneSelectButtonView.ChapterID = ChapterID;
+                    //set completion progress indicators
+                    string cutSceneKey = (ChapterID +"-"+ cutSceneID);
+                    bool cutSceneCompletionValue = GameManager.Singleton.ProgressManager.GetCutSceneProgress(cutSceneKey);
+                    CutSceneSelectButtonView.SetProgress(cutSceneCompletionValue, completionColor);
 
                     //place 3 level select buttons
                     for (int k = 0; k < 3; k++) {
@@ -62,6 +67,10 @@ namespace StudioByStorm.UI.Controllers {
                             LevelSelectButtonView.ChapterID = ChapterID;
                             LevelSelectButtonView.levelNumberText[l].text = romanNumerals[levelID + 1];
                         }
+                        //set completion progress indicators
+                        string levelKey = (ChapterID +"-"+ levelID);
+                        int levelCompletionValue = GameManager.Singleton.ProgressManager.GetLevelProgress(levelKey);
+                        LevelSelectButtonView.SetProgress(levelCompletionValue, completionColor);
 
                         levelID++;
                     }

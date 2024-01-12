@@ -22,6 +22,7 @@ namespace StudioByStorm {
         public LevelManager LevelManager;
         public LevelConfig LevelConfig;
         public SpatialHashManager SpatialHashManager;
+        public ProgressManager ProgressManager;
         public UIController UIController;
         public AdjacencyList AdjacencyList;
         public ColorModel ColorModel;
@@ -46,6 +47,7 @@ namespace StudioByStorm {
                 GameManager.Singleton.SpatialHashManager.SetPlayerHashData(PlayerHashData);
                 PlayerController = player.GetComponent<PlayerController>();
                 AdjacencyList = new AdjacencyList();
+                ProgressManager = new ProgressManager();
             } else {
                 Destroy(this);
             }

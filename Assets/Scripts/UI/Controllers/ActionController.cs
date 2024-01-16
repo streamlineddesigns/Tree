@@ -347,7 +347,8 @@ namespace StudioByStorm {
             GameManager.Singleton.LevelManager.currentLevelEdgeCount++;
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentEdge.parentID, ActionModel.CurrentNode.ID);
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentNode.ID, ActionModel.CurrentEdge.parentID);
-            GameManager.Singleton.AdjacencyList.Log();
+            //Display logging
+            //GameManager.Singleton.AdjacencyList.Log();
 
             //if the current node was disjoint, then make it a child, otherwise, leave it whatever it was
             ActionModel.CurrentNode.NodeType = (ActionModel.CurrentNode.NodeType == NodeType.Disjoint) ? NodeType.Child : ActionModel.CurrentNode.NodeType;

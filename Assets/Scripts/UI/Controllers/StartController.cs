@@ -22,6 +22,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void PlayButtonClick()
         {
+            GameManager.Singleton.UIController.ShowView(ViewName.FadeView);
             MockNodes.SetActive(false);
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);
             GameEventPublisher.PublishGameStateChange(GameState.GameStart);

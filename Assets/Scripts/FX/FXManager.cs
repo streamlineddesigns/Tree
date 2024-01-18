@@ -85,19 +85,26 @@ namespace StudioByStorm.FX {
         IEnumerator DelayedLaunchFireWork()
         {
             Vector3 targetPosition = GameManager.Singleton.player.transform.position;
-            int fireworksToLaunch = 3;
-            float offset = 2.0f;
+            int fireworksToLaunch = 5;
+            
             float offsetX = targetPosition.x;
             float offsetY = targetPosition.y;
+            float AdditionalXOffset = 12.0f;
+            float AdditionalYOffset = 4.0f;
             float timeBetweenLaunches = 0.25f;
 
             for (int i = 0; i < fireworksToLaunch; i++) {
                 GameObject firework = FireworksPool.Get();
                 Vector3 currentTargetPosition = targetPosition;
-                offsetX += UnityEngine.Random.Range(-offset, offset);
-                offsetY += UnityEngine.Random.Range(-offset, offset);
-                currentTargetPosition.x = offsetX;
-                currentTargetPosition.y = offsetY;
+                
+                float randomizedXOffset = (UnityEngine.Random.Range(0.0f, 10.0f) > 5.0f) ? AdditionalXOffset : -AdditionalXOffset;
+                randomizedXOffset += UnityEngine.Random.Range(-2.0f, 2.0f);
+                currentTargetPosition.x = offsetX + randomizedXOffset;
+
+                float randomizedYOffset = (UnityEngine.Random.Range(0.0f, 10.0f) > 5.0f) ? AdditionalYOffset : -AdditionalYOffset;
+                randomizedYOffset += UnityEngine.Random.Range(-2.0f, 2.0f);
+                currentTargetPosition.y = offsetY + randomizedYOffset;
+
                 firework.transform.position = currentTargetPosition;
                 firework.SetActive(true);
                 yield return new WaitForSeconds(timeBetweenLaunches);

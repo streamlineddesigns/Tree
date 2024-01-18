@@ -84,10 +84,30 @@ namespace StudioByStorm.UI.Controllers {
 
         private void SaveProgress()
         {
+            bool needsToSave = false;
+
             string key = (currentChapterID + "-" + currentCutSceneID);
-            GameManager.Singleton.ProgressManager.UpdateCutScene(key, true);
-            GameManager.Singleton.ProgressManager.Save();
+
+            bool cutSceneCompletionValue = GameManager.Singleton.ProgressManager.GetCutSceneProgress(key);
+
+            if (! cutSceneCompletionValue) {
+                GameManager.Singleton.ProgressManager.UpdateCutScene(key, true);
+                needsToSave = true;
+            }
+
+            int highestCutSceneCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedCutSceneProgress(currentChapterID);
+
+            if (currentCutSceneID > highestCutSceneCompletedForCurrentChapter) {
+                GameManager.Singleton.ProgressManager.UpdateUnlockedCutScene(currentChapterID, currentCutSceneID);
+                needsToSave = true;
+            }
+
+            //save
+            if (needsToSave) {
+                GameManager.Singleton.ProgressManager.Save();
+            }
         }
+
     }
 
 }

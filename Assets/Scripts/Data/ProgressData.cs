@@ -18,6 +18,18 @@ namespace StudioByStorm.Data {
          * Value is just a boolean for if the cut scene was watched or not
          */
         public Dictionary<string, bool> cutSceneProgress = new Dictionary<string, bool>();
+
+        /*
+         * Key is int(ChapterID)
+         * Value is highest level unlocked for that chapter
+         */
+        public Dictionary<int, int> unlockedLevelProgress = new Dictionary<int, int>();
+
+        /*
+         * Key is int(ChapterID)
+         * Value is highest cut scene unlocked for that chapter
+         */
+        public Dictionary<int, int> unlockedCutSceneProgress = new Dictionary<int, int>();
     }
 
 }

@@ -96,12 +96,28 @@ namespace StudioByStorm.UI.Controllers {
 
         private void SaveProgress(int currentChapterID, int currentLevelID, int starsAwarded)
         {
+            bool needsToSave = false;
+
+            //handle star progress
             string key = (currentChapterID + "-" + currentLevelID);
 
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
 
             if (starsAwarded > previousStarsAwarded) {
                 GameManager.Singleton.ProgressManager.UpdateLevel(key, starsAwarded);
+                needsToSave = true;
+            }
+
+            //handle unlock progress
+            int highestLevelCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedLevelProgress(currentChapterID);
+
+            if (currentLevelID > highestLevelCompletedForCurrentChapter) {
+                GameManager.Singleton.ProgressManager.UpdateUnlockedLevel(currentChapterID, currentLevelID);
+                needsToSave = true;
+            }
+
+            //save
+            if (needsToSave) {
                 GameManager.Singleton.ProgressManager.Save();
             }
         }

@@ -30,6 +30,7 @@ namespace StudioByStorm {
             Serialize<ProgressData>(ProgressData, LevelSaveFilePath);
         }
 
+        //Key is string(ChapterID + "-" + LevelID)
         public int GetLevelProgress(string k)
         {
             if (! ProgressData.levelProgress.ContainsKey(k)) {
@@ -39,6 +40,7 @@ namespace StudioByStorm {
             return ProgressData.levelProgress[k];
         }
 
+        //Key is string(ChapterID + "-" + CutSceneID)
         public bool GetCutSceneProgress(string k)
         {
             if (! ProgressData.cutSceneProgress.ContainsKey(k)) {
@@ -46,6 +48,26 @@ namespace StudioByStorm {
             }
 
             return true;
+        }
+
+        //Key is int(ChapterID)
+        public int GetUnlockedLevelProgress(int k)
+        {
+            if (! ProgressData.unlockedLevelProgress.ContainsKey(k)) {
+                return -1;
+            }
+
+            return ProgressData.unlockedLevelProgress[k];
+        }
+
+        //Key is int(ChapterID)
+        public int GetUnlockedCutSceneProgress(int k)
+        {
+            if (! ProgressData.unlockedCutSceneProgress.ContainsKey(k)) {
+                return -1;
+            }
+
+            return ProgressData.unlockedCutSceneProgress[k];
         }
 
         public void UpdateLevel(string k, int v)
@@ -63,6 +85,24 @@ namespace StudioByStorm {
                 ProgressData.cutSceneProgress[k] = v;
             } else {
                 ProgressData.cutSceneProgress.Add(k, v);
+            }
+        }
+
+        public void UpdateUnlockedLevel(int k, int v)
+        {
+            if (ProgressData.unlockedLevelProgress.ContainsKey(k)) {
+                ProgressData.unlockedLevelProgress[k] = v;
+            } else {
+                ProgressData.unlockedLevelProgress.Add(k, v);
+            }
+        }
+
+        public void UpdateUnlockedCutScene(int k, int v)
+        {
+            if (ProgressData.unlockedCutSceneProgress.ContainsKey(k)) {
+                ProgressData.unlockedCutSceneProgress[k] = v;
+            } else {
+                ProgressData.unlockedCutSceneProgress.Add(k, v);
             }
         }
 

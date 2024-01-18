@@ -9,7 +9,28 @@ namespace StudioByStorm.UI {
     {
         public int ID;
         public int ChapterID;
+        public GameObject unlockedContainer;
+        public GameObject lockContainer;
         public Image progressImage;
+        public bool IsLocked;
+
+        public void SetLockStatus(bool isLocked)
+        {
+            IsLocked = isLocked;
+
+            if (IsLocked) {
+                unlockedContainer.SetActive(false);
+                lockContainer.SetActive(true);
+            } else {
+                unlockedContainer.SetActive(true);
+                lockContainer.SetActive(false);
+            }
+        }
+
+        public bool GetLockStatus()
+        {
+            return IsLocked;
+        }
 
         public void SetProgress(bool completionValue, Color completionColor)
         {

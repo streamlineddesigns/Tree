@@ -393,9 +393,18 @@ namespace StudioByStorm {
                 //$$EXPERMENTAL
             }
 
-            if (GameManager.Singleton.LevelManager.parentColorsConnected.Where(x => x.Value == true).Count() >= (GameManager.Singleton.LevelManager.currentLevelParentCount / 2) && GameManager.Singleton.LevelManager.currentLevelEdgeCount >= (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2))) {
+            /*
+             * All nodes might not be used but still allow level completion
+             */
+            if (GameManager.Singleton.LevelManager.parentColorsConnected.Where(x => x.Value == true).Count() >= (GameManager.Singleton.LevelManager.currentLevelParentCount / 2) ) {
                 GameEventPublisher.PublishGameStateChange(GameState.LevelComplete);
             }
+
+            /*
+             * All nodes have to be used to allow level completion
+            if (GameManager.Singleton.LevelManager.parentColorsConnected.Where(x => x.Value == true).Count() >= (GameManager.Singleton.LevelManager.currentLevelParentCount / 2) && GameManager.Singleton.LevelManager.currentLevelEdgeCount >= (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2))) {
+                GameEventPublisher.PublishGameStateChange(GameState.LevelComplete);
+            }*/
         }
     }
 

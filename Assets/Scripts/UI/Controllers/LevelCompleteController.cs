@@ -17,6 +17,7 @@ namespace StudioByStorm.UI.Controllers {
         public TMP_Text levelText;
         public Image[] starImages;
         private int framesToWait = 2;
+        private float[] percentOfLevelCompletedToStarTierMapping = new float[4]{0.0f, 0.0f, 0.75f, 1.0f};
 
         protected void Awake()
         { 
@@ -62,7 +63,19 @@ namespace StudioByStorm.UI.Controllers {
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
 
-            int starsAwarded = 3;
+            int currentLevelEdgeCount = GameManager.Singleton.LevelManager.currentLevelEdgeCount;
+            int totalEdgeCount = (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2));
+            float edgePercent = currentLevelEdgeCount * 1.0f / totalEdgeCount * 1.0f;
+            
+            //Debug.Log("currentLevelEdgeCount: " + currentLevelEdgeCount);
+            //Debug.Log("totalEdgeCount: " + totalEdgeCount);
+            //Debug.Log("edgePercent: " + edgePercent);
+
+            //map the percentage of the level beaten to the stars awarded to the player
+            int starsAwarded = (edgePercent >= percentOfLevelCompletedToStarTierMapping[3]) ? 3 : 
+                               (edgePercent >= percentOfLevelCompletedToStarTierMapping[2]) ? 2 : 
+                               (edgePercent >= percentOfLevelCompletedToStarTierMapping[1]) ? 1 : 0;
+
             SetProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
             SaveProgress(currentChapterID, currentLevelID, starsAwarded);
 

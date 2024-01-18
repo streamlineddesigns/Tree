@@ -41,10 +41,12 @@ namespace StudioByStorm.UI.Controllers {
             if (currentCutSceneID == 0) {
                 headingText.gameObject.SetActive(true);
                 yield return StartCoroutine(PrintText(headingText, currentChapter.heading));
+                SetTextToFullyOpaque(headingText);
             }
 
             messageText.gameObject.SetActive(true);
             yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].message));
+            SetTextToFullyOpaque(messageText);
 
             continueButton.SetActive(true);
         }
@@ -63,6 +65,13 @@ namespace StudioByStorm.UI.Controllers {
                 TMP.color = targetColor;
                 yield return new WaitForSeconds(0.1f);
             }
+        }
+
+        protected void SetTextToFullyOpaque(TMP_Text TMP)
+        {
+            Color targetColor = TMP.color;
+            targetColor.a = 255;
+            TMP.color = targetColor;
         }
 
         public void ContinueButtonClick()

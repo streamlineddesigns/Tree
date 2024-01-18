@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using StudioByStorm.Data.LevelChapters;
@@ -12,6 +13,9 @@ namespace StudioByStorm.UI.Controllers {
     public class LevelCompleteController : Controller
     {
         public static Dictionary<int, LevelCompleteController> instances = new  Dictionary<int, LevelCompleteController>();
+        public TMP_Text headingText;
+        public TMP_Text levelText;
+        public Image[] starImages;
         private int framesToWait = 2;
 
         protected void Awake()
@@ -48,6 +52,30 @@ namespace StudioByStorm.UI.Controllers {
                 Destroy(gameObject);
             } else {
                 LevelCompleteController.instances.Add(gameObject.GetInstanceID(), this);
+                //re-run on enable to ensure it gets added to the registry
+                base.OnEnable();
+            }
+        }
+
+        public void Show()
+        {
+            int starsAwarded = 3;
+            SetProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
+
+            int levelID = GameManager.Singleton.LevelManager.currentLevelID;
+            int chapterID = GameManager.Singleton.LevelManager.currentChapterID;
+            headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[chapterID].heading;
+            levelText.text = GameManager.Singleton.LevelManager.romanNumerals[levelID + 1];
+
+            GameManager.Singleton.UIController.ShowView(ViewName);
+        }
+
+        protected void SetProgress(int completionValue, Color completionColor)
+        {
+            for (int i = 0; i < starImages.Length; i++) {
+                if (completionValue > i) {
+                    starImages[i].color = completionColor;
+                }
             }
         }
 

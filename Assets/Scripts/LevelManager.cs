@@ -11,12 +11,15 @@ using StudioByStorm.Optimizations;
 using StudioByStorm.Graph;
 using StudioByStorm;
 using StudioByStorm.Data.LevelChapters;
+using StudioByStorm.UI.Controllers;
 
 namespace StudioByStorm {
 
     public class LevelManager: MonoBehaviour
     {
         public Chapters levelChapters;
+        public List<string> romanNumerals;
+        public Color levelCompletionColor;
         public int currentLevelNodeCount;
         public int currentLevelEdgeCount;
         public int currentLevelParentCount;
@@ -73,7 +76,8 @@ namespace StudioByStorm {
         {
             SaveProgress();
             GameManager.Singleton.PlayerController.LockMovement(true);
-            GameManager.Singleton.UIController.ShowView(ViewName.LevelCompleteView);
+            LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
+            levelCompleteController.Show();
             GameManager.Singleton.FXManager.LaunchFireWork();
         }
 

@@ -17,8 +17,6 @@ namespace StudioByStorm.UI.Controllers {
         public GameObject ChapterRowGO;
         public GameObject ViewportContentSpawnLocation;
         public LevelConfig LevelConfig;
-        public List<string> romanNumerals;
-        public Color completionColor;
 
         void Start()
         {
@@ -54,7 +52,7 @@ namespace StudioByStorm.UI.Controllers {
                     //set completion progress indicators
                     string cutSceneKey = (ChapterID +"-"+ cutSceneID);
                     bool cutSceneCompletionValue = GameManager.Singleton.ProgressManager.GetCutSceneProgress(cutSceneKey);
-                    CutSceneSelectButtonView.SetProgress(cutSceneCompletionValue, completionColor);
+                    CutSceneSelectButtonView.SetProgress(cutSceneCompletionValue, GameManager.Singleton.LevelManager.levelCompletionColor);
 
                     //place 3 level select buttons
                     for (int k = 0; k < 3; k++) {
@@ -65,12 +63,12 @@ namespace StudioByStorm.UI.Controllers {
                         for (int l = 0; l < LevelSelectButtonView.levelNumberText.Length; l++) {
                             LevelSelectButtonView.ID = levelID;
                             LevelSelectButtonView.ChapterID = ChapterID;
-                            LevelSelectButtonView.levelNumberText[l].text = romanNumerals[levelID + 1];
+                            LevelSelectButtonView.levelNumberText[l].text = GameManager.Singleton.LevelManager.romanNumerals[levelID + 1];
                         }
                         //set completion progress indicators
                         string levelKey = (ChapterID +"-"+ levelID);
                         int levelCompletionValue = GameManager.Singleton.ProgressManager.GetLevelProgress(levelKey);
-                        LevelSelectButtonView.SetProgress(levelCompletionValue, completionColor);
+                        LevelSelectButtonView.SetProgress(levelCompletionValue, GameManager.Singleton.LevelManager.levelCompletionColor);
 
                         levelID++;
                     }
@@ -83,14 +81,14 @@ namespace StudioByStorm.UI.Controllers {
             GameManager.Singleton.LevelManager.currentLevelID = ID;
             GameManager.Singleton.LevelManager.currentChapterID = chapterID;
             StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;
-            GameManager.Singleton.UIController.Back();
+            ///GameManager.Singleton.UIController.Back();
             StartController.PlayButtonClick();
         }
 
         public void CutSceneSelectButtonClick(int ID, int chapterID)
         {
             CutSceneController CutSceneController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.CutSceneView) as CutSceneController;
-            GameManager.Singleton.UIController.Back();
+            //GameManager.Singleton.UIController.Back();
             CutSceneController.ShowCutScene(ID, chapterID);
         }
     }

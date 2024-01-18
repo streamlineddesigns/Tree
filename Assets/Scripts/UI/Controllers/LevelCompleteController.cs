@@ -59,23 +59,37 @@ namespace StudioByStorm.UI.Controllers {
 
         public void Show()
         {
+            int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
+            int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
+
             int starsAwarded = 3;
             SetProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
+            SaveProgress(currentChapterID, currentLevelID, starsAwarded);
 
-            int levelID = GameManager.Singleton.LevelManager.currentLevelID;
-            int chapterID = GameManager.Singleton.LevelManager.currentChapterID;
-            headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[chapterID].heading;
-            levelText.text = GameManager.Singleton.LevelManager.romanNumerals[levelID + 1];
+            headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
+            levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
 
             GameManager.Singleton.UIController.ShowView(ViewName);
         }
 
-        protected void SetProgress(int completionValue, Color completionColor)
+        private void SetProgress(int completionValue, Color completionColor)
         {
             for (int i = 0; i < starImages.Length; i++) {
                 if (completionValue > i) {
                     starImages[i].color = completionColor;
                 }
+            }
+        }
+
+        private void SaveProgress(int currentChapterID, int currentLevelID, int starsAwarded)
+        {
+            string key = (currentChapterID + "-" + currentLevelID);
+
+            int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
+
+            if (starsAwarded > previousStarsAwarded) {
+                GameManager.Singleton.ProgressManager.UpdateLevel(key, starsAwarded);
+                GameManager.Singleton.ProgressManager.Save();
             }
         }
 

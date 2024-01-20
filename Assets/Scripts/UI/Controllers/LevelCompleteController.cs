@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 using UnityEngine.SceneManagement;
 using StudioByStorm.Data.LevelChapters;
 
@@ -60,6 +61,13 @@ namespace StudioByStorm.UI.Controllers {
 
         public void Show()
         {
+            StartCoroutine(ShowRoutine());
+        }
+
+        IEnumerator ShowRoutine() 
+        {
+            yield return null;
+
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
 
@@ -81,8 +89,21 @@ namespace StudioByStorm.UI.Controllers {
 
             headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
+            
+            //zoom out
+            GameController GameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
+            GameController.ZoomButtonClick(2.0f);
 
-            GameManager.Singleton.UIController.ShowView(ViewName);
+            //close the zoom view
+            GameManager.Singleton.UIController.Close(ViewName.ZoomView);
+
+            yield return new WaitForSeconds(3.0f);
+
+            //show the level complete view
+            View levelCompleteView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelCompleteView) as View;
+            //levelCompleteView.transform.DOScale(new Vector3(0.1f, 0.1f, 0.1f), 0.0f);
+            GameManager.Singleton.UIController.ShowView(ViewName.LevelCompleteView);
+            //levelCompleteView.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.5f).SetEase(Ease.InQuad);
         }
 
         private void SetProgress(int completionValue, Color completionColor)

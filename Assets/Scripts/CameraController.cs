@@ -22,6 +22,7 @@ namespace StudioByStorm {
         public float smoothSpeed = 10f;
         private Vector3 currentVelocity;
         private Vector2 swipeStart;
+        private bool IsLevelComplete = false;
 
         public void MoveToCentroid()
         {
@@ -52,6 +53,7 @@ namespace StudioByStorm {
                     break;
 
                 case GameState.LevelComplete :
+                    IsLevelComplete = true;
                     break;
             }
         }
@@ -88,6 +90,10 @@ namespace StudioByStorm {
 
         private void SwipeDetection()
         {
+            if (IsLevelComplete) {
+                return;
+            }
+
             // Detect swipe input
             if (Input.GetMouseButtonDown(0)) {
 

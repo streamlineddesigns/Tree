@@ -29,11 +29,11 @@ namespace StudioByStorm.UI.Controllers {
             GameManager.Singleton.UIController.ShowView(ViewName.PauseView);
         }
 
-        public void ZoomButtonClick()
+        public void ZoomButtonClick(float speed = 1.0f)
         {
             CameraController.centroid = Centroid.transform;
             GameManager.Singleton.CameraController.MoveToCentroid();
-            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(20, 1.0f);
+            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(20, speed).SetEase(Ease.InQuad);
             GameManager.Singleton.UIController.ShowView(ViewName.ZoomView);
         }
 

@@ -11,10 +11,11 @@ namespace StudioByStorm.UI.Controllers {
     {
         public TMP_Text sensitivityValue;
         public TMP_Text smoothingValue;
+        
         public void ZoomOutButtonClick()
         {
             CameraController.centroid = null;
-            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(11, 1.0f);
+            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(11, 1.0f).SetEase(Ease.InQuad);
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);
         }
 

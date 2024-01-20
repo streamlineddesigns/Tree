@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
+using StudioByStorm.UI.Controllers;
 
 namespace StudioByStorm.FX {
 
@@ -84,13 +85,16 @@ namespace StudioByStorm.FX {
 
         IEnumerator DelayedLaunchFireWork()
         {
-            Vector3 targetPosition = GameManager.Singleton.player.transform.position;
+            //Vector3 targetPosition = GameManager.Singleton.player.transform.position;
+            GameController GameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
+            Vector3 targetPosition = GameController.Centroid.transform.position;
+
             int fireworksToLaunch = 5;
             
             float offsetX = targetPosition.x;
             float offsetY = targetPosition.y;
-            float AdditionalXOffset = 12.0f;
-            float AdditionalYOffset = 4.0f;
+            float AdditionalXOffset = 15.0f;
+            float AdditionalYOffset = 5.0f;
             float timeBetweenLaunches = 0.25f;
 
             for (int i = 0; i < fireworksToLaunch; i++) {
@@ -98,11 +102,11 @@ namespace StudioByStorm.FX {
                 Vector3 currentTargetPosition = targetPosition;
                 
                 float randomizedXOffset = (UnityEngine.Random.Range(0.0f, 10.0f) > 5.0f) ? AdditionalXOffset : -AdditionalXOffset;
-                randomizedXOffset += UnityEngine.Random.Range(-2.0f, 2.0f);
+                randomizedXOffset += UnityEngine.Random.Range(-5.0f, 5.0f);
                 currentTargetPosition.x = offsetX + randomizedXOffset;
 
                 float randomizedYOffset = (UnityEngine.Random.Range(0.0f, 10.0f) > 5.0f) ? AdditionalYOffset : -AdditionalYOffset;
-                randomizedYOffset += UnityEngine.Random.Range(-2.0f, 2.0f);
+                randomizedYOffset += UnityEngine.Random.Range(-5.0f, 5.0f);
                 currentTargetPosition.y = offsetY + randomizedYOffset;
 
                 firework.transform.position = currentTargetPosition;

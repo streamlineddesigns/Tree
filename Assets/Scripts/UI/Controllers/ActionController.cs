@@ -35,6 +35,7 @@ namespace StudioByStorm {
         protected Edge currentSelectedEdge;
         public LeanJoystick JumpJoyStick;
         public float jumpScaling = 0.75f;
+        private bool canParentNodesConnect = true;
 
         void Update()
         {
@@ -261,8 +262,8 @@ namespace StudioByStorm {
                 ActionView.DisableGetEdgeButton();
             }
 
-            
-            if ( ActionModel.CurrentEdge != null && (ActionModel.CurrentEdge.parentNode.NodeType != NodeType.Parent || ActionModel.CurrentNode.NodeType != NodeType.Parent) && ActionModel.CurrentEdge.parentID != ActionModel.CurrentNode.ID && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, ActionModel.CurrentNode.gameObject.transform.position) < EdgeDistanceThreshold && (ActionModel.CurrentNode.NodeType == NodeType.Parent && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentNode.NumOfConnections == 0 || (ActionModel.CurrentNode.NodeType == NodeType.Child || ActionModel.CurrentNode.NodeType == NodeType.Disjoint) && ActionModel.CurrentNode.NumOfConnections <= 1)) {
+            bool canParentNodesConnectRule = (canParentNodesConnect) ? true : (ActionModel.CurrentEdge.parentNode.NodeType != NodeType.Parent || ActionModel.CurrentNode.NodeType != NodeType.Parent);
+            if ( ActionModel.CurrentEdge != null && canParentNodesConnectRule && ActionModel.CurrentEdge.parentID != ActionModel.CurrentNode.ID && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, ActionModel.CurrentNode.gameObject.transform.position) < EdgeDistanceThreshold && (ActionModel.CurrentNode.NodeType == NodeType.Parent && ActionModel.CurrentEdge.EdgeColor == ActionModel.CurrentNode.NodeColor && ActionModel.CurrentNode.NumOfConnections == 0 || (ActionModel.CurrentNode.NodeType == NodeType.Child || ActionModel.CurrentNode.NodeType == NodeType.Disjoint) && ActionModel.CurrentNode.NumOfConnections <= 1)) {
                 ActionView.EnableSetEdgeButton();
             } else {
                 ActionView.DisableSetEdgeButton();

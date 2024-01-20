@@ -25,6 +25,7 @@ namespace StudioByStorm.PCG {
         private List<List<List<int>>> allPotentialSolutions;
         //stores the path combinations that actually solve the level
         private List<List<List<int>>> workingSolutions;
+        private List<List<List<int>>> nearSolutions;
 
         public void Search()
         {
@@ -38,17 +39,15 @@ namespace StudioByStorm.PCG {
             while (numberOfSolutions == 0) {
                 yield return null;
                 createAdjacencyList();
-                bool isThereAPathForEachColor = false;
+                bool foundColorPaths = false;
 
-                while (! isThereAPathForEachColor) {
+                while (! foundColorPaths) {
                     yield return null;
                     attempts++;
                     PlaceRandomColors();
                     FindAllColorsInGraphConstructionManager();
-                    FindAllColorPaths();
-                    isThereAPathForEachColor = IsThereAPathForEachColor();
+                    foundColorPaths = FindAllColorPaths();
                 }
-
                 
                 GetCartesianProductOfAllPathsIntoPathIndexCombinations();
                 CreateAllPotentialSolutionsFromPathIndexCombinations();
@@ -56,20 +55,28 @@ namespace StudioByStorm.PCG {
                 numberOfSolutions = workingSolutions.Count;
             }
 
-            DisplayWorkingSolutions();
+            if (numberOfSolutions != 0) {
+                //re-create the adjacency list
+                createAdjacencyList(1.5f);
+                DisplayWorkingSolutions();
+            }
         }
 
-        private void createAdjacencyList()
+        private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
         {
             int nodeCount = GraphConstructionManager.nodePositions.Count;
 
             for (int i = 0; i < GraphConstructionManager.nodePositions.Count; i++) {
+
                 for (int j = 0; j < GraphConstructionManager.nodePositions.Count; j++) {
                     if (i == j) {
                         continue;
                     }
 
-                    if (Vector3.Distance(GraphConstructionManager.nodePositions[i], GraphConstructionManager.nodePositions[j]) <= 1.5f) {
+                    //remove all edges before adding any
+                    GraphConstructionManager.AdjacencyList.Remove(i, j);
+
+                    if (Vector3.Distance(GraphConstructionManager.nodePositions[i], GraphConstructionManager.nodePositions[j]) <= maxDistanceBetweenNodesToCreateEdge) {
                         GraphConstructionManager.addToAdjacencyList(i, j);
                     }
                 }
@@ -97,7 +104,7 @@ namespace StudioByStorm.PCG {
             //color shuffling
             int nodeCount = GraphConstructionManager.nodeColors.Count;
             int minimumNodesPerPath = 3;
-            int requiredNumberOfColorsToPlace = (nodeCount >= 12) ? 4 : (nodeCount >= 9) ? 3 : (nodeCount >= 6) ? 2 : (nodeCount >= 3) ? 1 : 0;
+            int requiredNumberOfColorsToPlace = (nodeCount >= 15) ? 4 : (nodeCount >= 12) ? 3 : (nodeCount >= 9) ? 2 : 1;//(nodeCount >= 3) ? 1 : 0;
             if (requiredNumberOfColorsToPlace <= 0) {
                 Debug.LogError("You need to place more nodes!! Can't make a level without at least " + minimumNodesPerPath + " nodes!");
                 return false;
@@ -163,11 +170,16 @@ namespace StudioByStorm.PCG {
             Debug.Log("All Colors Count: " + allColors.Count);
         }
 
-        private void FindAllColorPaths () {
+        private bool FindAllColorPaths () {
             bool isDebugging = false;
             NodeColorToAllPaths = new Dictionary<NodeColor, List<List<int>>>();
-            DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList, isDebugging);
+            int minPathLength = 2;
+            DFSPaths DFSPaths = new DFSPaths(GraphConstructionManager.AdjacencyList, minPathLength, isDebugging);
             int pathCount = 0;
+            bool isThereAPathForEachColor = true;
+            bool isCTooLarge = false;
+            int C = 1;
+            int mostPathsOfAnyColor = 1;
 
             for (int j = 0; j < allColors.Count; j++) {
                 //get the current color to operate on
@@ -176,7 +188,7 @@ namespace StudioByStorm.PCG {
                 List<int> NodeIDs = NodeColorToNodeIDs[colorKey];
                 if (NodeIDs.Count != 2) {
                     Debug.LogError("There should be 2 of each color on the graph!!");
-                    return;
+                    return false;
                 }
 
                 //create a list of node IDS to exlude from search ie if they are not grayscale && not the same color
@@ -192,38 +204,25 @@ namespace StudioByStorm.PCG {
                 //search
                 List<List<int>> paths = DFSPaths.Search(NodeIDs[0], NodeIDs[1], excludedNodeIds);
                 NodeColorToAllPaths.Add(colorKey, paths);
+                Debug.Log(colorKey.ToString() + " Count : " + paths.Count);
                 pathCount += paths.Count;
+
+                if (paths.Count == 0) {
+                    isThereAPathForEachColor = false;
+                    break;
+                }
+
+                mostPathsOfAnyColor = (paths.Count > mostPathsOfAnyColor) ? paths.Count : mostPathsOfAnyColor;
+
+                C *= paths.Count;
+                if (C >= 100000 || ( (C * mostPathsOfAnyColor) >= 100000 && j < (allColors.Count - 1) )) {
+                    isCTooLarge = true;
+                    break;
+                }
             }
 
             Debug.Log("FindAllColorPaths - pathCount: " + pathCount);
-        }
-
-        private bool IsThereAPathForEachColor()
-        {
-            bool isThereAPathForEachColor = true;
-            List<bool> longEnoughChecks = new List<bool>{false, false, false, false};
-            bool isThereALongEnoughPathForEachColor = true;
-
-            for (int i = 0; i < allColors.Count; i++) {
-                NodeColor colorKey = allColors[i];
-                if (NodeColorToAllPaths[colorKey].Count <= 0) {
-                    isThereAPathForEachColor = false;
-                }
-
-                for (int j = 0; j < NodeColorToAllPaths[colorKey].Count; j++) {
-                    if (NodeColorToAllPaths[colorKey][j].Count >= 3) {
-                        longEnoughChecks[i] = true;
-                    }
-                }
-                
-            }
-
-            isThereALongEnoughPathForEachColor = (longEnoughChecks.Where(x => x == true).ToList().Count == allColors.Count);
-
-            Debug.Log("Is There A Path For Each Color: " + isThereAPathForEachColor);
-            Debug.Log("Is There A Long Enough Path For Each Color: " + isThereALongEnoughPathForEachColor);
-
-            return (isThereAPathForEachColor && isThereALongEnoughPathForEachColor);
+            return (isThereAPathForEachColor && !isCTooLarge);
         }
 
         private void GetCartesianProductOfAllPathsIntoPathIndexCombinations()
@@ -239,9 +238,9 @@ namespace StudioByStorm.PCG {
                 //add the index of the paths
                 for (int j = 0; j < paths.Count; j++) {
                     //only include paths longer than 2 nodes each
-                    if (paths[j].Count > 2) {
+                    //if (paths[j].Count > 2) {
                         indexs.Add(j);
-                    }
+                    //}
                 }
 
                 listOfColorToAllPathsIndexs.Add(indexs);
@@ -258,7 +257,7 @@ namespace StudioByStorm.PCG {
 
         private void CreateAllPotentialSolutionsFromPathIndexCombinations()
         {
-            allPotentialSolutions = new List<List<List<int>>>();
+            allPotentialSolutions = new List<List<List<int>>>(100000);
 
             //iterate over all possible combinations of solutions
             Parallel.For(0, cartesianPathIndexCombinations.Count, (i, state) => {
@@ -277,9 +276,9 @@ namespace StudioByStorm.PCG {
                 }
 
                 //only include a potential solution if the sum of the node's in all paths equals the total number of nodes. ie. all nodes are used in level
-                if (potentialSolution.Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count) {
-                    allPotentialSolutions.Add(potentialSolution);
-                }
+                //if (potentialSolution.Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count) {
+                allPotentialSolutions.Add(potentialSolution);
+                //}
             });
 
             Debug.Log("allPotentialSolutions count: " + allPotentialSolutions.Count);
@@ -289,37 +288,47 @@ namespace StudioByStorm.PCG {
         {
             bool foundASolution = false;
             workingSolutions = new List<List<List<int>>>();
+            nearSolutions = new List<List<List<int>>>();
 
             Parallel.For(0, allPotentialSolutions.Count, (k, state) => {
 
                 Dictionary<int, int> usedNodeIds = new Dictionary<int, int>();
                 bool workingSolution = true;
 
-                for (int l = 0; l < allPotentialSolutions[k].Count; l++) {
+                if (allPotentialSolutions[k] != null) {
+                    for (int l = 0; l < allPotentialSolutions[k].Count; l++) {
                             
-                    //iterate over all nodes
-                    for (int m = 0; m < allPotentialSolutions[k][l].Count; m++) {
-                        //get the node id
-                        int NodeID = allPotentialSolutions[k][l][m];
-                        //working solutions have paths where nodes are ONLY used once
-                        if (usedNodeIds.ContainsKey(NodeID)) {
-                            workingSolution = false;
+                        //iterate over all nodes
+                        for (int m = 0; m < allPotentialSolutions[k][l].Count; m++) {
+                            //get the node id
+                            int NodeID = allPotentialSolutions[k][l][m];
+                            //working solutions have paths where nodes are ONLY used once
+                            if (usedNodeIds.ContainsKey(NodeID)) {
+                                workingSolution = false;
+                                break;
+                            } else {
+                                //keep track of the Node ID to ensure it's only used once
+                                usedNodeIds.Add(NodeID, NodeID);
+                            }
+                        }
+
+                        if (! workingSolution) {
                             break;
-                        } else {
-                            //keep track of the Node ID to ensure it's only used once
-                            usedNodeIds.Add(NodeID, NodeID);
                         }
                     }
-
-                    if (! workingSolution) {
-                        break;
-                    }
+                } else {
+                    workingSolution = false;
                 }
+                
 
             
                 if (workingSolution) {
-                    workingSolutions.Add(allPotentialSolutions[k]);
-                    foundASolution = true;
+                    if (allPotentialSolutions[k].Select(x=>x.Count).Sum() == GraphConstructionManager.nodeColors.Count) {
+                        workingSolutions.Add(allPotentialSolutions[k]);
+                        foundASolution = true;
+                    } else {
+                        nearSolutions.Add(allPotentialSolutions[k]);
+                    }
                 }
             });
         }
@@ -327,6 +336,7 @@ namespace StudioByStorm.PCG {
         private void DisplayWorkingSolutions()
         {
             Debug.Log("Total Solutions: " + workingSolutions.Count);
+            Debug.Log("Near Solutions: " + nearSolutions.Count);
 
             for (int k = 0; k < workingSolutions.Count; k++) {
                 for (int l = 0; l < workingSolutions[k].Count; l++) {

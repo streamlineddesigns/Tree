@@ -10,23 +10,35 @@ namespace StudioByStorm.Graph {
         private AdjacencyList AdjacencyList;
         private List<int> visited;
         private Stack<int> nodeIDs;
+        private bool IsDebugging;
 
-        public DFS(AdjacencyList adjacencyList)
+        public DFS(AdjacencyList adjacencyList, bool isDebugging = false)
         {
             AdjacencyList = adjacencyList;
             visited = new List<int>();
             nodeIDs = new Stack<int>();
+            IsDebugging = isDebugging;
         }
 
-        public void Search(int startNodeID)
+        public bool Search(int startNodeID, int endNodeID, List<int> excludedNodes)
         {
             nodeIDs.Push(startNodeID);
             visited.Add(startNodeID);
+            visited.AddRange(excludedNodes);
+            bool foundPath = false;
 
             while(nodeIDs.Count > 0) {
 
                 int currentID = nodeIDs.Pop();
-                Debug.Log(currentID);
+                
+                if (currentID == endNodeID) {
+                    foundPath = true;
+                    break;
+                }
+
+                if (IsDebugging) {
+                    Debug.Log(currentID);
+                }
 
                 List<int> connectedNodes = AdjacencyList.Get(currentID);
 
@@ -40,6 +52,7 @@ namespace StudioByStorm.Graph {
 
             }
 
+            return foundPath;
         }
 
     }

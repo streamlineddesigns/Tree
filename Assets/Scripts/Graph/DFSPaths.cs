@@ -9,11 +9,13 @@ namespace StudioByStorm.Graph {
     {
         private Dictionary<int, List<int>> Nodes;
         private bool IsDebugging;
+        private int minimumPathLength;
 
-        public DFSPaths(AdjacencyList adjacencyList, bool isDebugging = false)
+        public DFSPaths(AdjacencyList adjacencyList, int minPathLength = 2, bool isDebugging = false)
         {
             Nodes = adjacencyList.GetRaw();
             IsDebugging = isDebugging;
+            minimumPathLength = minPathLength;
         }
 
         public List<List<int>> Search(int start, int end, List<int> excluded)
@@ -48,9 +50,12 @@ namespace StudioByStorm.Graph {
 
             if (current == end)
             {
-                // Note: This creates a new list with the contents of currentPath
-                // This is to ensure each path in allPaths is independent.
-                allPaths.Add(new List<int>(currentPath));
+                if (currentPath.Count >= minimumPathLength) {
+                    // Note: This creates a new list with the contents of currentPath
+                    // This is to ensure each path in allPaths is independent.
+                    allPaths.Add(new List<int>(currentPath));
+                }
+                
             }
             else
             {

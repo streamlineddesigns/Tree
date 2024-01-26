@@ -102,10 +102,6 @@ namespace StudioByStorm.UI {
 
         public void SetEdgeButtonClick(Edge edge)
         {
-            //need to get the nearest nodes id
-            Node nearestNode = GameManager.Singleton.nearbyNode.GetData<Node>();
-            //set new target
-            edge.FabrikSolver2D.GetChain(edge.FabrikSolver2D.chainCount).target = nearestNode.gameObject.transform;
             //remove edge from player
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName) as ActionController;
             ActionController.ActionModel.CurrentEdge = null;

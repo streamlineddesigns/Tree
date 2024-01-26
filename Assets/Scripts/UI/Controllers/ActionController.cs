@@ -205,7 +205,7 @@ namespace StudioByStorm {
             //Debug.Log("Lerping");
             
             lerping = true;
-            Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
+            Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).Take(edge.activeLinkIndex).ToArray();
             Vector3 waypointTarget = Vector3.zero;
 
             //activate node ripple FX
@@ -312,14 +312,10 @@ namespace StudioByStorm {
 
         protected IEnumerator EdgeLightFXTravel(Edge currentEdge)
         {
-            //$$jiggle the edge
-            Vector3 edgeTarget = Vector3.zero;
-            edgeTarget.y += 0.2f;
-            currentEdge.gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 0, 0.2f, false);
+            //wait to make sure the edge has had the time to shutdown properly
+            yield return new WaitForSeconds(0.35f);
 
-            yield return 0;
-
-            Vector3[] waypoints = currentEdge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
+            Vector3[] waypoints = currentEdge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).Take(currentEdge.activeLinkIndex).ToArray();
             int lightsToTravel = 3;
 
             for (int k = 0; k < lightsToTravel; k++) {

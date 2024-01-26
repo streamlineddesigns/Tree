@@ -187,8 +187,13 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-        private void ToggleColor()
+        private void ToggleColor(int nodeGameObjectID)
         {
+            if (currentNodeGameID == nodeGameObjectID) {
+                return;
+            }
+
+            currentNodeGameID = nodeGameObjectID;
             isLightColor = !isLightColor;
 
             if (isLightColor) {
@@ -213,7 +218,7 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
-                ToggleColor();
+                ToggleColor(collider.gameObject.GetInstanceID());
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);

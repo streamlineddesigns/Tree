@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using UnityEngine.U2D.IK;
 
 namespace StudioByStorm {
@@ -13,8 +14,11 @@ namespace StudioByStorm {
         public int childID;
         public NodeColor EdgeColor;
         public SpriteRenderer[] LinkSpriteRenderers;
+        public SpriteRenderer[] LinkConnectorSpriteRenderers;
         public FabrikSolver2D FabrikSolver2D;
         public IKManager2D IKManager2D;
+        public int activeLinkIndex;
+        public GameObject emptyTarget;
 
         void Start()
         {
@@ -28,7 +32,11 @@ namespace StudioByStorm {
 
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
                 LinkSpriteRenderers[i].sprite = GameManager.Singleton.ColorModel.ColoredGetters[colorIndex];
+                LinkSpriteRenderers[i].gameObject.SetActive(true);
+                if (i < LinkConnectorSpriteRenderers.Length) LinkConnectorSpriteRenderers[i].gameObject.SetActive(true);
             }
+
+            activeLinkIndex = LinkSpriteRenderers.Length - 1;
 
             fabrikOn(true);
         }
@@ -40,8 +48,57 @@ namespace StudioByStorm {
 
         protected IEnumerator DelayedFabrikShutDown()
         {
-            yield return new WaitForSeconds(1.0f);
+            //get child node
+            Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(childID);
+            //calculate direction between child and parent node
+            Vector2 direction = (childNode.gameObject.transform.position - parentNode.gameObject.transform.position).normalized;
+            //get child node position (ie the target) and scale vector in that direction
+            Vector2 scaledTargetPosition = (Vector2)childNode.gameObject.transform.position + (direction * 7.0f);
+            emptyTarget.transform.position = childNode.gameObject.transform.position;
+
+            //get distance too so we know how many links to disable visually
+            float distance = Vector2.Distance(childNode.gameObject.transform.position, parentNode.gameObject.transform.position);
+
+            //tell chain to target the empty target
+            FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = emptyTarget.transform;
+            //then move the empty target to that scaled target position for a smoother looking animation
+            emptyTarget.transform.DOMove(scaledTargetPosition, 0.3f).SetEase(Ease.InQuad);
+
+            //while that's happening, disable some of the end links, so they don't extend passed child node
+            if (distance >= 7.5f) {
+                StartCoroutine(DisableLinks(2));
+            } else {
+                StartCoroutine(DisableLinks(3));
+            }
+
+            yield return new WaitForSeconds(0.325f);
+
+            //$$jiggle the edge
+            Vector3 edgeTarget = Vector3.zero;
+            edgeTarget.y += 0.2f;
+            gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 0, 0.2f, false);
+
+            //need to get the nearest nodes id
+            //Node nearestNode = GameManager.Singleton.nearbyNode.GetData<Node>();
+            //set new target
+            //FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = nearestNode.gameObject.transform;
+            //yield return new WaitForSeconds(1.0f);
+
             fabrikOn(false);
+        }
+
+        IEnumerator DisableLinks(int count)
+        {
+            int targetIndex = (LinkSpriteRenderers.Length - 1) - count;
+
+            for (int i = LinkSpriteRenderers.Length - 1; i > targetIndex; i--) {
+                LinkSpriteRenderers[i].gameObject.SetActive(false);
+                if (i < LinkConnectorSpriteRenderers.Length) LinkConnectorSpriteRenderers[i].gameObject.SetActive(false);
+                activeLinkIndex = i - 1;
+                yield return new WaitForSeconds(0.08335f);//approx 5 frames
+            }
+
+            activeLinkIndex = targetIndex;
         }
 
         protected void fabrikOn(bool isOn)

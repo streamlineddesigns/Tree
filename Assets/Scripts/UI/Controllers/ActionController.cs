@@ -34,6 +34,7 @@ namespace StudioByStorm {
         public Material originalMaterial;
         protected Edge currentSelectedEdge;
         public LeanJoystick JumpJoyStick;
+        public LeanJoystick TravelJoyStick;
         public float jumpScaling = 0.75f;
         private bool canParentNodesConnect = true;
 
@@ -158,7 +159,8 @@ namespace StudioByStorm {
                 return;
             }
             //check the direction of the joystick
-            Vector2 joystickDir = UpPoint - DownPoint;
+            //Vector2 joystickDir = UpPoint - DownPoint;
+            Vector2 joystickDir = TravelJoyStick.ScaledValue;
             //get a list of the ids the current node is connected to from the adjacency list
             List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
             if (lerping || adjacentNodeIDS == null) {
@@ -173,7 +175,7 @@ namespace StudioByStorm {
             for (int i = 0; i < adjacentNodeIDS.Count; i++) {
                 int nodeID = adjacentNodeIDS[i];
                 Node connectedNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
-                Vector2 directionToConnectedNode = connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
+                Vector2 directionToConnectedNode = (connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position).normalized;
 
                 float connectedNodeDistance = ML.Math.GetDistance(joystickDir, directionToConnectedNode);
 

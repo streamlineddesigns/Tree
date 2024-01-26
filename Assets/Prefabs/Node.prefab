@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 459201729621729708}
   m_Layer: 0
   m_Name: neuron-outer
-  m_TagString: Surface
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 4017653327414133733}
   m_Layer: 0
   m_Name: neuron-middle
-  m_TagString: Surface
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2891,7 +2891,7 @@ GameObject:
   - component: {fileID: 3769018874093319939}
   m_Layer: 0
   m_Name: neuron-inner
-  m_TagString: Surface
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3272,15 +3272,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3168434834008078296}
-  - component: {fileID: 3172556055134286851}
-  - component: {fileID: 4331102707455709592}
   m_Layer: 0
-  m_Name: Surface
-  m_TagString: Surface
+  m_Name: ColorSurface
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3168434834008078296
 Transform:
   m_ObjectHideFlags: 0
@@ -3299,59 +3297,6 @@ Transform:
   m_Father: {fileID: 7268160276479977150}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &3172556055134286851
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8067778577139301239}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.008}
-  serializedVersion: 2
-  m_Radius: 0.5
---- !u!114 &4331102707455709592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8067778577139301239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3db77f4ef7a056a4cb5b9fb132959250, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravityPoints:
-  - {fileID: 814552262668770237}
-  - {fileID: 4128095337721465101}
-  - {fileID: 9194212886287862799}
-  - {fileID: 7915571750749165462}
-  - {fileID: 3424084497609612491}
-  - {fileID: 1870522084645003891}
-  - {fileID: 441153167117369306}
-  - {fileID: 6860567120062728844}
-  - {fileID: 8178706516575438869}
-  - {fileID: 1389598498360440606}
-  - {fileID: 8397348084015506047}
-  - {fileID: 4352702791293539882}
-  - {fileID: 4086965520672396882}
-  - {fileID: 5068432472491480359}
-  - {fileID: 1379528561502316520}
-  - {fileID: 5456744464275103778}
-  - {fileID: 4121393581109290243}
-  - {fileID: 4991578388103141239}
-  - {fileID: 5604809497572980225}
-  - {fileID: 2603677805508007891}
-  - {fileID: 5598001050449784861}
-  - {fileID: 3436786254115633086}
-  - {fileID: 2958189012424933848}
-  - {fileID: 8505539974548576297}
 --- !u!1 &8084755128506446923
 GameObject:
   m_ObjectHideFlags: 0

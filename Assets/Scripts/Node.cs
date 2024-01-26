@@ -148,7 +148,7 @@ namespace StudioByStorm {
         public void DisplayColor() {
             //ColorSurface.SetActive(true);
             //DarkSurface.SetActive(false);
-            ColorSurface.SetActive(true);
+            //ColorSurface.SetActive(true);
             LightColored.DOFade(1, 3);
             DarkColored.DOFade(1, 3);
             for (int i = 0; i < Hairs.Length; i++) {
@@ -160,7 +160,7 @@ namespace StudioByStorm {
         public void DisplayGrayScale() {
             //ColorSurface.SetActive(false);
             //DarkSurface.SetActive(true);
-            DarkSurface.SetActive(true);
+            //DarkSurface.SetActive(true);
             LightColored.DOFade(0, 3);
             DarkColored.DOFade(0, 3);
             for (int i = 0; i < Hairs.Length; i++) {

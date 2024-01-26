@@ -20,6 +20,15 @@ namespace StudioByStorm.Gravity.Player {
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
 
+        [SerializeField] private Material lightMaterial;
+        [SerializeField] private Material darkMaterial;
+        [SerializeField] private Color lightColor;
+        [SerializeField] private Color darkColor;
+        [SerializeField] private GameObject light2D;
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        private bool isLightColor;
+        private int currentNodeGameID;
+
         private Surface surface;
         private bool isOnSurface;
         private bool isInAtmosphere;
@@ -178,6 +187,21 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        private void ToggleColor()
+        {
+            isLightColor = !isLightColor;
+
+            if (isLightColor) {
+                light2D.SetActive(true);
+                spriteRenderer.color = lightColor;
+                spriteRenderer.material = lightMaterial;
+            } else {
+                light2D.SetActive(false);
+                spriteRenderer.color = darkColor;
+                spriteRenderer.material = darkMaterial;
+            }
+        }
+
         void OnTriggerEnter2D(Collider2D collider)
         {
             if (collider.TryGetComponent<Node>(out Node Node)) {
@@ -189,6 +213,7 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
+                ToggleColor();
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);

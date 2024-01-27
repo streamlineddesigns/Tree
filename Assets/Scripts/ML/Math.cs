@@ -93,6 +93,15 @@ namespace StudioByStorm.ML {
             return new Bounds(center, size);
         }
 
+        public static float[] MinMaxScale(float[] values, float minValue, float maxValue)
+        {
+            float[] scaledValues = new float[values.Length];
+            for (int i = 0; i < values.Length; i++) {
+                scaledValues[i] = (values[i] - minValue) / (maxValue - minValue);
+            }
+            return scaledValues;
+        }
+
     }
 
 }

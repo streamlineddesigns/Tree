@@ -20,6 +20,14 @@ namespace StudioByStorm {
         GrayScale
     }
 
+    public enum ColorType
+    {
+        Default,
+        Light,
+        Dark,
+        PurposelyUnassigned,
+    }
+
     public enum NodeAction
     {
         TravelNode,

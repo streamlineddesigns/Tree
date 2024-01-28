@@ -85,5 +85,13 @@ namespace StudioByStorm {
         Node,
         Boid
     }
+
+    public enum ObstacleType {
+        SingleNode,
+        DoubleNode,
+        TripleNode,
+        BetweenNode,
+        OnNode
+    }
     
 }

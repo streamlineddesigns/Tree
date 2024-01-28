@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace StudioByStorm.Data {
 
+    /*
+     * Used for organizing quantitative data about the obstacle's parts
+     */
     [System.Serializable]
     public class ObstaclePartData
     {

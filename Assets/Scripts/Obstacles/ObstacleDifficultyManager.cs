@@ -88,6 +88,7 @@ namespace StudioByStorm.Obstacles {
                 CompositeAnimation.gameObject.SetActive(false);
             }
 
+            RescaleObstacleDifficulty();
             Save();
         }
 
@@ -167,6 +168,13 @@ namespace StudioByStorm.Obstacles {
             UpdateObstacleDifficulty(totalObstaclePartData, maxObstaclePartData, iterationCount);
         }
 
+        /*
+         * Difficulty score is calculated by taking the maximum number of obstacle parts, in a row, for each color, for each frame, over x amount of time
+         * then adding up the distance between those obstacle parts ie their overall length and averaging it over the total number of frames
+         * this gives us a low number for higher difficulty, so it's re-projected between 0 and the highest numerical difficulty score assigned to an obstacle ie a high number
+         * then it's scaled between 0 and 100 for easier readability
+         * but its split between multiple functions. This one and RescaleObstacleDifficulty()
+         */
         protected void UpdateObstacleDifficulty(ObstaclePartData totalObstaclePartData, ObstaclePartData maxObstaclePartData, int iterations)
         {
             float unitMeasurement = 0;
@@ -239,7 +247,25 @@ namespace StudioByStorm.Obstacles {
             }
 
             obstacleDataRepository.data[index].difficultyScore = totalDifficulty;
+        }
 
+        protected void RescaleObstacleDifficulty()
+        {
+            //find the highest difficulty score (add 0.1f so the lowest score doesn't become 0)
+            float highestDifficultyScore = obstacleDataRepository.data.Max(x => x.difficultyScore) + 0.1f;
+            //set the new updated highest difficulty score to rescale to
+            float rescaledHighestDifficultyScore = 100.0f;
+
+            //re-project between 0 and the highest numerical difficulty score assigned to an obstacle
+            for (int i = 0; i < obstacleDataRepository.data.Count; i++) {
+                float currentDifficultyScore = obstacleDataRepository.data[i].difficultyScore;
+                float reProjectedTotalDifficulty = highestDifficultyScore - currentDifficultyScore;
+                float percent = reProjectedTotalDifficulty / highestDifficultyScore;
+                float rescaledDifficultyScore = percent * rescaledHighestDifficultyScore;
+                //then update the obstacles difficulty score
+                obstacleDataRepository.data[i].difficultyScore = rescaledDifficultyScore;
+                Debug.Log("Name: " + obstacleDataRepository.data[i].name + "currentDifficultyScore: " + currentDifficultyScore + "reProjectedTotalDifficulty: " + reProjectedTotalDifficulty + "percent: " + percent + "rescaledDifficultyScore: " + rescaledDifficultyScore + "difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
+            }
         }
 
         protected void Save()

@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
+using DG.Tweening;
 using StudioByStorm.Data;
 using StudioByStorm.Repositories;
 using StudioByStorm.Helpers;
@@ -22,6 +23,7 @@ namespace StudioByStorm.Obstacles {
         public GameObject ObstacleContainer;
         public float timeToRecord = 60.0f;
         [Range(0, 4)] public float timeScale = 1.0f;
+        public Ease easing = Ease.InSine;
 
         private List<CompositeAnimation> CompositeAnimations = new List<CompositeAnimation>();
         private CompositeAnimation CompositeAnimation;
@@ -88,6 +90,7 @@ namespace StudioByStorm.Obstacles {
                 CompositeAnimation.gameObject.SetActive(false);
             }
 
+            yield return new WaitForSeconds(1.0f);
             RescaleObstacleDifficulty();
             Save();
         }
@@ -173,6 +176,7 @@ namespace StudioByStorm.Obstacles {
          * then adding up the distance between those obstacle parts ie their overall length and averaging it over the total number of frames
          * this gives us a low number for higher difficulty, so it's re-projected between 0 and the highest numerical difficulty score assigned to an obstacle ie a high number
          * then it's scaled between 0 and 100 for easier readability
+         * then it gets passed through an easing function for modifying it's rate of change
          * but its split between multiple functions. This one and RescaleObstacleDifficulty()
          */
         protected void UpdateObstacleDifficulty(ObstaclePartData totalObstaclePartData, ObstaclePartData maxObstaclePartData, int iterations)
@@ -262,9 +266,10 @@ namespace StudioByStorm.Obstacles {
                 float reProjectedTotalDifficulty = highestDifficultyScore - currentDifficultyScore;
                 float percent = reProjectedTotalDifficulty / highestDifficultyScore;
                 float rescaledDifficultyScore = percent * rescaledHighestDifficultyScore;
+                float easedDifficultyScore = DOVirtual.EasedValue(0, rescaledHighestDifficultyScore, percent, easing);
                 //then update the obstacles difficulty score
-                obstacleDataRepository.data[i].difficultyScore = rescaledDifficultyScore;
-                Debug.Log("Name: " + obstacleDataRepository.data[i].name + "currentDifficultyScore: " + currentDifficultyScore + "reProjectedTotalDifficulty: " + reProjectedTotalDifficulty + "percent: " + percent + "rescaledDifficultyScore: " + rescaledDifficultyScore + "difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
+                obstacleDataRepository.data[i].difficultyScore = easedDifficultyScore;
+                Debug.Log("Name: " + obstacleDataRepository.data[i].name + " highestDifficultyScore: " + highestDifficultyScore + " currentDifficultyScore: " + currentDifficultyScore + " reProjectedTotalDifficulty: " + reProjectedTotalDifficulty + " percent: " + percent + " rescaledDifficultyScore: " + rescaledDifficultyScore + " easedDifficultyScore: " + easedDifficultyScore + " difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
             }
         }
 

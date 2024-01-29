@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
@@ -9,7 +12,6 @@ using StudioByStorm.Data;
 using StudioByStorm.Repositories;
 using StudioByStorm.Helpers;
 using StudioByStorm.Obstacles.Animations;
-
 
 namespace StudioByStorm.Obstacles {
 
@@ -85,6 +87,8 @@ namespace StudioByStorm.Obstacles {
                 //deactivate it
                 CompositeAnimation.gameObject.SetActive(false);
             }
+
+            Save();
         }
 
         protected void CenterObstacle()
@@ -160,10 +164,10 @@ namespace StudioByStorm.Obstacles {
             Debug.Log("Dark Count: " + darkCount);
             Debug.Log("Default Count: " + defaultCount);
 
-            SaveDifficulty(totalObstaclePartData, maxObstaclePartData, iterationCount);
+            UpdateObstacleDifficulty(totalObstaclePartData, maxObstaclePartData, iterationCount);
         }
 
-        protected void SaveDifficulty(ObstaclePartData totalObstaclePartData, ObstaclePartData maxObstaclePartData, int iterations)
+        protected void UpdateObstacleDifficulty(ObstaclePartData totalObstaclePartData, ObstaclePartData maxObstaclePartData, int iterations)
         {
             float unitMeasurement = 0;
             float totalDifficulty = 0;
@@ -233,7 +237,17 @@ namespace StudioByStorm.Obstacles {
                     totalDifficulty = totalDifficulty * 0.5f;
                     break;
             }
+
             obstacleDataRepository.data[index].difficultyScore = totalDifficulty;
+
+        }
+
+        protected void Save()
+        {
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(obstacleDataRepository);
+            AssetDatabase.SaveAssets();
+#endif
         }
 
         protected ObstaclePartData GetMaxDistance()

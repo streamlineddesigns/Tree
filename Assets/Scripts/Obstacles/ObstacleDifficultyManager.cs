@@ -343,7 +343,7 @@ namespace StudioByStorm.Obstacles {
                     if (consecutiveColorTypes.ContainsKey(ct)) {
                         for (int j = 0; j < consecutiveColorTypes[ct].Count; j++) {
                             int indexOne = consecutiveColorTypes[ct][j];
-                            if ((j + 1) < consecutiveColorTypes[ct].Count - 1 && CircleCastHelper.hitGameObjects[indexOne] != null) {
+                            if ((j + 1) <= consecutiveColorTypes[ct].Count - 1 && CircleCastHelper.hitGameObjects[indexOne] != null) {
                                 int indexTwo = consecutiveColorTypes[ct][j + 1];
                                 totalDistance += Vector3.Distance(CircleCastHelper.hitGameObjects[indexOne].transform.position, 
                                                                 CircleCastHelper.hitGameObjects[indexTwo].transform.position);

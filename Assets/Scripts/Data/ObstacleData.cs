@@ -6,7 +6,7 @@ using UnityEngine.AddressableAssets;
 namespace StudioByStorm.Data {
 
     [System.Serializable]
-    public struct ObstacleData
+    public class ObstacleData
     {
         public string name;
         public AssetReference assetReference;

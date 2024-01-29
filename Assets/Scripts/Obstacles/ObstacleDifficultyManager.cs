@@ -3,35 +3,68 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.AddressableAssets;
 using StudioByStorm.Data;
+using StudioByStorm.Repositories;
 using StudioByStorm.Helpers;
 using StudioByStorm.Obstacles.Animations;
+
 
 namespace StudioByStorm.Obstacles {
 
     public class ObstacleDifficultyManager : MonoBehaviour
     {
+        public ObstacleDataRepository obstacleDataRepository;
         public CircleCastHelper CircleCastHelper;
-        public CompositeAnimation[] CompositeAnimations;
+        public GameObject ObstacleContainer;
         public float timeToRecord = 60.0f;
+        [Range(0, 4)] public float timeScale = 1.0f;
 
+        private List<CompositeAnimation> CompositeAnimations = new List<CompositeAnimation>();
         private CompositeAnimation CompositeAnimation;
         private GameObject[] obstacleParts;
         private Bounds partBounds;
         private bool isRecording;
+        private string currentObstacleName;
+
+        void Awake()
+        {
+            Time.timeScale = timeScale;
+        }
 
         void Start()
-        {
-            for (int i = 0; i < CompositeAnimations.Length; i++) {
-                CompositeAnimations[i].gameObject.SetActive(false);
+        {            
+            //Load addressable references from the Obstacle Data Registry 
+            for (int i = 0; i < obstacleDataRepository.data.Count; i++) {
+                AssetReference currentAssetReference = obstacleDataRepository.data[i].assetReference;
+                AsyncOperationHandle<GameObject> AsyncObstacleHandle = currentAssetReference.LoadAssetAsync<GameObject>();
+                AsyncObstacleHandle.Completed += OnAsyncObstacleHandleCompleted;
             }
 
             StartCoroutine(AssignDifficulty());
         }
 
+        private void OnAsyncObstacleHandleCompleted(AsyncOperationHandle<GameObject> handle)
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded) {
+                GameObject result = handle.Result;
+                GameObject currentObstacle = Instantiate(result, ObstacleContainer.transform) as GameObject;
+                currentObstacle.SetActive(false);
+                CompositeAnimations.Add(currentObstacle.GetComponent<CompositeAnimation>());
+                
+            } else {
+                Debug.LogError("OnAsyncObstacleHandleCompleted FAILED");
+            }
+        }
+
         IEnumerator AssignDifficulty()
         {
-            for (int i = 0; i < CompositeAnimations.Length; i++) {
+            yield return new WaitUntil(() => CompositeAnimations.Count == obstacleDataRepository.data.Count);
+
+            for (int i = 0; i < CompositeAnimations.Count; i++) {
+                //get the obstacles name for later
+                currentObstacleName = CompositeAnimations[i].gameObject.name.Replace("(Clone)", "");
                 //get the obstacle
                 CompositeAnimation = CompositeAnimations[i];
                 //activate it
@@ -127,14 +160,80 @@ namespace StudioByStorm.Obstacles {
             Debug.Log("Dark Count: " + darkCount);
             Debug.Log("Default Count: " + defaultCount);
 
+            SaveDifficulty(totalObstaclePartData, maxObstaclePartData, iterationCount);
+        }
+
+        protected void SaveDifficulty(ObstaclePartData totalObstaclePartData, ObstaclePartData maxObstaclePartData, int iterations)
+        {
+            float unitMeasurement = 0;
+            float totalDifficulty = 0;
+            float defaultMaxConsecutiveColorTypeCount = 0;
+            float defaultAverageMaxConsecutiveColorTypeCount = 0;
 
             foreach (ColorType ct in Enum.GetValues(typeof(ColorType))) {
-                if (maxObstaclePartData.maxConsecutiveColorTypeCount.ContainsKey(ct)) Debug.Log("maxConsecutiveColorTypeCount - " + ct.ToString() + ": " + maxObstaclePartData.maxConsecutiveColorTypeCount[ct]);
-                if (maxObstaclePartData.maxColorDistance.ContainsKey(ct)) Debug.Log("maxColorDistance - " + ct.ToString() + ": " + maxObstaclePartData.maxColorDistance[ct]);
+                int currentMaxConsecutiveColorTypeCount = 0;
+                float currentMaxColorDistance = 0.0f;
 
-                if (totalObstaclePartData.maxConsecutiveColorTypeCount.ContainsKey(ct)) Debug.Log("TOTAL maxConsecutiveColorTypeCount - " + ct.ToString() + ": " + totalObstaclePartData.maxConsecutiveColorTypeCount[ct] / iterationCount);
-                if (totalObstaclePartData.maxColorDistance.ContainsKey(ct)) Debug.Log("TOTAL maxColorDistance - " + ct.ToString() + ": " + totalObstaclePartData.maxColorDistance[ct] / iterationCount);
+                if (maxObstaclePartData.maxConsecutiveColorTypeCount.ContainsKey(ct)) {
+                    currentMaxConsecutiveColorTypeCount = maxObstaclePartData.maxConsecutiveColorTypeCount[ct];
+                    Debug.Log("maxConsecutiveColorTypeCount - " + ct.ToString() + ": " + currentMaxConsecutiveColorTypeCount);
+
+                    /*if (ct == ColorType.Default) {
+                        defaultMaxConsecutiveColorTypeCount = currentMaxConsecutiveColorTypeCount;
+                    }*/
+                } 
+                if (maxObstaclePartData.maxColorDistance.ContainsKey(ct)) {
+                    currentMaxColorDistance = maxObstaclePartData.maxColorDistance[ct];
+                    Debug.Log("maxColorDistance - " + ct.ToString() + ": " + currentMaxColorDistance);
+
+                    /*if (ct == ColorType.Light) {
+                        totalDifficulty += currentMaxColorDistance;
+                    }*/
+                }
+
+                if (ct == ColorType.Light) {
+                    unitMeasurement = (currentMaxConsecutiveColorTypeCount > 0) ? (currentMaxColorDistance / currentMaxConsecutiveColorTypeCount * 1.0f) : 0.0f;
+                }
+
+                float currentAverageMaxConsecutiveColorTypeCount;
+                float currentAverageMaxColorDistance;
+
+                if (totalObstaclePartData.maxConsecutiveColorTypeCount.ContainsKey(ct)) {
+                    currentAverageMaxConsecutiveColorTypeCount = (totalObstaclePartData.maxConsecutiveColorTypeCount[ct] * 1.0f) / iterations;
+                    Debug.Log("AVERAGE maxConsecutiveColorTypeCount - " + ct.ToString() + ": " + currentAverageMaxConsecutiveColorTypeCount);
+
+                    if (ct == ColorType.Default) {
+                        defaultAverageMaxConsecutiveColorTypeCount = currentAverageMaxConsecutiveColorTypeCount;
+                    }
+                }
+                if (totalObstaclePartData.maxColorDistance.ContainsKey(ct)) {
+                    currentAverageMaxColorDistance = totalObstaclePartData.maxColorDistance[ct] / iterations;
+                    Debug.Log("AVERAGE maxColorDistance - " + ct.ToString() + ": " + currentAverageMaxColorDistance);
+
+                    if (ct == ColorType.Light) {
+                        totalDifficulty += currentAverageMaxColorDistance;
+                    }
+                }
             }
+
+            /*float defaultMaxDistance = defaultMaxConsecutiveColorTypeCount * 0.5f;
+            Debug.Log("MODIFIED default max distance: " + defaultMaxDistance);
+            totalDifficulty += defaultMaxDistance;*/
+
+            float defaultAverageDistance = defaultAverageMaxConsecutiveColorTypeCount * 0.5f;
+            Debug.Log("MODIFIED default average distance: " + defaultAverageDistance);
+            totalDifficulty += defaultAverageDistance;
+
+            int index = obstacleDataRepository.data.FindIndex(x => x.name == currentObstacleName);
+            switch(obstacleDataRepository.data[index].obstacleType) {
+                case ObstacleType.SingleNode:
+                    totalDifficulty = totalDifficulty * 1.0f;
+                    break;
+                case ObstacleType.DoubleNode:
+                    totalDifficulty = totalDifficulty * 0.5f;
+                    break;
+            }
+            obstacleDataRepository.data[index].difficultyScore = totalDifficulty;
         }
 
         protected ObstaclePartData GetMaxDistance()

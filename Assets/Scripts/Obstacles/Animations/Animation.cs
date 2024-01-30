@@ -7,7 +7,6 @@ namespace StudioByStorm.Obstacles.Animations {
 
     public abstract class Animation : MonoBehaviour
     {
-        public string name;
         public float time = 0.25f;
         public Ease easing;
         public int direction = 0;
@@ -66,7 +65,7 @@ namespace StudioByStorm.Obstacles.Animations {
             StopCoroutine(AnimationUpdate());
         }
 
-        private void TeleportBuildingBlocksPosition()
+        protected void TeleportBuildingBlocksPosition()
         {
             for (int i = 0; i < buildingBlocks.Length; i++) {
                 //check & update indexs
@@ -78,7 +77,7 @@ namespace StudioByStorm.Obstacles.Animations {
             }
         }
 
-        private void TeleportBuildingBlocksRotation()
+        protected void TeleportBuildingBlocksRotation()
         {
             for (int i = 0; i < buildingBlocks.Length; i++) {
                 //check & update indexs

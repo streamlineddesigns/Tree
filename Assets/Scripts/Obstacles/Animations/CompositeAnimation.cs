@@ -15,6 +15,13 @@ namespace StudioByStorm.Obstacles.Animations {
                 animations[i].Animate();
             }
         }
+
+        public void Stop() 
+        {
+            for (int i = 0; i < animations.Length; i++) {
+                animations[i].Stop();
+            }
+        }
     }
 
 }

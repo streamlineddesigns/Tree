@@ -10,6 +10,8 @@ using StudioByStorm.Optimizations;
 using StudioByStorm.UI;
 using StudioByStorm.GestureRecognition;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.Helpers;
+using StudioByStorm.Obstacles;
 
 namespace StudioByStorm.Gravity.Player {
 
@@ -20,6 +22,8 @@ namespace StudioByStorm.Gravity.Player {
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
 
+        [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
+
         [SerializeField] private Material lightMaterial;
         [SerializeField] private Material darkMaterial;
         [SerializeField] private Color lightColor;
@@ -28,6 +32,7 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;
         private int currentNodeGameID;
+        private bool isPositionHelperPlayingBack;
 
         private Surface surface;
         private bool isOnSurface;
@@ -157,6 +162,10 @@ namespace StudioByStorm.Gravity.Player {
 
         void FixedUpdate()
         {
+            if (isPositionHelperPlayingBack) {
+                return;
+            }
+
             if (isOnSurface || isInAtmosphere)
             {
                 if (gravityDirection != Vector2.zero) {
@@ -207,6 +216,13 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        IEnumerator WaitForPositionHelper()
+        {
+            isPositionHelperPlayingBack = true;
+            yield return StartCoroutine(PlayerPositionHelper.WaitUntilFinished());
+            isPositionHelperPlayingBack = false;
+        }
+
         void OnTriggerEnter2D(Collider2D collider)
         {
             if (collider.TryGetComponent<Node>(out Node Node)) {
@@ -219,6 +235,7 @@ namespace StudioByStorm.Gravity.Player {
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
                 ToggleColor(collider.gameObject.GetInstanceID());
+                PlayerPositionHelper.SetRecording(false);
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);
@@ -227,6 +244,20 @@ namespace StudioByStorm.Gravity.Player {
 
             } else if (collider.CompareTag("Atmosphere")) {
                 //CameraController.SetTarget(collider.gameObject.transform);
+                PlayerPositionHelper.ResetPositions();
+            }
+            
+            if (collider.CompareTag("Obstacle")) {
+                //get the obstacle part
+                ColorType obstacleColorType = collider.GetComponent<ObstaclePart>().colorType;
+                //if the player is the same color as the obstacle part
+                if ((isLightColor && obstacleColorType == ColorType.Light) || (!isLightColor && obstacleColorType == ColorType.Dark)) {
+
+                //otherwise
+                } else {
+                    PlayerPositionHelper.PlayBack();
+                    StartCoroutine(WaitForPositionHelper());
+                }
             }
         }
         
@@ -269,6 +300,7 @@ namespace StudioByStorm.Gravity.Player {
 
             if (collider.CompareTag("Surface")) {
                 isOnSurface = false;
+                PlayerPositionHelper.SetRecording(true);
 
             } else if (collider.CompareTag("Atmosphere")) {
                 isInAtmosphere = false;

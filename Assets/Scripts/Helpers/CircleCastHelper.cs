@@ -112,7 +112,7 @@ namespace StudioByStorm.Helpers {
                     lineRenderers[i].SetPosition(0, originPoint.transform.position);
                 }
                 
-                lineRenderers[i].widthMultiplier = 2.0f;
+                lineRenderers[i].widthMultiplier = 3.0f;
                 go.SetActive(true);
             }
         }

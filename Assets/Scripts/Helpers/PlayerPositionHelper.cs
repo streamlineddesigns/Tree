@@ -10,6 +10,7 @@ namespace StudioByStorm.Helpers {
     {
         private List<Vector3> waypointPositions = new List<Vector3>();
         private Vector3 lastWaypointPosition;
+        private Vector3 startPosition;
         private bool isRecording = false;
         private bool isOn;
 
@@ -31,6 +32,7 @@ namespace StudioByStorm.Helpers {
                 return;
             }
 
+            startPosition = gameObject.transform.position;
             isRecording = ir;
             ResetPositions();
         }
@@ -38,8 +40,9 @@ namespace StudioByStorm.Helpers {
         public void PlayBack()
         {
             if (isRecording) {
-                lastWaypointPosition = waypointPositions[0];
                 waypointPositions.Reverse();
+                waypointPositions.Add(startPosition);
+                lastWaypointPosition = waypointPositions[waypointPositions.Count - 1];
                 Vector3[] reversedWaypoints = waypointPositions.ToArray();
                 gameObject.transform.DOPath(reversedWaypoints, 0.5f, PathType.Linear).SetEase(Ease.Linear);
                 SetRecording(false);

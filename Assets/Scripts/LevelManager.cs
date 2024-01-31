@@ -1,7 +1,10 @@
 using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -12,6 +15,8 @@ using StudioByStorm.Graph;
 using StudioByStorm;
 using StudioByStorm.Data.LevelChapters;
 using StudioByStorm.UI.Controllers;
+using StudioByStorm.Obstacles.Animations;
+using StudioByStorm.Repositories;
 
 namespace StudioByStorm {
 
@@ -28,6 +33,8 @@ namespace StudioByStorm {
         public GameObject EdgeRenderer;
         public GameObject Edge;
         public GameObject Node;
+        public ObstacleDataRepository obstacleDataRepository;
+        public GameObject ObstacleContainer;
         public List<Node> CurrentLevel = new List<Node>();
         public LevelData CurrentLevelData;
         public int currentLevelID;
@@ -35,6 +42,9 @@ namespace StudioByStorm {
         protected Pool NodePool;
         protected Pool EdgeRendererPool;
         protected List<float[]> nodePositions;
+        protected List<float[]> obstaclePositions;
+        protected static List<GameObject> Obstacles = new List<GameObject>();
+        protected static List<AsyncOperationHandle> ObstacleHandles = new List<AsyncOperationHandle>();
 
         void Awake()
         {
@@ -84,7 +94,57 @@ namespace StudioByStorm {
         {
             TextAsset currentLevelTextAsset = levelChapters.chapters[currentChapterID].levels[currentLevelID].levelFile;
             CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(currentLevelTextAsset.text);
-            Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);
+            //Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);
+            UnloadObstacles();
+            LoadLevelObstacles();
+        }
+
+        protected void UnloadObstacles()
+        {
+            for (int i = 0; i < Obstacles.Count; i++) {
+                if (Obstacles[i] != null) {
+                    Destroy(Obstacles[i]);
+                }
+            }
+            Obstacles = new List<GameObject>();
+
+            for (int j = 0; j < ObstacleHandles.Count; j++) {
+                Debug.Log("Unloading: " + j);
+                Addressables.Release(ObstacleHandles[j]);
+            }
+            ObstacleHandles = new List<AsyncOperationHandle>();
+        }
+
+        protected void LoadLevelObstacles()
+        {
+            for (int i = 0; i < CurrentLevelData.obstacleNames.Count; i++) {
+                string currentObstacleName = CurrentLevelData.obstacleNames[i];
+                AssetReference currentAssetReference = obstacleDataRepository.data.Where(x => x.name == currentObstacleName).First().assetReference;
+                AsyncOperationHandle<GameObject> AsyncObstacleHandle = currentAssetReference.LoadAssetAsync<GameObject>();
+                AsyncObstacleHandle.Completed += OnAsyncObstacleHandleCompleted;
+            }
+        }
+
+        private void OnAsyncObstacleHandleCompleted(AsyncOperationHandle<GameObject> handle)
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded) {
+                GameObject result = handle.Result;
+                string name = handle.Result.name;
+                int obstacleIndex = CurrentLevelData.obstacleNames.IndexOf(name);
+                VectorData posVectorData = CurrentLevelData.obstaclePositions[obstacleIndex];
+                VectorData rotVectorData = CurrentLevelData.obstacleRotations[obstacleIndex];
+                Vector3 pos = new Vector3(posVectorData.x, posVectorData.y, posVectorData.z);
+                Vector3 rot = new Vector3(rotVectorData.x, rotVectorData.y, rotVectorData.z);
+                GameObject currentObstacle = Instantiate(result, pos, Quaternion.Euler(rot), ObstacleContainer.transform) as GameObject;
+                currentObstacle.SetActive(true);
+                currentObstacle.GetComponent<CompositeAnimation>().Animate();
+
+                Obstacles.Add(currentObstacle);
+                ObstacleHandles.Add(handle);
+                
+            } else {
+                Debug.LogError("OnAsyncObstacleHandleCompleted FAILED");
+            }
         }
 
         protected void CleanUpOnGameStart()

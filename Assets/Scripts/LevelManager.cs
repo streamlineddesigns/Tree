@@ -109,7 +109,6 @@ namespace StudioByStorm {
             Obstacles = new List<GameObject>();
 
             for (int j = 0; j < ObstacleHandles.Count; j++) {
-                Debug.Log("Unloading: " + j);
                 Addressables.Release(ObstacleHandles[j]);
             }
             ObstacleHandles = new List<AsyncOperationHandle>();

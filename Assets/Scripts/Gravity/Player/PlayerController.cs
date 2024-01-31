@@ -28,11 +28,16 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] private Material darkMaterial;
         [SerializeField] private Color lightColor;
         [SerializeField] private Color darkColor;
+        [SerializeField] private Color hitObstacleColor;
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;
+        private bool isEnforcingLightColor = true;
         private int currentNodeGameID;
         private bool isPositionHelperPlayingBack;
+        private Material currentMaterial;
+        private Color currentColor;
+        private bool isHitAnimationPlaying;
 
         private Surface surface;
         private bool isOnSurface;
@@ -209,11 +214,34 @@ namespace StudioByStorm.Gravity.Player {
                 light2D.SetActive(true);
                 spriteRenderer.color = lightColor;
                 spriteRenderer.material = lightMaterial;
+                currentColor = lightColor;
+                currentMaterial = lightMaterial;
             } else {
                 light2D.SetActive(false);
                 spriteRenderer.color = darkColor;
                 spriteRenderer.material = darkMaterial;
+                currentColor = darkColor;
+                currentMaterial = darkMaterial;
             }
+        }
+
+        private void HitObstacleAnimation()
+        {
+            isHitAnimationPlaying = true;
+            spriteRenderer.material = darkMaterial;
+
+            Sequence hitSequenceAnimation = DOTween.Sequence();
+            hitSequenceAnimation.Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
+                                .Append(spriteRenderer.DOColor(currentColor, 0.075f))
+                                .Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
+                                .Append(spriteRenderer.DOColor(currentColor, 0.075f))
+                                .Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
+                                .Append(spriteRenderer.DOColor(currentColor, 0.075f))
+                                .AppendCallback(() => {
+                                    isHitAnimationPlaying = false;
+                                });
+
+            spriteRenderer.material = currentMaterial;
         }
 
         IEnumerator WaitForPositionHelper()
@@ -250,13 +278,26 @@ namespace StudioByStorm.Gravity.Player {
             if (collider.CompareTag("Obstacle")) {
                 //get the obstacle part
                 ColorType obstacleColorType = collider.GetComponent<ObstaclePart>().colorType;
-                //if the player is the same color as the obstacle part
-                if ((isLightColor && obstacleColorType == ColorType.Light) || (!isLightColor && obstacleColorType == ColorType.Dark)) {
+                //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
+                if ((isLightColor && obstacleColorType == ColorType.Light) 
+                     || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
 
                 //otherwise
                 } else {
-                    PlayerPositionHelper.PlayBack();
-                    StartCoroutine(WaitForPositionHelper());
+                    //make sure we didn't hit an obstacle while traveling because that doesn't count
+                    if (! lerping) {
+
+                        //use position helper to playback to safe point as long as player isn't in atmosphere or surface
+                        if (! isInAtmosphere && ! isOnSurface) {
+                            PlayerPositionHelper.PlayBack();
+                            StartCoroutine(WaitForPositionHelper());
+                        }
+                        
+                        //play the hit animation
+                        if (! isHitAnimationPlaying) {
+                            HitObstacleAnimation();
+                        }
+                    }
                 }
             }
         }
@@ -300,7 +341,9 @@ namespace StudioByStorm.Gravity.Player {
 
             if (collider.CompareTag("Surface")) {
                 isOnSurface = false;
-                PlayerPositionHelper.SetRecording(true);
+                if (! lerping) {
+                    PlayerPositionHelper.SetRecording(true);
+                }
 
             } else if (collider.CompareTag("Atmosphere")) {
                 isInAtmosphere = false;

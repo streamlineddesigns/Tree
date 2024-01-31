@@ -12,7 +12,7 @@ namespace StudioByStorm.PCG {
     public class ProceduralLevelGenerator : MonoBehaviour
     {
         public int attempts = 0;
-        [SerializeField] private GraphConstructionManager GraphConstructionManager;
+        private GraphConstructionManager GraphConstructionManager;
         //stores color: node ids that are the input color
         private Dictionary<NodeColor, List<int>> NodeColorToNodeIDs;
         //stores all colors used in graph construction
@@ -27,12 +27,12 @@ namespace StudioByStorm.PCG {
         private List<List<List<int>>> workingSolutions;
         private List<List<List<int>>> nearSolutions;
 
-        public void Search()
+        public void DependencyInjection(GraphConstructionManager gcm)
         {
-            StartCoroutine(DelayedSearch());
+            GraphConstructionManager = gcm;
         }
 
-        IEnumerator DelayedSearch()
+        public IEnumerator CreateLevel()
         {
             int numberOfSolutions = 0;
 
@@ -60,6 +60,8 @@ namespace StudioByStorm.PCG {
                 createAdjacencyList(1.5f);
                 DisplayWorkingSolutions();
             }
+
+            GraphConstructionManager.CreateLevelData();
         }
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)

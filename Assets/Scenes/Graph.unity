@@ -2638,6 +2638,8 @@ MonoBehaviour:
     Layers: []
     PlayerStartPosition: {x: 0, y: 0, z: 0}
     Centroid: {x: 0, y: 0, z: 0}
+    obstacleNames: []
+    obstaclePositions: []
   ColorModel: {fileID: 265017687}
   NodePrefab: {fileID: 1810738523918551442, guid: 8def7caae31ce8e4bb56f9c838f028d6, type: 3}
   UserPositionPrefab: {fileID: 7482260787690634381, guid: 66d9211729a11644fbca77482f5723dc, type: 3}
@@ -2647,6 +2649,7 @@ MonoBehaviour:
   currentCursorNodeColor: 4
   nodeColors: 
   nodePositions: []
+  nodeGameObjectReferences: []
   playerPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &326406039
 GameObject:
@@ -6118,6 +6121,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 622081021}
   m_CullTransparentMesh: 1
+--- !u!1 &622706676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 622706677}
+  - component: {fileID: 622706678}
+  m_Layer: 0
+  m_Name: ProceduralController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &622706677
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622706676}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1813285836}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &622706678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622706676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a328edf2d40f4499c3fd65d3deefd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LevelConfig: {fileID: 1361499445}
+  ObstacleDataRepository: {fileID: 11400000, guid: 98e9cf9d0fbca2d41821ede964ec686d, type: 2}
+  GraphConstructionManager: {fileID: 324574520}
+  ProceduralLevelGenerator: {fileID: 1378012689}
+  ProceduralObstacleSelector: {fileID: 1259678317}
+  ProceduralObstaclePlacer: {fileID: 1071975207}
+  maxLevels: 150
 --- !u!1 &693652668
 GameObject:
   m_ObjectHideFlags: 0
@@ -9684,9 +9738,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 324574520}
-        m_TargetAssemblyTypeName: StudioByStorm.Graph.GraphConstructionManager, Assembly-CSharp
-        m_MethodName: showAdjacencyList
+      - m_Target: {fileID: 622706678}
+        m_TargetAssemblyTypeName: StudioByStorm.PCG.ProceduralController, Assembly-CSharp
+        m_MethodName: Save
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9820,6 +9874,51 @@ Transform:
   m_Father: {fileID: 696468829}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1071975205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1071975206}
+  - component: {fileID: 1071975207}
+  m_Layer: 0
+  m_Name: ProceduralObstaclePlacer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1071975206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071975205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1813285836}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1071975207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071975205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3df19df87df6bfc47a893d4173fd66bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleContainer: {fileID: 1215515735}
 --- !u!1 &1081695156
 GameObject:
   m_ObjectHideFlags: 0
@@ -10658,6 +10757,37 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1215515735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1215515736}
+  m_Layer: 0
+  m_Name: ObstacleContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1215515736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215515735}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1217251523
 GameObject:
   m_ObjectHideFlags: 0
@@ -11150,6 +11280,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1259678315
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1259678316}
+  - component: {fileID: 1259678317}
+  m_Layer: 0
+  m_Name: ProceduralObstacleSelector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1259678316
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259678315}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1813285836}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1259678317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259678315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dad2938ca20430468c0b4e1c0557257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1287115339
 GameObject:
   m_ObjectHideFlags: 0
@@ -12137,7 +12311,7 @@ GameObject:
   - component: {fileID: 1378012688}
   - component: {fileID: 1378012689}
   m_Layer: 0
-  m_Name: ProceduralContentGenerator
+  m_Name: ProceduralLevelGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12156,7 +12330,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1813285836}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1378012689
 MonoBehaviour:
@@ -12170,7 +12344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b3accc2dd7b4c4db177705e9d9d144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GraphConstructionManager: {fileID: 324574520}
+  attempts: 0
 --- !u!1 &1385119875
 GameObject:
   m_ObjectHideFlags: 0
@@ -15691,9 +15865,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1378012689}
-        m_TargetAssemblyTypeName: StudioByStorm.PCG.ProceduralLevelGenerator, Assembly-CSharp
-        m_MethodName: Search
+      - m_Target: {fileID: 622706678}
+        m_TargetAssemblyTypeName: StudioByStorm.PCG.ProceduralController, Assembly-CSharp
+        m_MethodName: Create
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16293,7 +16467,10 @@ Transform:
   - {fileID: 324574519}
   - {fileID: 265017688}
   - {fileID: 1361499444}
+  - {fileID: 622706677}
   - {fileID: 1378012688}
+  - {fileID: 1259678316}
+  - {fileID: 1071975206}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

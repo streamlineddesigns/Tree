@@ -1,12 +1,8 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using StudioByStorm.Data;
 using StudioByStorm.Config;
 using UnityEngine.SceneManagement;
@@ -146,6 +142,7 @@ namespace StudioByStorm.Graph {
 
             if (tappedGameObject != null && playerSetPositionSwitch) {
                 playerPosition = tappedGameObject.transform.position * 7.0f;
+                GlobalLevelData.PlayerStartPosition = playerPosition;
                 UserPositionGameObject.transform.position = tappedGameObject.transform.position;
                 UserPositionGameObject.SetActive(true);
                 playerSetPositionSwitch = false;
@@ -341,7 +338,7 @@ namespace StudioByStorm.Graph {
             }
         }
 
-        public void showAdjacencyList()
+        public void CreateLevelData()
         {
             AdjacencyList singleEntryAdjacencyList = AdjacencyList.GetWithoutDuplicateEdges();
             AdjacencyList.Log();
@@ -399,22 +396,6 @@ namespace StudioByStorm.Graph {
 
             GlobalLevelData = LevelData;
             //Debug.Log(LevelData.Layers.Count);
-
-            string dir = Application.persistentDataPath + "/" + LevelConfig.subfolder;
-            if (! Directory.Exists(dir)) {
-                Directory.CreateDirectory(dir);
-            }
-            int LevelFileCountInDir = Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Length;
-            string LevelSaveFilePath = (dir + LevelConfig.fileNameAppend + LevelFileCountInDir + LevelConfig.fileNamePrepend).ToString();
-
-            Debug.Log(LevelSaveFilePath);
-
-            File.WriteAllText(LevelSaveFilePath, JsonConvert.SerializeObject(LevelData, Formatting.Indented, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            }));
-
-            SceneManager.LoadScene("Graph");
         }
 
         protected void moveRow()

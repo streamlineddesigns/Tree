@@ -106,7 +106,9 @@ namespace StudioByStorm.PCG {
             //color shuffling
             int nodeCount = GraphConstructionManager.nodeColors.Count;
             int minimumNodesPerPath = 3;
-            int requiredNumberOfColorsToPlace = (nodeCount >= 15) ? 4 : (nodeCount >= 12) ? 3 : (nodeCount >= 9) ? 2 : 1;//(nodeCount >= 3) ? 1 : 0;
+            int colorsToPlaceOptionOne = (nodeCount >= 12) ? 4 : (nodeCount >= 9) ? 3 : (nodeCount >= 6) ? 2 : 1;
+            int colorsToPlaceOptionTwo = (nodeCount >= 15) ? 4 : (nodeCount >= 12) ? 3 : (nodeCount >= 9) ? 2 : 1;
+            int requiredNumberOfColorsToPlace = (UnityEngine.Random.Range(1, 11) <= 5) ? colorsToPlaceOptionOne : colorsToPlaceOptionTwo;
             if (requiredNumberOfColorsToPlace <= 0) {
                 Debug.LogError("You need to place more nodes!! Can't make a level without at least " + minimumNodesPerPath + " nodes!");
                 return false;

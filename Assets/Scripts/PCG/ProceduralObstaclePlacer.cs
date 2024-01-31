@@ -18,8 +18,10 @@ namespace StudioByStorm.PCG {
         private ObstacleDataRepository ObstacleDataRepository;
         private GraphConstructionManager GraphConstructionManager;
         private List<int> greyNodeIDs;
-        public List<int> usedGreyNodeIDs = new List<int>();
-        private List<string> placedObstacleNames = new List<string>();
+        public List<int> usedGreyNodeIDs;
+        private List<string> placedObstacleNames;
+        private static List<GameObject> Obstacles = new List<GameObject>();
+        private static List<AsyncOperationHandle> ObstacleHandles = new List<AsyncOperationHandle>();
 
         public void DependencyInjection(ObstacleDataRepository obr, GraphConstructionManager gcm)
         {
@@ -29,6 +31,9 @@ namespace StudioByStorm.PCG {
 
         public IEnumerator PlaceObstacles()
         {
+            //Release addressables
+            UnloadObstacles();
+
             //get the grey nodes ids
             greyNodeIDs = GraphConstructionManager.nodeColors.Select((n, index) => new { NodeColor = n, Index = index })
                                                              .Where(x => x.NodeColor == NodeColor.GrayScale)
@@ -38,6 +43,12 @@ namespace StudioByStorm.PCG {
             //shuffle the grey nodes
             Shuffle shuffle = new Shuffle();
             greyNodeIDs = shuffle.FisherYates(greyNodeIDs);
+
+            //initialize list for nodes that end up being used by obstacles
+            usedGreyNodeIDs = new List<int>();
+
+            //initialize list for obstacles that actually get placed
+            placedObstacleNames = new List<string>();
 
             //create the obstacle position list
             GraphConstructionManager.GlobalLevelData.obstaclePositions = new List<VectorData>();
@@ -182,6 +193,10 @@ namespace StudioByStorm.PCG {
                 yield return loadHandle;
                 GameObject go = Instantiate(loadHandle.Result, Vector3.zero, Quaternion.Euler(nodeDir), obstacleContainer.transform);
 
+                //keep track of used addressables
+                Obstacles.Add(go);
+                ObstacleHandles.Add(loadHandle);
+
                 //get the composite animation on the obstacle
                 CompositeAnimation compositeAnimation = go.GetComponent<CompositeAnimation>();
                 //Get all the composite animation's parts
@@ -287,6 +302,21 @@ namespace StudioByStorm.PCG {
         protected void OnNodeObstacleTypePlacement(int obstacleNameIndex)
         {
 
+        }
+
+        protected void UnloadObstacles()
+        {
+            for (int i = 0; i < Obstacles.Count; i++) {
+                if (Obstacles[i] != null) {
+                    Destroy(Obstacles[i]);
+                }
+            }
+            Obstacles = new List<GameObject>();
+
+            for (int j = 0; j < ObstacleHandles.Count; j++) {
+                Addressables.Release(ObstacleHandles[j]);
+            }
+            ObstacleHandles = new List<AsyncOperationHandle>();
         }
     }
 

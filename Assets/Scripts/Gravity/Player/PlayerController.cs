@@ -227,11 +227,11 @@ namespace StudioByStorm.Gravity.Player {
 
         private void HitObstacleAnimation()
         {
-            isHitAnimationPlaying = true;
-            spriteRenderer.material = darkMaterial;
-
             Sequence hitSequenceAnimation = DOTween.Sequence();
-            hitSequenceAnimation.Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
+            hitSequenceAnimation.AppendCallback(() => {
+                                    isHitAnimationPlaying = true;
+                                    spriteRenderer.material = darkMaterial;
+                                }).Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
                                 .Append(spriteRenderer.DOColor(currentColor, 0.075f))
                                 .Append(spriteRenderer.DOColor(hitObstacleColor, 0.075f))
                                 .Append(spriteRenderer.DOColor(currentColor, 0.075f))
@@ -239,9 +239,8 @@ namespace StudioByStorm.Gravity.Player {
                                 .Append(spriteRenderer.DOColor(currentColor, 0.075f))
                                 .AppendCallback(() => {
                                     isHitAnimationPlaying = false;
+                                    spriteRenderer.material = currentMaterial;
                                 });
-
-            spriteRenderer.material = currentMaterial;
         }
 
         IEnumerator WaitForPositionHelper()

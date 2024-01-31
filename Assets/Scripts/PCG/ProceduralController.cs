@@ -23,7 +23,6 @@ namespace StudioByStorm.PCG {
         [SerializeField] private  ProceduralLevelGenerator ProceduralLevelGenerator;
         [SerializeField] private  ProceduralObstacleSelector ProceduralObstacleSelector;
         [SerializeField] private  ProceduralObstaclePlacer ProceduralObstaclePlacer;
-        [SerializeField] private int maxLevels = 150;
 
         public void Create()
         {
@@ -35,7 +34,7 @@ namespace StudioByStorm.PCG {
             ProceduralLevelGenerator.DependencyInjection(GraphConstructionManager);
             yield return StartCoroutine(ProceduralLevelGenerator.CreateLevel());
 
-            ProceduralObstacleSelector.DependencyInjection(ObstacleDataRepository, GraphConstructionManager, maxLevels);
+            ProceduralObstacleSelector.DependencyInjection(ObstacleDataRepository, GraphConstructionManager, LevelConfig);
             yield return StartCoroutine(ProceduralObstacleSelector.SelectObstacles());
 
             ProceduralObstaclePlacer.DependencyInjection(ObstacleDataRepository, GraphConstructionManager);
@@ -60,6 +59,11 @@ namespace StudioByStorm.PCG {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
 
+            SceneManager.LoadScene("Graph");
+        }
+
+        public void Reload()
+        {
             SceneManager.LoadScene("Graph");
         }
     }

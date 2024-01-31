@@ -100,8 +100,10 @@ namespace StudioByStorm.PCG {
                 Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 7.0f;
                 //create our VectorData from it
                 VectorData pos = new VectorData(scaled);
-                //use default rotation
-                VectorData rot = new VectorData(Vector3.up);
+                //use random rotation
+                float[] angleOffsets = new float[4]{0.0f, 180.0f, 90.0f, -90.0f};
+                Vector3 randRot = new Vector3(0.0f, 0.0f, angleOffsets[Random.Range(0, angleOffsets.Length)]);
+                VectorData rot = new VectorData(randRot);
                 //update our level's obstacle position list
                 GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
                 //update our level's obstacle rotation list
@@ -199,7 +201,7 @@ namespace StudioByStorm.PCG {
                 placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
 
                 //clean up
-                //Destroy(go);
+                Destroy(go);
             }
 
             yield return null;

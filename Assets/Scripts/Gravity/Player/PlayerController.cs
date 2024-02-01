@@ -32,7 +32,7 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;
-        private bool isEnforcingLightColor = true;
+        private bool isEnforcingLightColor = false;
         private int currentNodeGameID;
         private bool isPositionHelperPlayingBack;
         private Material currentMaterial;
@@ -201,27 +201,27 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-        private void ToggleColor(int nodeGameObjectID)
+        IEnumerator ToggleColor(int nodeGameObjectID)
         {
-            if (currentNodeGameID == nodeGameObjectID) {
-                return;
-            }
+            yield return new WaitUntil(() => !isHitAnimationPlaying);
 
-            currentNodeGameID = nodeGameObjectID;
-            isLightColor = !isLightColor;
+            if (currentNodeGameID != nodeGameObjectID) {
+                currentNodeGameID = nodeGameObjectID;
+                isLightColor = !isLightColor;
 
-            if (isLightColor) {
-                light2D.SetActive(true);
-                spriteRenderer.color = lightColor;
-                spriteRenderer.material = lightMaterial;
-                currentColor = lightColor;
-                currentMaterial = lightMaterial;
-            } else {
-                light2D.SetActive(false);
-                spriteRenderer.color = darkColor;
-                spriteRenderer.material = darkMaterial;
-                currentColor = darkColor;
-                currentMaterial = darkMaterial;
+                if (isLightColor) {
+                    light2D.SetActive(true);
+                    spriteRenderer.color = lightColor;
+                    spriteRenderer.material = lightMaterial;
+                    currentColor = lightColor;
+                    currentMaterial = lightMaterial;
+                } else {
+                    light2D.SetActive(false);
+                    spriteRenderer.color = darkColor;
+                    spriteRenderer.material = darkMaterial;
+                    currentColor = darkColor;
+                    currentMaterial = darkMaterial;
+                }
             }
         }
 
@@ -261,7 +261,7 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
-                ToggleColor(collider.gameObject.GetInstanceID());
+                StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
                 PlayerPositionHelper.SetRecording(false);
                 
                 //$$jiggle the node

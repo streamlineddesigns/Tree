@@ -45,6 +45,10 @@ namespace StudioByStorm {
         protected List<float[]> obstaclePositions;
         protected static List<GameObject> Obstacles = new List<GameObject>();
         protected static List<AsyncOperationHandle> ObstacleHandles = new List<AsyncOperationHandle>();
+        protected Vector2 currentNodePosition;
+        protected int nearbyCompositeAnimationID;
+        protected CompositeAnimation nearbyCompositeAnimation;
+        private bool isGameStarted = false;
 
         void Awake()
         {
@@ -66,6 +70,15 @@ namespace StudioByStorm {
         void OnDisable()
         {
             GameEventPublisher.OnStateChange -= OnStateChange;
+        }
+
+        void Update()
+        {
+            if (! isGameStarted) {
+                return;
+            }
+
+            UpdateNearbyObstacle();
         }
 
         public void OnStateChange(GameState state)
@@ -99,6 +112,40 @@ namespace StudioByStorm {
             LoadLevelObstacles();
         }
 
+        protected void UpdateNearbyObstacle()
+        {
+            Vector2 nearbyNodePosition = GameManager.Singleton.nearbyNode.GetPosition();
+
+            if (GameManager.Singleton.nearbyNode.gameObject == null ||  (currentNodePosition == nearbyNodePosition && nearbyCompositeAnimation != null)) {
+                return;
+            }
+
+            Debug.LogError("Assigned");
+
+            currentNodePosition = nearbyNodePosition;
+            int currentNodeID = GameManager.Singleton.nearbyNode.GetData<Node>().ID;
+
+            if (!GameManager.Singleton.CompositeAnimationRegistry.Contains(currentNodeID)) {
+                return;
+            }
+
+            CompositeAnimation compositeAnimation = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(currentNodeID);
+            int compositeAnimationID = compositeAnimation.gameObject.GetInstanceID();
+
+            if (nearbyCompositeAnimationID != compositeAnimationID) {
+                nearbyCompositeAnimationID = compositeAnimationID;
+
+                if (nearbyCompositeAnimation != null) {
+                    nearbyCompositeAnimation.Stop();
+                    Debug.LogError("Stoping");
+                }
+
+                nearbyCompositeAnimation = compositeAnimation;
+                nearbyCompositeAnimation.Animate();
+                Debug.LogError("Animating");
+            }
+        }
+
         protected void UnloadObstacles()
         {
             for (int i = 0; i < Obstacles.Count; i++) {
@@ -130,13 +177,15 @@ namespace StudioByStorm {
                 GameObject result = handle.Result;
                 string name = handle.Result.name;
                 int obstacleIndex = CurrentLevelData.obstacleNames.IndexOf(name);
+                List<int> obstacleNodeIDs = CurrentLevelData.obstacleNodeIDs[obstacleIndex];
                 VectorData posVectorData = CurrentLevelData.obstaclePositions[obstacleIndex];
                 VectorData rotVectorData = CurrentLevelData.obstacleRotations[obstacleIndex];
                 Vector3 pos = new Vector3(posVectorData.x, posVectorData.y, posVectorData.z);
                 Vector3 rot = new Vector3(rotVectorData.x, rotVectorData.y, rotVectorData.z);
                 GameObject currentObstacle = Instantiate(result, pos, Quaternion.Euler(rot), ObstacleContainer.transform) as GameObject;
                 currentObstacle.SetActive(true);
-                currentObstacle.GetComponent<CompositeAnimation>().Animate();
+                CompositeAnimation currentCompositeAnimation = currentObstacle.GetComponent<CompositeAnimation>();
+                currentCompositeAnimation.nodeIDs = obstacleNodeIDs;
 
                 Obstacles.Add(currentObstacle);
                 ObstacleHandles.Add(handle);
@@ -191,6 +240,8 @@ namespace StudioByStorm {
             float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
             GameManager.Singleton.player.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
             GameManager.Singleton.FXManager.SeaDust.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+
+            isGameStarted = true;
         }
 
         protected void SetEdgeRenderers()

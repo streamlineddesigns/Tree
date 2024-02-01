@@ -56,6 +56,9 @@ namespace StudioByStorm.PCG {
             //create the obstacle rotation list
             GraphConstructionManager.GlobalLevelData.obstacleRotations = new List<VectorData>();
 
+            //create the obstacle to node list
+            GraphConstructionManager.GlobalLevelData.obstacleNodeIDs = new List<List<int>>();
+
             //iterate over the selected obstacles
             for (int i = 0; i < GraphConstructionManager.GlobalLevelData.obstacleNames.Count; i++) {
 
@@ -119,6 +122,8 @@ namespace StudioByStorm.PCG {
                 GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
                 //update our level's obstacle rotation list
                 GraphConstructionManager.GlobalLevelData.obstacleRotations.Add(rot);
+                //update our obstacle to node list
+                GraphConstructionManager.GlobalLevelData.obstacleNodeIDs.Add(new List<int>(){greyNodeIndex});
                 //keep track of the obstacle name since we found a place for it
                 placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
             }
@@ -213,6 +218,7 @@ namespace StudioByStorm.PCG {
                 VectorData rot = new VectorData(nodeDir);
                 GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
                 GraphConstructionManager.GlobalLevelData.obstacleRotations.Add(rot);
+                GraphConstructionManager.GlobalLevelData.obstacleNodeIDs.Add(new List<int>(){firstFoundGreyNodeIndex, secondFoundGreyNodeIndex});
                 placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
 
                 //clean up
@@ -295,6 +301,7 @@ namespace StudioByStorm.PCG {
                 VectorData rot = new VectorData(nodeDir);
                 GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
                 GraphConstructionManager.GlobalLevelData.obstacleRotations.Add(rot);
+                GraphConstructionManager.GlobalLevelData.obstacleNodeIDs.Add(new List<int>(){firstFoundGreyNodeIndex, secondFoundGreyNodeIndex});
                 placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
             }
         }

@@ -12,6 +12,7 @@ namespace StudioByStorm.Data {
         public Vector3 PlayerStartPosition;
         public Vector3 Centroid;
         public List<string> obstacleNames;
+        public List<List<int>> obstacleNodeIDs;
         public List<VectorData> obstaclePositions;
         public List<VectorData> obstacleRotations;
     }

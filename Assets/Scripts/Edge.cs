@@ -53,7 +53,7 @@ namespace StudioByStorm {
             //calculate direction between child and parent node
             Vector2 direction = (childNode.gameObject.transform.position - parentNode.gameObject.transform.position).normalized;
             //get child node position (ie the target) and scale vector in that direction
-            Vector2 scaledTargetPosition = (Vector2)childNode.gameObject.transform.position + (direction * 7.0f);
+            Vector2 scaledTargetPosition = (Vector2)childNode.gameObject.transform.position + (direction * 14.0f);
             emptyTarget.transform.position = childNode.gameObject.transform.position;
 
             //get distance too so we know how many links to disable visually

@@ -19,6 +19,8 @@ namespace StudioByStorm.PCG {
         [SerializeField] private int maxObstaclesInALevel = 20;
         [SerializeField] private float maxObstacleDifficultyScore = 100.0f;
         [SerializeField] private int highestEasierLevelID = 30;
+        [SerializeField] private bool isDebuggingCurrentLevelID = false;
+        [SerializeField] private int debugLevelID;
 
         private ObstacleDataRepository ObstacleDataRepository;
         private GraphConstructionManager GraphConstructionManager;
@@ -35,7 +37,7 @@ namespace StudioByStorm.PCG {
         public IEnumerator SelectObstacles()
         {
             //get info on the current level being made
-            int currentLevelID = GetCurrentLevelFileCount() + 1;
+            currentLevelID = (isDebuggingCurrentLevelID) ? debugLevelID : (GetCurrentLevelFileCount() + 1);
             Debug.LogWarning("currentLevelID: " + currentLevelID);
             float levelPercent = currentLevelID / (maxLevelID  * 1.0f);
             Debug.LogWarning("levelPercent: " + levelPercent);
@@ -59,6 +61,9 @@ namespace StudioByStorm.PCG {
             //set difficulty score range
             float lowestDifficultyScore = Mathf.Max(currentDifficultyScore - rangeOffset, 0.0f);
             float highestDifficultyScore = currentDifficultyScore + rangeOffset;
+
+            //override to 0 for now due to lack of in range obstacles for a lot of difficulty scores
+            lowestDifficultyScore = 0.0f;
 
             Debug.LogWarning("lowestDifficultyScore: " + lowestDifficultyScore);
             Debug.LogWarning("highestDifficultyScore: " + highestDifficultyScore);

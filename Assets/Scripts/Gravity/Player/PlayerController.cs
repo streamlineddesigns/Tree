@@ -186,11 +186,12 @@ namespace StudioByStorm.Gravity.Player {
                 ApplyGravityFailSafe();
             }
 
-            if (isOnSurface) {
+            //looks like this is handled elsewhere now
+            /*if (isOnSurface) {
                 if (isJumping) {
                     Jump();
                 }
-            }
+            }*/
 
             if (! isOnSurface) {
                 ResetMovement();

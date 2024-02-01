@@ -19,6 +19,9 @@ namespace StudioByStorm.EventPublishers {
         public static event TapEvent OnTap;//subscribable event
         public static event TapEvent OnLongTap;//subscribable event
 
+        public delegate void NodeChangeEvent(int NodeID);//delegate signature
+        public static event NodeChangeEvent OnPlayerNodeChange;//subscribable event
+
         void Awake()
         {
             if (Singleton == null) {
@@ -60,6 +63,13 @@ namespace StudioByStorm.EventPublishers {
         {
             if (OnLongTap != null) {
                 OnLongTap(Position);
+            }
+        }
+
+        public static void PublishPlayerNodeChange(int NodeID)
+        {
+            if (OnPlayerNodeChange != null) {
+                OnPlayerNodeChange(NodeID);
             }
         }
     }

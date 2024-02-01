@@ -84,6 +84,8 @@ namespace StudioByStorm.Gravity.Player {
         private Vector2 joystickDownPoint;
         private Vector2 joystickUpPoint;
 
+        private int playerNodeID = -1;
+
         
         void Awake()
         {
@@ -256,6 +258,12 @@ namespace StudioByStorm.Gravity.Player {
             if (collider.TryGetComponent<Node>(out Node Node)) {
                 ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
                 if (ActionController != null) ActionController.ManualOnTriggerEnter2D(Node);
+
+                //publish that the players node ID changed
+                if (playerNodeID != Node.ID) {
+                    playerNodeID = Node.ID;
+                    GameEventPublisher.PublishPlayerNodeChange(playerNodeID);
+                }
             }
 
             if (collider.CompareTag("Surface")) {

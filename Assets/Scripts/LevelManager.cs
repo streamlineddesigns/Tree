@@ -42,13 +42,17 @@ namespace StudioByStorm {
         protected Pool NodePool;
         protected Pool EdgeRendererPool;
         protected List<float[]> nodePositions;
+
         protected List<float[]> obstaclePositions;
         protected static List<GameObject> Obstacles = new List<GameObject>();
         protected static List<AsyncOperationHandle> ObstacleHandles = new List<AsyncOperationHandle>();
-        protected Vector2 currentNodePosition;
+
+        protected int playerNodeID = -1;
         protected int nearbyCompositeAnimationID;
         protected CompositeAnimation nearbyCompositeAnimation;
-        private bool isGameStarted = false;
+        protected AdjacencyList horizontalVerticalAdjacencyList;
+        protected List<int> nodeIDsWithAnimations;
+        protected List<int> playingAnimations = new List<int>();
 
         void Awake()
         {
@@ -65,20 +69,13 @@ namespace StudioByStorm {
         void OnEnable()
         {
             GameEventPublisher.OnStateChange += OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnStateChange -= OnStateChange;
-        }
-
-        void Update()
-        {
-            if (! isGameStarted) {
-                return;
-            }
-
-            UpdateNearbyObstacle();
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
         }
 
         public void OnStateChange(GameState state)
@@ -93,6 +90,12 @@ namespace StudioByStorm {
                     OnLevelComplete();
                     break;
             }
+        }
+
+        protected void OnPlayerNodeChange(int nodeID)
+        {
+            playerNodeID = nodeID;
+            StartCoroutine(UpdateNearbyObstacles());
         }
 
         protected void OnLevelComplete()
@@ -112,37 +115,48 @@ namespace StudioByStorm {
             LoadLevelObstacles();
         }
 
-        protected void UpdateNearbyObstacle()
+        
+
+        /*
+            $$TODO
+            I need the list of NodeID's with animations on them from CurrentLevelData
+            Then I can check that list for the current node ID
+            If it's there, I can check the adjacency list for any connected nodes
+                           -> Might need to cache & use an adjacency list of horizontal and vertical nodes instead of diagonal 
+            I can then check if those child NodeID's are in CurrentLevelData
+            I can keep a list of all of these ConnectedNodeID's including the current node ID
+            
+            then I can make a list of PlayingAnimations
+            If any of the ConnectedNodeID's are in the PlayingAnimations List, then they don't need anything
+            but if they aren't in the list, then they need to have their animations turned on and get added to the PlayingAnimations list
+                                            ->I can get the actual animation from the CompositeAnimationRegistry if there's one there for that node
+            Any of the ID's in PlayingAnimations that aren't in ConnectedNodeID's, need to be removed and have their animations turned off
+         */
+        IEnumerator UpdateNearbyObstacles()
         {
-            Vector2 nearbyNodePosition = GameManager.Singleton.nearbyNode.GetPosition();
+            yield return null;
 
-            if (GameManager.Singleton.nearbyNode.gameObject == null ||  (currentNodePosition == nearbyNodePosition && nearbyCompositeAnimation != null)) {
-                return;
-            }
+            if (nodeIDsWithAnimations != null) {
+                List<int> connectedNodes = horizontalVerticalAdjacencyList.Get(playerNodeID);
+            
+                List<int> connectedNodesWithAnimations = connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList();
 
-            Debug.LogError("Assigned");
-
-            currentNodePosition = nearbyNodePosition;
-            int currentNodeID = GameManager.Singleton.nearbyNode.GetData<Node>().ID;
-
-            if (!GameManager.Singleton.CompositeAnimationRegistry.Contains(currentNodeID)) {
-                return;
-            }
-
-            CompositeAnimation compositeAnimation = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(currentNodeID);
-            int compositeAnimationID = compositeAnimation.gameObject.GetInstanceID();
-
-            if (nearbyCompositeAnimationID != compositeAnimationID) {
-                nearbyCompositeAnimationID = compositeAnimationID;
-
-                if (nearbyCompositeAnimation != null) {
-                    nearbyCompositeAnimation.Stop();
-                    Debug.LogError("Stoping");
+                if (nodeIDsWithAnimations.Contains(playerNodeID)) {
+                    connectedNodesWithAnimations.Add(playerNodeID);
                 }
 
-                nearbyCompositeAnimation = compositeAnimation;
-                nearbyCompositeAnimation.Animate();
-                Debug.LogError("Animating");
+                //Debug.Log("Connected nodes with animations: " + connectedNodesWithAnimations.Count);
+
+                List<int> animationsToEnable = connectedNodesWithAnimations.Where(x => !playingAnimations.Contains(x)).ToList();
+                List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
+
+                animationsToEnable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Animate());
+                animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
+
+                //Debug.Log("animationsToEnable: " + animationsToEnable.Count);
+                //Debug.Log("animationsToDisable: " + animationsToDisable.Count);
+
+                playingAnimations = connectedNodesWithAnimations.Select(x => x).ToList();
             }
         }
 
@@ -237,11 +251,52 @@ namespace StudioByStorm {
 
             SetEdgeRenderers();
 
+            //$$TODO we all ready have a centroid in our LevelData.. plus we can't just randomly throw the player there because there could be obstacles
             float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
             GameManager.Singleton.player.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
             GameManager.Singleton.FXManager.SeaDust.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
 
-            isGameStarted = true;
+            //save our node ids with animations
+            nodeIDsWithAnimations = CurrentLevelData.obstacleNodeIDs.SelectMany<List<int>, int>(x => x).ToList();
+            //create our horizontal/vertical adjacency list
+            StartCoroutine(createHorizontalVerticalAdjacencyList());
+        }
+
+        IEnumerator createHorizontalVerticalAdjacencyList()
+        {
+            yield return new WaitUntil(() => GameManager.Singleton.NodeRegistry.Count() == CurrentLevelData.AdjacencyListData.Count);
+
+            horizontalVerticalAdjacencyList = new AdjacencyList();
+            float[] angleOffsets = new float[5]{0.0f, -180.0f, 180.0f, 90.0f, -90.0f};
+
+            //iterate over current level's adjacency list
+            for (int i = 0; i < CurrentLevelData.AdjacencyListData.Count; i++) {
+                //get the current node
+                int currentNodeID = i;
+
+                Vector3 currendNodePosition = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID).gameObject.transform.position;
+
+                //iterate over list of adjacent nodes
+                for (int j = 0; j < CurrentLevelData.AdjacencyListData[currentNodeID].Count; j++) {
+                    int adjacentNodeID = CurrentLevelData.AdjacencyListData[currentNodeID][j];
+
+                    if (currentNodeID ==  adjacentNodeID) {
+                        continue;
+                    }
+
+                    Vector3 adjacentNodePosition = GameManager.Singleton.NodeRegistry.TryGetValue(adjacentNodeID).gameObject.transform.position;
+                    Vector3 nodeDir = (currendNodePosition - adjacentNodePosition).normalized;
+                    Vector3 perpVec = Vector3.Cross(nodeDir, Vector3.forward);
+                    float angle = Mathf.Atan2(perpVec.y, perpVec.x) * Mathf.Rad2Deg;
+
+                    if (angleOffsets.Contains(angle)) {
+                        horizontalVerticalAdjacencyList.Add(currentNodeID, adjacentNodeID);
+                        horizontalVerticalAdjacencyList.Add(adjacentNodeID, currentNodeID);
+                    }
+                }
+            }
+
+            horizontalVerticalAdjacencyList.Log();
         }
 
         protected void SetEdgeRenderers()

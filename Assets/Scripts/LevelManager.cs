@@ -115,47 +115,34 @@ namespace StudioByStorm {
             LoadLevelObstacles();
         }
 
-        
-
-        /*
-            $$TODO
-            I need the list of NodeID's with animations on them from CurrentLevelData
-            Then I can check that list for the current node ID
-            If it's there, I can check the adjacency list for any connected nodes
-                           -> Might need to cache & use an adjacency list of horizontal and vertical nodes instead of diagonal 
-            I can then check if those child NodeID's are in CurrentLevelData
-            I can keep a list of all of these ConnectedNodeID's including the current node ID
-            
-            then I can make a list of PlayingAnimations
-            If any of the ConnectedNodeID's are in the PlayingAnimations List, then they don't need anything
-            but if they aren't in the list, then they need to have their animations turned on and get added to the PlayingAnimations list
-                                            ->I can get the actual animation from the CompositeAnimationRegistry if there's one there for that node
-            Any of the ID's in PlayingAnimations that aren't in ConnectedNodeID's, need to be removed and have their animations turned off
-         */
         IEnumerator UpdateNearbyObstacles()
         {
             yield return null;
 
             if (nodeIDsWithAnimations != null) {
+                //get any connected nodes to the players current node
                 List<int> connectedNodes = horizontalVerticalAdjacencyList.Get(playerNodeID);
-            
+                //reduce that to the list of nodes that have obstacles to animate
                 List<int> connectedNodesWithAnimations = connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList();
 
+                //also add the current node if it has an animation too
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);
                 }
 
                 //Debug.Log("Connected nodes with animations: " + connectedNodesWithAnimations.Count);
 
+                //any animation id that is not in the playing animations list needs to be animated
                 List<int> animationsToEnable = connectedNodesWithAnimations.Where(x => !playingAnimations.Contains(x)).ToList();
-                List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
-
                 animationsToEnable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Animate());
+                //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
+                List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
                 animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
 
                 //Debug.Log("animationsToEnable: " + animationsToEnable.Count);
                 //Debug.Log("animationsToDisable: " + animationsToDisable.Count);
 
+                //now we can update our playing animations list based on connectedNodesWithAnimations
                 playingAnimations = connectedNodesWithAnimations.Select(x => x).ToList();
             }
         }

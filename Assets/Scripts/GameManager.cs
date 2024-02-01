@@ -33,6 +33,7 @@ namespace StudioByStorm {
         public ViewRegistry ViewRegistry;
         public NodeRegistry NodeRegistry;
         public EdgeRegistry EdgeRegistry;
+        public CompositeAnimationRegistry CompositeAnimationRegistry;
         public HashData PlayerHashData;
         public GameObject player;
         public PlayerController PlayerController;

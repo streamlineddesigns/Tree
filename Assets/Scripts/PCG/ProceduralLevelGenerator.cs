@@ -26,6 +26,7 @@ namespace StudioByStorm.PCG {
         //stores the path combinations that actually solve the level
         private List<List<List<int>>> workingSolutions;
         private List<List<List<int>>> nearSolutions;
+        [SerializeField] private bool isUsingMaxDistanceBetweenNodes = false;
 
         public void DependencyInjection(GraphConstructionManager gcm)
         {
@@ -66,6 +67,8 @@ namespace StudioByStorm.PCG {
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
         {
+            maxDistanceBetweenNodesToCreateEdge = (isUsingMaxDistanceBetweenNodes && maxDistanceBetweenNodesToCreateEdge == 1.2f) ? 1.5f : 1.2f;
+
             int nodeCount = GraphConstructionManager.nodePositions.Count;
 
             for (int i = 0; i < GraphConstructionManager.nodePositions.Count; i++) {

@@ -58,6 +58,7 @@ namespace StudioByStorm {
 
             //get distance too so we know how many links to disable visually
             float distance = Vector2.Distance(childNode.gameObject.transform.position, parentNode.gameObject.transform.position);
+            Debug.Log(distance);
 
             //tell chain to target the empty target
             FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = emptyTarget.transform;
@@ -65,7 +66,9 @@ namespace StudioByStorm {
             emptyTarget.transform.DOMove(scaledTargetPosition, 0.3f).SetEase(Ease.InQuad);
 
             //while that's happening, disable some of the end links, so they don't extend passed child node
-            if (distance >= 7.5f) {
+            if (distance >= 9.0f) {
+                StartCoroutine(DisableLinks(1));
+            } else if (distance >= 7.5f) {    
                 StartCoroutine(DisableLinks(2));
             } else {
                 StartCoroutine(DisableLinks(3));

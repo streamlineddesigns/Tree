@@ -103,6 +103,23 @@ namespace StudioByStorm.Obstacles {
 
         protected void CenterObstacle()
         {
+            GameObject[] centerParts = CompositeAnimation.animations.Select<Animations.Animation, GameObject>(x => x.centerPosition).ToArray();
+            GameObject centerPart = null;
+            bool foundCenterPart = false;
+
+            for (int i = 0; i < centerParts.Length; i++) {
+                if (centerParts[i] != null) {
+                    centerPart = centerParts[i];
+                    foundCenterPart = true;
+                    break;
+                }
+            }
+
+            if (foundCenterPart) {
+                CompositeAnimation.gameObject.transform.position = centerPart.transform.position;
+                return;
+            }
+
             //Get all the composite animation's parts
             obstacleParts = CompositeAnimation.animations.SelectMany<Animations.Animation, GameObject>(x => x.buildingBlocks).ToArray();
             //calculate an AABB on the part's positions

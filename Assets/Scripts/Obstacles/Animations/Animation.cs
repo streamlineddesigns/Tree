@@ -13,6 +13,7 @@ namespace StudioByStorm.Obstacles.Animations {
         public GameObject[] buildingBlocks;
         public int initialPositionTeleport = 0;//allows for customization of similar animations with different starting visual style
         public int initialRotationTeleportCount = 0;//allows for customization of similar animations with different starting visual style
+        public GameObject centerPosition;
 
         protected bool animate = true;
         protected Vector3[] buildingBlockPositions;

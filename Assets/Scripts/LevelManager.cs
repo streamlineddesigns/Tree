@@ -124,7 +124,7 @@ namespace StudioByStorm {
                 //get any connected nodes to the players current node
                 List<int> connectedNodes = horizontalVerticalAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
-                List<int> connectedNodesWithAnimations = connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList();
+                List<int> connectedNodesWithAnimations = (connectedNodes != null) ? connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList() : new List<int>();
                 //also add the current node if it has an animation too
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);
@@ -137,14 +137,14 @@ namespace StudioByStorm {
                 animationsToEnable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Animate());
                 //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
                 List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
-                animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
+                //animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
                 
                 //If we want animations connected to more than one node (which are in connectedNodesWithAnimations) to stay active too
-                /*animationsToDisable.ForEach(x => {
+                animationsToDisable.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
                     bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
                     if (! hasMatch) currentAnim.Stop();
-                });*/
+                });
 
                 //Debug.Log("animationsToEnable: " + animationsToEnable.Count);
                 //Debug.Log("animationsToDisable: " + animationsToDisable.Count);
@@ -258,7 +258,7 @@ namespace StudioByStorm {
 
         IEnumerator createHorizontalVerticalAdjacencyList()
         {
-            yield return new WaitUntil(() => GameManager.Singleton.NodeRegistry.Count() == CurrentLevelData.AdjacencyListData.Count);
+            yield return new WaitUntil(() => GameManager.Singleton.NodeRegistry.Count() == CurrentLevelData.Layers.Sum(x => x.nodeCount));
 
             horizontalVerticalAdjacencyList = new AdjacencyList();
             float[] angleOffsets = new float[5]{0.0f, -180.0f, 180.0f, 90.0f, -90.0f};
@@ -268,7 +268,15 @@ namespace StudioByStorm {
                 //get the current node
                 int currentNodeID = i;
 
-                Vector3 currendNodePosition = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID).gameObject.transform.position;
+                Vector3 currendNodePosition = Vector3.zero;
+                
+                if (GameManager.Singleton.NodeRegistry.Contains(currentNodeID)) {
+                    currendNodePosition = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID).gameObject.transform.position;
+                }
+
+                /*if (currendNodePosition == Vector3.zero) {
+                    Debug.LogError("non existent node ID issue?");
+                }*/
 
                 //iterate over list of adjacent nodes
                 for (int j = 0; j < CurrentLevelData.AdjacencyListData[currentNodeID].Count; j++) {

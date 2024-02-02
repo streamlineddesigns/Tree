@@ -17,6 +17,10 @@ namespace StudioByStorm.Obstacles.Animations {
                 } else {
                     gameObject.transform.Rotate(0.0f, 0.0f, 2.0f);
                 }
+
+                /*float speed = (360.0f / time) / 30.0f;
+                gameObject.transform.Rotate(0f, 0f, speed);*/
+
                 
                 yield return new WaitForSeconds(0.0333f);
                 

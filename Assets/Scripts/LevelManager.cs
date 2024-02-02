@@ -117,14 +117,14 @@ namespace StudioByStorm {
 
         IEnumerator UpdateNearbyObstacles()
         {
-            yield return null;
+            yield return new WaitUntil(() => Obstacles.Count == CurrentLevelData.obstacleNames.Count && horizontalVerticalAdjacencyList != null);
+            yield return new WaitForSeconds(0.1f);   
 
             if (nodeIDsWithAnimations != null) {
                 //get any connected nodes to the players current node
                 List<int> connectedNodes = horizontalVerticalAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
                 List<int> connectedNodesWithAnimations = connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList();
-
                 //also add the current node if it has an animation too
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);
@@ -138,6 +138,13 @@ namespace StudioByStorm {
                 //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
                 List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
                 animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
+                
+                //If we want animations connected to more than one node (which are in connectedNodesWithAnimations) to stay active too
+                /*animationsToDisable.ForEach(x => {
+                    CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                    bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
+                    if (! hasMatch) currentAnim.Stop();
+                });*/
 
                 //Debug.Log("animationsToEnable: " + animationsToEnable.Count);
                 //Debug.Log("animationsToDisable: " + animationsToDisable.Count);
@@ -283,7 +290,7 @@ namespace StudioByStorm {
                 }
             }
 
-            horizontalVerticalAdjacencyList.Log();
+            //horizontalVerticalAdjacencyList.Log();
         }
 
         protected void SetEdgeRenderers()

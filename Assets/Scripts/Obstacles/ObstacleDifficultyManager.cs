@@ -31,6 +31,7 @@ namespace StudioByStorm.Obstacles {
         private Bounds partBounds;
         private bool isRecording;
         private string currentObstacleName;
+        [SerializeField] private bool bJustCreateReport = false;
 
         void Awake()
         {
@@ -46,7 +47,11 @@ namespace StudioByStorm.Obstacles {
                 AsyncObstacleHandle.Completed += OnAsyncObstacleHandleCompleted;
             }
 
-            StartCoroutine(AssignDifficulty());
+            if (bJustCreateReport) {
+                CreateReport();
+            } else {
+                StartCoroutine(AssignDifficulty());
+            }
         }
 
         private void OnAsyncObstacleHandleCompleted(AsyncOperationHandle<GameObject> handle)
@@ -71,10 +76,10 @@ namespace StudioByStorm.Obstacles {
                 currentObstacleName = CompositeAnimations[i].gameObject.name.Replace("(Clone)", "");
                 //get the obstacle
                 CompositeAnimation = CompositeAnimations[i];
-                //activate it
-                CompositeAnimation.gameObject.SetActive(true);
                 //center it
                 CenterObstacle();
+                //activate it
+                CompositeAnimation.gameObject.SetActive(true);
                 //animate it
                 CompositeAnimation.Animate();
                 //start recording
@@ -92,6 +97,7 @@ namespace StudioByStorm.Obstacles {
 
             yield return new WaitForSeconds(1.0f);
             RescaleObstacleDifficulty();
+            CreateReport();
             Save();
         }
 
@@ -186,6 +192,9 @@ namespace StudioByStorm.Obstacles {
             float defaultMaxConsecutiveColorTypeCount = 0;
             float defaultAverageMaxConsecutiveColorTypeCount = 0;
 
+            float currentAverageMaxLightDistance = 0.0f;
+            float currentAverageMaxDarkDistance = 0.0f;
+
             foreach (ColorType ct in Enum.GetValues(typeof(ColorType))) {
                 int currentMaxConsecutiveColorTypeCount = 0;
                 float currentMaxColorDistance = 0.0f;
@@ -227,7 +236,9 @@ namespace StudioByStorm.Obstacles {
                     Debug.Log("AVERAGE maxColorDistance - " + ct.ToString() + ": " + currentAverageMaxColorDistance);
 
                     if (ct == ColorType.Light) {
-                        totalDifficulty += currentAverageMaxColorDistance;
+                        currentAverageMaxLightDistance += currentAverageMaxColorDistance;
+                    } else if (ct == ColorType.Dark) {
+                        currentAverageMaxDarkDistance += currentAverageMaxColorDistance;
                     }
                 }
             }
@@ -236,7 +247,9 @@ namespace StudioByStorm.Obstacles {
             Debug.Log("MODIFIED default max distance: " + defaultMaxDistance);
             totalDifficulty += defaultMaxDistance;*/
 
-            float defaultAverageDistance = defaultAverageMaxConsecutiveColorTypeCount * 0.5f;
+            totalDifficulty += currentAverageMaxLightDistance;
+
+            float defaultAverageDistance = defaultAverageMaxConsecutiveColorTypeCount * 0.4f;
             Debug.Log("MODIFIED default average distance: " + defaultAverageDistance);
             totalDifficulty += defaultAverageDistance;
 
@@ -271,6 +284,20 @@ namespace StudioByStorm.Obstacles {
                 obstacleDataRepository.data[i].difficultyScore = easedDifficultyScore;
                 Debug.Log("Name: " + obstacleDataRepository.data[i].name + " highestDifficultyScore: " + highestDifficultyScore + " currentDifficultyScore: " + currentDifficultyScore + " reProjectedTotalDifficulty: " + reProjectedTotalDifficulty + " percent: " + percent + " rescaledDifficultyScore: " + rescaledDifficultyScore + " easedDifficultyScore: " + easedDifficultyScore + " difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
             }
+        }
+
+        protected void CreateReport()
+        {
+            for (int i = 0; i < 10; i++) {
+                int maxValue = (i * 10) + 10;
+                int minValue = maxValue - 10;
+                int count = obstacleDataRepository.data.Where(x => x.difficultyScore >= minValue && x.difficultyScore <= maxValue).Count();
+                Debug.LogError(minValue + "-" + maxValue + ": " + count + "\n");
+            }
+
+            
+            List<string> names = obstacleDataRepository.data.OrderBy(x => x.difficultyScore).Select(x => x.name).ToList();
+            names.ForEach(x => Debug.LogError(x + "\n"));
         }
 
         protected void Save()

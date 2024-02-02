@@ -8,9 +8,14 @@ namespace StudioByStorm.Obstacles.Animations {
 
     public class WaypointPartialPathAnimation : Animation
     {
+        public bool isAutoLooping = true;
+        
         public GameObject[] targetGameObjects;
         protected Vector3[] targetPositions;
         protected int[] targetPositionIndexs;
+
+        [SerializeField] private bool pingPongLooping = false;
+        private bool isReversing = false;
 
         protected void Awake()
         {
@@ -53,13 +58,38 @@ namespace StudioByStorm.Obstacles.Animations {
                 
                 for (int i = 0; i < targetPositionIndexs.Length; i++) {
                     int currentIndex = targetPositionIndexs[i];
-                    targetPositionIndexs[i] = (currentIndex + 1 <= targetPositionIndexs.Length - 1) ? currentIndex + 1 : 0;
+
+                    int lastBuildingBlockIndex = buildingBlocks.Length - 1;
+                    int lastTargetPositionIndex = targetPositions.Length - 1;
+
+                    if (pingPongLooping) {
+                        if (! isReversing && buildingBlocks[lastBuildingBlockIndex].transform.localPosition == targetPositions[lastTargetPositionIndex]) {
+                            isReversing = true;
+                            direction = (direction != 0) ? 0 : 1;
+                        } else if (isReversing && buildingBlocks[0].transform.localPosition == targetPositions[0]) {
+                            isReversing = false;
+                            direction = (direction != 0) ? 0 : 1;
+                        }
+                    }
+
+                    if (isReversing) {
+                        targetPositionIndexs[i] = (currentIndex - 1 >= 0) ? currentIndex - 1 : targetPositionIndexs.Length - 1;
+                    } else {
+                        targetPositionIndexs[i] = (currentIndex + 1 <= targetPositionIndexs.Length - 1) ? currentIndex + 1 : 0;
+                    }
                 }
 
                 for (int j = 0; j < buildingBlocks.Length; j++) {
+
                     int buildBlockTargetIndex = targetPositionIndexs[j];
                     Vector3 targetPosition = targetPositions[buildBlockTargetIndex];
                     buildingBlocks[j].transform.DOLocalMove(targetPosition, time, false).SetEase(easing);
+
+                    if (! pingPongLooping && ! isAutoLooping && buildBlockTargetIndex == 0) {
+                        buildingBlocks[j].SetActive(false);
+                    } else if (! pingPongLooping && ! isAutoLooping) {
+                        buildingBlocks[j].SetActive(true);
+                    }
                 }
 
                 bool isMoving = true;
@@ -77,7 +107,7 @@ namespace StudioByStorm.Obstacles.Animations {
                     isMoving = isAnyMoving;
                     yield return new WaitForSeconds(0.0333f);
                 }
-                
+
             }
         }
 

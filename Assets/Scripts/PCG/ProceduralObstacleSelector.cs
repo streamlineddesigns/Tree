@@ -34,7 +34,81 @@ namespace StudioByStorm.PCG {
             LevelConfig = levelConfig;
         }
         
+        /*
+         * order by difficulty score
+         * then using the level percent to see what obstacle index we'd be at based on the obstacle count
+         * then select within the range to create an in inRangePossibleObstacles list
+         * then select everything under that range for an underRangePossibleObstacle list
+         * then in a loop, create selectedObstacleList
+         * if selectedObstacleList.Count >= inRangePossibleObstacles.Count + underRangePossibleObstacle.Count then break out
+         * if selectedObstacleList.Count >= targetObstacleCount then break out
+         * then simply randomly choose which list to pick from inRangePossibleObstacles vs underRangePossibleObstacle and do something like 75/25 or 50/50
+         */
+
         public IEnumerator SelectObstacles()
+        {
+            //get current level id and level percent
+            currentLevelID = (isDebuggingCurrentLevelID) ? debugLevelID : (GetCurrentLevelFileCount() + 1);
+            float levelPercent = currentLevelID / (maxLevelID  * 1.0f);
+            
+            //get target obstacle index using level percent
+            int targetObstacleIndex = (int) ((ObstacleDataRepository.data.Count * 1.0f) * levelPercent);
+            //get possible obstacles simply by ordering by difficulty score
+            List<ObstacleData> possibleObstacles = ObstacleDataRepository.data.OrderBy(x => x.difficultyScore).ToList();
+
+            //get min and max obstacle index by +/- 5
+            int minObstacleIndex = targetObstacleIndex - 5;
+            int maxObstacleIndex = targetObstacleIndex + 5;
+        
+            //IN range is simply index >= min && index <= max and then we shuffle
+            List<ObstacleData> inRangePossibleObstacles = ObstacleDataRepository.data.Where((x, index) => (index >= minObstacleIndex && index <= maxObstacleIndex)).ToList();
+            Shuffle inRangeShuffle = new Shuffle();
+            inRangePossibleObstacles = inRangeShuffle.FisherYates(inRangePossibleObstacles);
+
+            //UNDER range is simply index <= min and then we shuffle
+            List<ObstacleData> underRangePossibleObstacles = ObstacleDataRepository.data.Where((x, index) => (index <= minObstacleIndex)).ToList();
+            Shuffle underRangeShuffle = new Shuffle();
+            underRangePossibleObstacles = underRangeShuffle.FisherYates(underRangePossibleObstacles);
+
+            //target obstacle count is our level percent interpolated based on the the min and max obstacles in a level an our easing fucntion
+            float percentOffset = Mathf.Min((0.035f + levelPercent), 100.0f);
+            int targetObstacleCount = (int) DOVirtual.EasedValue(0.0f, maxObstaclesInALevel, percentOffset, obstacleCountEasing);
+
+            List<ObstacleData> selectedObstacleList = new List<ObstacleData>();
+
+            bool isSearching = true;
+            int inRangeIndex = 0;
+            int underRangeIndex = 0;
+
+            while(isSearching) {
+
+                int selectedObstacleCount = selectedObstacleList.Count;
+                
+                if (selectedObstacleCount >= targetObstacleCount || selectedObstacleCount >= possibleObstacles.Count) {
+                    isSearching = false;
+                }
+
+                //ie a 50% chance of using the in range obstacles over the under range obstacles
+                bool useInRange = (UnityEngine.Random.Range(1.0f, 10.0f) >= 5.0f);
+                if (useInRange && inRangeIndex < inRangePossibleObstacles.Count) {
+                    selectedObstacleList.Add(inRangePossibleObstacles[inRangeIndex]);
+                    inRangeIndex++;
+                } else if (! useInRange && underRangeIndex < underRangePossibleObstacles.Count) {
+                    selectedObstacleList.Add(underRangePossibleObstacles[underRangeIndex]);
+                    underRangeIndex++;
+                }
+                yield return null;
+            }
+
+            //grab them from possible obstacles
+            List<ObstacleData> obstaclesToUse = selectedObstacleList.Take(targetObstacleCount).ToList();
+            //add them to the level
+            GraphConstructionManager.GlobalLevelData.obstacleNames = obstaclesToUse.Select(x => x.name).ToList();
+
+            yield return null;
+        }
+
+        /*public IEnumerator SelectObstacles()
         {
             //get info on the current level being made
             currentLevelID = (isDebuggingCurrentLevelID) ? debugLevelID : (GetCurrentLevelFileCount() + 1);
@@ -89,7 +163,7 @@ namespace StudioByStorm.PCG {
             GraphConstructionManager.GlobalLevelData.obstacleNames = obstaclesToUse.Select(x => x.name).ToList();
 
             yield return null;
-        }
+        }*/
 
         protected int GetCurrentLevelFileCount()
         {

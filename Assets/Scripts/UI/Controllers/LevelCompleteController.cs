@@ -151,7 +151,8 @@ namespace StudioByStorm.UI.Controllers {
             Chapter currentChapter = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID];
             
             //check if it's equal to our chapters last level ID. ie should play next chapter
-            int lastLevelIDForCurrentChapter = currentChapter.levels.Count - 1;
+            //int lastLevelIDForCurrentChapter = currentChapter.levels.Count - 1;
+            int lastLevelIDForCurrentChapter = (GameManager.Singleton.LevelManager.initiallyAvailableLevelRowsPerChapter * 3) - 1;
             int nextChapterID = currentChapterID + 1;
 
             if (currentLevelID >= lastLevelIDForCurrentChapter) {

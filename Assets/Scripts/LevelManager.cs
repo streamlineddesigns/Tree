@@ -39,6 +39,7 @@ namespace StudioByStorm {
         public LevelData CurrentLevelData;
         public int currentLevelID;
         public int currentChapterID;
+        public int initiallyAvailableLevelRowsPerChapter = 3;
         protected Pool NodePool;
         protected Pool EdgeRendererPool;
         protected List<float[]> nodePositions;

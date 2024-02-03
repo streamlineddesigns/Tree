@@ -17,7 +17,6 @@ namespace StudioByStorm.UI.Controllers {
         public GameObject ChapterRowGO;
         public GameObject ViewportContentSpawnLocation;
         public LevelConfig LevelConfig;
-        private int initiallyAvailableSets = 3;
 
         void Start()
         {
@@ -40,7 +39,7 @@ namespace StudioByStorm.UI.Controllers {
                 int levelID = 0;
                 int ChapterID = i;
 
-                for (int j = 0; j < initiallyAvailableSets; j++) {
+                for (int j = 0; j < GameManager.Singleton.LevelManager.initiallyAvailableLevelRowsPerChapter; j++) {
                     int cutSceneID = j;
                     string cutSceneKey = (ChapterID +"-"+ cutSceneID);
                     //place a level row 

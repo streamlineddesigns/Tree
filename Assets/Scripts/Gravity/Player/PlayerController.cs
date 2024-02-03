@@ -440,6 +440,7 @@ namespace StudioByStorm.Gravity.Player {
             Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
 
             float force = (isPowerJumping) ? powerJumpForce : jumpForce;
+            force += (!isJoystickUp) ? 2.0f : 0.0f;
             rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
             didJump = true;
             isJumping = false;

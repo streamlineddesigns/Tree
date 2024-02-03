@@ -53,6 +53,8 @@ namespace StudioByStorm.UI.Controllers {
 
         IEnumerator PrintText(TMP_Text TMP, string textToPrint)
         {
+            textToPrint = textToPrint.Replace("<br>", Environment.NewLine);
+
             //get characters from current chapter heading
             char[] charArray = textToPrint.ToCharArray();
             List<char> charList = new List<char>();

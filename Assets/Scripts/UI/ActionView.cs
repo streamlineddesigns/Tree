@@ -114,7 +114,7 @@ namespace StudioByStorm.UI {
         }
 
         public void OnJumpJoyStickDown()
-        {
+        {/*
             //get positions
             Vector3 p0 = JumpJoyStickHandleRect.gameObject.transform.localPosition;
             if (ML.Math.GetDistance(p0, previousp0Position) > pMovementThreshold) {
@@ -159,6 +159,7 @@ namespace StudioByStorm.UI {
             float p3Distance = ML.Math.GetDistance((Vector2) p0, (Vector2) p3TargetPosition);
             p2Indicator.transform.localScale = new Vector3(p2Distance, p2Indicator.transform.localScale.y, p2Indicator.transform.localScale.z);
             p3Indicator.transform.localScale = new Vector3(p3Distance, p3Indicator.transform.localScale.y, p3Indicator.transform.localScale.z);
+            */
         }
 
         public void OnJumpJoyStickUp()

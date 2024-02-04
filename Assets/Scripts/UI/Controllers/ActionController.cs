@@ -289,7 +289,7 @@ namespace StudioByStorm {
             StartCoroutine(DeplayedJumpIsUp());
             jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
-            GameManager.Singleton.PlayerController.JumpOverride(dir);
+            GameManager.Singleton.PlayerController.JumpOverride(-jumpJoystickUpPoint);
             ActionView.OnJumpJoyStickUp();
 
             isJumpIndicatorOn = false;

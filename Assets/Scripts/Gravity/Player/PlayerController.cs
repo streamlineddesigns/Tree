@@ -21,6 +21,8 @@ namespace StudioByStorm.Gravity.Player {
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
+        [SerializeField] private ParticleSystem gameOverExplosionFX;
+        [SerializeField] private ParticleSystem gameOverGlowingLightFX;
 
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
 
@@ -54,6 +56,7 @@ namespace StudioByStorm.Gravity.Player {
 
         private bool isMovementLocked;
         private bool isUsingDirectionalMovement = true;
+        private Vector2 previousMovementDirection = Vector2.zero;
         private Vector2 movementDirection = Vector2.zero;
         private Vector2 swipeDirection = Vector2.zero;
         private float movementForce = 7f;
@@ -63,7 +66,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool isPowerJumping = false;
         private bool didJump = false;
         private float jumpForce = 7f;
-        private float powerJumpForce = 11f;
+        private float powerJumpForce = 13f;
 
         private Vector2 dashDirection = Vector2.zero;
         private float spaceDashForce = 9f;
@@ -175,13 +178,13 @@ namespace StudioByStorm.Gravity.Player {
 
             if (isOnSurface || isInAtmosphere)
             {
-                if (gravityDirection != Vector2.zero) {
+                if (gravityDirection != Vector2.zero && !isOnSurface) {
                     ApplyGravity();
                 }
                 
-                if (movementDirection != Vector2.zero) {
+                /*if (movementDirection != Vector2.zero) {
                     Move();
-                }
+                }*/
             }
 
             if (! isInAtmosphere && ! isOnSurface) {
@@ -246,6 +249,13 @@ namespace StudioByStorm.Gravity.Player {
                                 });
         }
 
+        IEnumerator LevelLoseAnimation()
+        {
+            //play explosion fx
+            //play glowing light fx
+            yield return null;
+        }
+
         IEnumerator WaitForPositionHelper()
         {
             isPositionHelperPlayingBack = true;
@@ -272,6 +282,9 @@ namespace StudioByStorm.Gravity.Player {
                 surface = collider.gameObject.GetComponent<Surface>();
                 StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
                 PlayerPositionHelper.SetRecording(false);
+
+                movementDirection = previousMovementDirection;
+                Move();
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);
@@ -387,9 +400,11 @@ namespace StudioByStorm.Gravity.Player {
         protected void OnJoystickDirectionChange(Vector2 Direction)
         {
             Vector2 joystickDir = Direction;//joystickUpPoint - joystickDownPoint;
-
+            
             if (isOnSurface) {
-                movementDirection = joystickDir;//$$(r.endPoint - r.startPoint).normalized;
+                movementDirection = -joystickDir;//$$(r.endPoint - r.startPoint).normalized;
+            } else {
+                previousMovementDirection = joystickDir;
             }
 
             SetRelativeForwardDirection();
@@ -409,6 +424,11 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void ApplyGravity()
         {
+            /*
+             * Overriding gravity completely for new movement testing
+             */
+            gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
+
             transform.up = - gravityDirection;
             rigidbody.AddForce(gravityDirection * (gravityForce * Time.fixedDeltaTime));
         }
@@ -416,13 +436,16 @@ namespace StudioByStorm.Gravity.Player {
         protected void Move()
         {
             if (isJoystickUp) {
-                return;
+                //return;
             }
             //Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.player.transform.position;//$$Testing could make it like this if we wanted player to be able to just move on flat ground
             Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.nearbyNode.gameObject.transform.position;
             Vector2 target = nearbyNodePosition + movementDirection.normalized * mockNodeRadius;//$$TODOsget nearby surface gravity point, and get its distance from the nearby node and use that instead of mockNodeRadius.
             
-            rigidbody.DOMove(target, movementForce, false);
+            //rigidbody.DOMove(target, movementForce, false);
+            //rigidbody.DOMove(nearbyNodePosition, movementForce, false);
+            rigidbody.velocity = Vector2.zero;
+            transform.position = nearbyNodePosition;
         }
 
         protected void ResetMovement()
@@ -440,7 +463,7 @@ namespace StudioByStorm.Gravity.Player {
             Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
 
             float force = (isPowerJumping) ? powerJumpForce : jumpForce;
-            force += (!isJoystickUp) ? 2.0f : 0.0f;
+            //force += (!isJoystickUp) ? 2.0f : 0.0f;
             rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
             didJump = true;
             isJumping = false;

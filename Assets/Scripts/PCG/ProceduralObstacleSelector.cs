@@ -79,8 +79,10 @@ namespace StudioByStorm.PCG {
             bool isSearching = true;
             int inRangeIndex = 0;
             int underRangeIndex = 0;
+            int searchIterationBreakOutCount = 1000;
+            int searchIterationsCount = 0;
 
-            while(isSearching) {
+            while(isSearching && searchIterationsCount < searchIterationBreakOutCount) {
 
                 int selectedObstacleCount = selectedObstacleList.Count;
                 
@@ -91,12 +93,26 @@ namespace StudioByStorm.PCG {
                 //ie a 50% chance of using the in range obstacles over the under range obstacles
                 bool useInRange = (UnityEngine.Random.Range(1.0f, 10.0f) >= 5.0f);
                 if (useInRange && inRangeIndex < inRangePossibleObstacles.Count) {
-                    selectedObstacleList.Add(inRangePossibleObstacles[inRangeIndex]);
+
+                    if (selectedObstacleList.Count(x => x.name == inRangePossibleObstacles[inRangeIndex].name) == 0) {
+                        selectedObstacleList.Add(inRangePossibleObstacles[inRangeIndex]);
+                    } else {
+                        Debug.LogError("Possible double entry: " + inRangePossibleObstacles[inRangeIndex].name);
+                    }
                     inRangeIndex++;
+
                 } else if (! useInRange && underRangeIndex < underRangePossibleObstacles.Count) {
-                    selectedObstacleList.Add(underRangePossibleObstacles[underRangeIndex]);
+
+                    if (selectedObstacleList.Count(x => x.name == underRangePossibleObstacles[underRangeIndex].name) == 0) {
+                        selectedObstacleList.Add(underRangePossibleObstacles[underRangeIndex]);
+                    } else {
+                        Debug.LogError("Possible double entry: " + underRangePossibleObstacles[underRangeIndex].name);
+                    }
+
                     underRangeIndex++;
                 }
+
+                searchIterationsCount++;
                 yield return null;
             }
 

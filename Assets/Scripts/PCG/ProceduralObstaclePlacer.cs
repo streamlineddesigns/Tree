@@ -208,8 +208,20 @@ namespace StudioByStorm.PCG {
                 GameObject[] obstacleParts = compositeAnimation.animations.SelectMany<Obstacles.Animations.Animation, GameObject>(x => x.buildingBlocks).ToArray();
                 //calculate an AABB on the part's positions
                 Bounds partBounds = ML.Math.ComputeAABB(obstacleParts.Select(x => x.transform.position).ToList());
+                //check if the animation is manually centered, if so use that center
+                GameObject[] centerParts = compositeAnimation.animations.Select<Obstacles.Animations.Animation, GameObject>(x => x.centerPosition).ToArray();
+                GameObject centerPart = null;
+                bool foundCenterPart = false;
+                for (int i = 0; i < centerParts.Length; i++) {
+                    if (centerParts[i] != null) {
+                        centerPart = centerParts[i];
+                        foundCenterPart = true;
+                        break;
+                    }
+                }
+                Vector3 centerPositionToseUse = (centerPart != null) ? centerPart.transform.position : partBounds.center;
                 //using this, we can determine the offset from the screen's center position 
-                Vector3 CompositeAnimationOffset = nodesCentroid - partBounds.center;
+                Vector3 CompositeAnimationOffset = nodesCentroid - centerPositionToseUse;
                 //then we can add this offset to the composite animation's position to center it properly
                 Vector3 obstacleTargetPosition = compositeAnimation.gameObject.transform.position + CompositeAnimationOffset;
 

@@ -25,6 +25,7 @@ namespace StudioByStorm {
         public ProgressManager ProgressManager;
         public UIController UIController;
         public AdjacencyList AdjacencyList;
+        public AdjacencyList FullAdjacencyList;
         public ColorModel ColorModel;
         public static GameManager Singleton;
         public ControllerRegistry ControllerRegistry;

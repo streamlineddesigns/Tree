@@ -58,7 +58,7 @@ namespace StudioByStorm {
 
             //get distance too so we know how many links to disable visually
             float distance = Vector2.Distance(childNode.gameObject.transform.position, parentNode.gameObject.transform.position);
-            Debug.Log(distance);
+            //Debug.Log(distance);
 
             //tell chain to target the empty target
             FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = emptyTarget.transform;

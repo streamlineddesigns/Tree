@@ -22,6 +22,8 @@ namespace StudioByStorm {
         protected bool isTravelAvailable;
         public float thresholdDistanceToBreakOutOfLerp = 0.1f;
         public bool lerping;
+        [SerializeField] private Color currentJumpIndicatorColor;
+        [SerializeField] private Color originalJumpIndicatorColor;
         protected bool travelIsUp;
         protected bool travelsearching = false;
         protected bool jumpIsUp;
@@ -75,26 +77,31 @@ namespace StudioByStorm {
         {
             Vector2 tempUpPoint = Input.mousePosition;
             //check the direction of the joystick
-            Vector2 joystickDir = tempUpPoint - DownPoint;
+            //Vector2 joystickDir = tempUpPoint - DownPoint;
+            Vector2 joystickDir = -TravelJoyStick.ScaledValue;
+            //get the full adjacency list
+            List<int> levelAdjacentNodeIDS = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
             //get a list of the ids the current node is connected to from the adjacency list
             List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
-            if (adjacentNodeIDS == null) {
+
+            if (lerping || adjacentNodeIDS == null || levelAdjacentNodeIDS == null || adjacentNodeIDS.Count == 0) {
                 return;
             }
             //calculate the directions from the current node to the connected node
             //do a 1KNN on the list and the directions of the joystick direction
             int index = -1;
             float minimumDistance = 1000.0f;
+            float thresholdDistance = 0.4f;
             Node targetNode = null;
 
-            for (int i = 0; i < adjacentNodeIDS.Count; i++) {
-                int nodeID = adjacentNodeIDS[i];
+            for (int i = 0; i < levelAdjacentNodeIDS.Count; i++) {
+                int nodeID = levelAdjacentNodeIDS[i];
                 Node connectedNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
-                Vector2 directionToConnectedNode = connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position;
+                Vector2 directionToConnectedNode = (connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position).normalized;
 
                 float connectedNodeDistance = ML.Math.GetDistance(joystickDir, directionToConnectedNode);
 
-                if (connectedNodeDistance < minimumDistance) {
+                if (connectedNodeDistance < minimumDistance && connectedNodeDistance <= thresholdDistance) {
                     minimumDistance = connectedNodeDistance;
                     index = nodeID;
                     targetNode = connectedNode;
@@ -116,6 +123,28 @@ namespace StudioByStorm {
                 }
             }
 
+            //if nothing was found
+            if (index == -1 || ! adjacentNodeIDS.Contains(targetNode.ID)) {
+
+                if (currentSelectedEdge != null) {
+                    //set the current selected back to original material
+                    for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
+                        currentSelectedEdge.LinkSpriteRenderers[i].material = originalMaterial;
+                    }
+                    currentSelectedEdge = null;
+                }
+
+                //update jump indicator
+                GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
+                /*if (currentJumpIndicatorColor != originalJumpIndicatorColor) {
+                    currentJumpIndicatorColor = originalJumpIndicatorColor;
+                    GameManager.Singleton.PlayerController.JumpIndicator.transform.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => {x.color = currentJumpIndicatorColor;});
+                    Debug.Log("HERE1");
+                }*/
+                
+                return;
+            }
+
             if (tempEdge.childID != -1 && currentSelectedEdge != tempEdge) {
 
                 //if there was all ready a selected edge
@@ -125,7 +154,6 @@ namespace StudioByStorm {
                         currentSelectedEdge.LinkSpriteRenderers[i].material = originalMaterial;
                     }
                 }
-                
 
                 //set the new selected edge
                 currentSelectedEdge = tempEdge;
@@ -134,6 +162,16 @@ namespace StudioByStorm {
                 for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
                     currentSelectedEdge.LinkSpriteRenderers[i].material = glowingMaterial;
                 }
+
+                //update jump indicator
+                GameManager.Singleton.PlayerController.JumpIndicator.SetActive(false);
+                /*Color nc = GameManager.Singleton.ColorModel.lightColor[(int) targetNode.NodeColor];
+                if (currentJumpIndicatorColor != nc) {
+                    currentJumpIndicatorColor = nc;
+                    GameManager.Singleton.PlayerController.JumpIndicator.transform.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => {x.color = currentJumpIndicatorColor;});
+                    Debug.Log("HERE2");
+                }*/
+                
             }
         }
         
@@ -160,26 +198,30 @@ namespace StudioByStorm {
             }
             //check the direction of the joystick
             //Vector2 joystickDir = UpPoint - DownPoint;
-            Vector2 joystickDir = TravelJoyStick.ScaledValue;
+            Vector2 joystickDir = -TravelJoyStick.ScaledValue;
             //get a list of the ids the current node is connected to from the adjacency list
+            List<int> levelAdjacentNodeIDS = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
+
             List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
-            if (lerping || adjacentNodeIDS == null) {
+
+            if (lerping || adjacentNodeIDS == null || levelAdjacentNodeIDS == null) {
                 return;
             }
             //calculate the directions from the current node to the connected node
             //do a 1KNN on the list and the directions of the joystick direction
             int index = -1;
             float minimumDistance = 1000.0f;
+            float thresholdDistance = 0.4f;
             Node targetNode = null;
 
-            for (int i = 0; i < adjacentNodeIDS.Count; i++) {
-                int nodeID = adjacentNodeIDS[i];
+            for (int i = 0; i < levelAdjacentNodeIDS.Count; i++) {
+                int nodeID = levelAdjacentNodeIDS[i];
                 Node connectedNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
                 Vector2 directionToConnectedNode = (connectedNode.gameObject.transform.position - ActionModel.CurrentNode.gameObject.transform.position).normalized;
 
                 float connectedNodeDistance = ML.Math.GetDistance(joystickDir, directionToConnectedNode);
 
-                if (connectedNodeDistance < minimumDistance) {
+                if (connectedNodeDistance < minimumDistance && connectedNodeDistance <= thresholdDistance) {
                     minimumDistance = connectedNodeDistance;
                     index = nodeID;
                     targetNode = connectedNode;
@@ -188,6 +230,11 @@ namespace StudioByStorm {
 
             //now we need to find the list of edges which are connected to current and target
             if (index != -1) {
+
+                if (! adjacentNodeIDS.Contains(targetNode.ID)) {
+                    return;
+                }
+
                 Edge currentEdge = ActionModel.CurrentNode.currentEdge;
                 Edge targetNodeEdge = targetNode.currentEdge;
 
@@ -233,7 +280,8 @@ namespace StudioByStorm {
             }
 
             Node EndNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID);
-            yield return new WaitUntil(() => GameManager.Singleton.player.transform.position == EndNode.gameObject.transform.position);
+            yield return new WaitUntil(() => Vector3.Distance(GameManager.Singleton.player.transform.position, EndNode.gameObject.transform.position) <= 0.1f);
+            
             Vector3 EndNodeTargetRotation = EndNode.InnerGraphic.gameObject.transform.localEulerAngles;
             EndNodeTargetRotation.z += 720.0f;
             EndNode.InnerGraphic.gameObject.transform.DORotate(EndNodeTargetRotation, 1.0f, RotateMode.LocalAxisAdd);

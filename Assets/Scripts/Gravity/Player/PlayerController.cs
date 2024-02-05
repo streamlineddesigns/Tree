@@ -146,21 +146,32 @@ namespace StudioByStorm.Gravity.Player {
 
             gameObject.transform.DOScale(1.0f, 0.25f);
 
-            for (int i = 0; i < waypoints.Length; i++) {
+            /*for (int i = 0; i < waypoints.Length; i++) {
                 if (i % 2 == 0) {
                     gameObject.transform.DOMove(waypoints[i], 0.1f, false);
                 } else {
                     gameObject.transform.DOPath(new Vector3[1]{waypoints[i]}, 0.1f, PathType.Linear);
                 }
                 yield return new WaitUntil(() => gameObject.transform.position == waypoints[i]);
-            }
+            }*/
+
+            gameObject.transform.DOPath(waypoints, 0.75f, PathType.Linear).SetEase(Ease.Linear).OnComplete(() => {
+                Move();
+            });
+
+            int lastWaypointIndex = waypoints.Length - 1;
+            yield return new WaitUntil(() => Vector3.Distance(gameObject.transform.position, waypoints[lastWaypointIndex]) <= 0.1f);
 
             //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
 
             gameObject.transform.DOScale(originalScale, 0.25f);
-            gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
-            yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+            //gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
+            
+            //yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f).OnComplete(() => {GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);});
+           
+            yield return null;
+            Move();
             lerping = false;
         }
 
@@ -375,6 +386,10 @@ namespace StudioByStorm.Gravity.Player {
 
         public void JumpOverride(Vector2 dir)
         {
+            if (lerping) {
+                return;
+            }
+            
             if (!isJumping && isOnSurface) {
                 isJumping = true;
                 isPowerJumping = true;

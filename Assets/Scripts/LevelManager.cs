@@ -253,6 +253,8 @@ namespace StudioByStorm {
 
             //save our node ids with animations
             nodeIDsWithAnimations = CurrentLevelData.obstacleNodeIDs.SelectMany<List<int>, int>(x => x).ToList();
+            //create our full adjacency list
+            CreateFullAdjacencyList();
             //create our horizontal/vertical adjacency list
             StartCoroutine(createHorizontalVerticalAdjacencyList());
         }
@@ -300,6 +302,26 @@ namespace StudioByStorm {
             }
 
             //horizontalVerticalAdjacencyList.Log();
+        }
+
+        protected void CreateFullAdjacencyList()
+        {
+            GameManager.Singleton.FullAdjacencyList = new AdjacencyList();
+
+            for (int i = 0; i < CurrentLevelData.AdjacencyListData.Count; i++) {
+                int currentNodeID = i;
+
+                for (int j = 0; j < CurrentLevelData.AdjacencyListData[i].Count; j++) {
+                    int adjacentNodeID = CurrentLevelData.AdjacencyListData[currentNodeID][j];
+
+                    if (currentNodeID ==  adjacentNodeID) {
+                        continue;
+                    }
+
+                    GameManager.Singleton.FullAdjacencyList.Add(currentNodeID, adjacentNodeID);
+                    GameManager.Singleton.FullAdjacencyList.Add(adjacentNodeID, currentNodeID);
+                }
+            }
         }
 
         protected void SetEdgeRenderers()

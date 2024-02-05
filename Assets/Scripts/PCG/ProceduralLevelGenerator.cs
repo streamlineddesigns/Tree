@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using StudioByStorm.Graph;
+using StudioByStorm.Data;
 
 namespace StudioByStorm.PCG {
 
@@ -63,6 +64,7 @@ namespace StudioByStorm.PCG {
             }
 
             GraphConstructionManager.CreateLevelData();
+            SetPlayerPositionToColorNode();
         }
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
@@ -355,6 +357,34 @@ namespace StudioByStorm.PCG {
                     Debug.Log(string.Join(" -> ", workingSolutions[k][l]));
                 }
             }
+        }
+
+        private void SetPlayerPositionToColorNode()
+        {
+            //create a list to hold the index's of all colored nodes
+            List<int> coloredNodeIndexs = new List<int>();
+
+            //iterate over node colors, store the indicies of only the ones which aren't gray
+            for (int i = 0; i < GraphConstructionManager.nodeColors.Count; i++) {
+                if (GraphConstructionManager.nodeColors[i] != NodeColor.GrayScale) {
+                    coloredNodeIndexs.Add(i);
+                }
+            }
+
+            //shuffle the list of indicies
+            Shuffle indexShuffler = new Shuffle();
+            List<int> shuffledColoredNodeIndexs = indexShuffler.FisherYates(coloredNodeIndexs);
+
+            //get a random index from the shuffled list
+            int randomIndex = UnityEngine.Random.Range(0, shuffledColoredNodeIndexs.Count);
+            int randomNodeIndex = shuffledColoredNodeIndexs[randomIndex];
+
+            //use it to get the position of the node at said index
+            Vector3 nodePosition = GraphConstructionManager.nodePositions[randomNodeIndex];
+            //scale it to in game size
+            Vector3 playerTargetPosition = nodePosition * 7.0f;
+            //update it in the level data
+            GraphConstructionManager.GlobalLevelData.PlayerStartPosition = playerTargetPosition;
         }
     }
 

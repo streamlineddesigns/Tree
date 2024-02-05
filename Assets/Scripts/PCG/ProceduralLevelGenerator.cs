@@ -67,7 +67,9 @@ namespace StudioByStorm.PCG {
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
         {
-            maxDistanceBetweenNodesToCreateEdge = (isUsingMaxDistanceBetweenNodes && maxDistanceBetweenNodesToCreateEdge == 1.2f) ? 1.5f : 1.2f;
+            if (maxDistanceBetweenNodesToCreateEdge == 1.2f) {
+                maxDistanceBetweenNodesToCreateEdge = (isUsingMaxDistanceBetweenNodes) ? 1.5f : 1.2f;
+            }
 
             int nodeCount = GraphConstructionManager.nodePositions.Count;
 
@@ -81,7 +83,10 @@ namespace StudioByStorm.PCG {
                     //remove all edges before adding any
                     GraphConstructionManager.AdjacencyList.Remove(i, j);
 
-                    if (Vector3.Distance(GraphConstructionManager.nodePositions[i], GraphConstructionManager.nodePositions[j]) <= maxDistanceBetweenNodesToCreateEdge) {
+                    float distance = Vector3.Distance(GraphConstructionManager.nodePositions[i], GraphConstructionManager.nodePositions[j]);
+                    //Debug.Log("distance: " + distance);
+
+                    if (distance <= maxDistanceBetweenNodesToCreateEdge) {
                         GraphConstructionManager.addToAdjacencyList(i, j);
                     }
                 }

@@ -30,8 +30,8 @@ namespace StudioByStorm.Obstacles.Animations {
 
                 //multiple shakes                
                 for (int i = 0; i < vibrateTilCollapseCount; i++) {
-                    Shake(time);
-                    yield return new WaitForSeconds(time);
+                    Shake(time * 2.0f);
+                    yield return new WaitForSeconds(time * 2.0f);
                 }
                 
                 //do movement to targets

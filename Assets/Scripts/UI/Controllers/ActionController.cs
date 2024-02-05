@@ -280,7 +280,7 @@ namespace StudioByStorm {
             }
 
             Node EndNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID);
-            yield return new WaitUntil(() => Vector3.Distance(GameManager.Singleton.player.transform.position, EndNode.gameObject.transform.position) <= 0.1f);
+            yield return new WaitForSeconds(0.75f);
             
             Vector3 EndNodeTargetRotation = EndNode.InnerGraphic.gameObject.transform.localEulerAngles;
             EndNodeTargetRotation.z += 720.0f;
@@ -376,7 +376,7 @@ namespace StudioByStorm {
                 //send light along path :)
                 for (int i = 0; i < waypoints.Length; i++) {
                     edgeLightFX.transform.DOMove(waypoints[i], 0.03f, false);
-                    yield return new WaitUntil(() => edgeLightFX.transform.position == waypoints[i]);
+                    yield return new WaitForSeconds(0.03f);
                 }
                 edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.03f, false);
                 edgeLightFX.SetActive(false);

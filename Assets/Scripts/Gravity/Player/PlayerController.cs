@@ -141,7 +141,7 @@ namespace StudioByStorm.Gravity.Player {
             lerping = true;
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f);
-            yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
+            yield return new WaitForSeconds(0.1f);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);
 
             gameObject.transform.DOScale(1.0f, 0.25f);
@@ -159,8 +159,7 @@ namespace StudioByStorm.Gravity.Player {
                 Move();
             });
 
-            int lastWaypointIndex = waypoints.Length - 1;
-            yield return new WaitUntil(() => Vector3.Distance(gameObject.transform.position, waypoints[lastWaypointIndex]) <= 0.1f);
+            yield return new WaitForSeconds(0.75f);
 
             //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
 
@@ -389,7 +388,7 @@ namespace StudioByStorm.Gravity.Player {
             if (lerping) {
                 return;
             }
-            
+
             if (!isJumping && isOnSurface) {
                 isJumping = true;
                 isPowerJumping = true;

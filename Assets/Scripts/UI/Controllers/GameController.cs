@@ -114,6 +114,14 @@ namespace StudioByStorm.UI.Controllers {
                     blueEdges[i].gameObject.SetActive(false);
                 }
             }
+
+            //when someone resets the current color, check if they are on a node of the same color and it's a parent. If so, enable the get edge button again!
+            //this is an edge case; no pun intended lol
+            Node nearbyNode = GameManager.Singleton.nearbyNode.GetData<Node>();
+            if (nearbyNode.NodeColor == inputColor && nearbyNode.NodeType == NodeType.Parent && Vector3.Distance(nearbyNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) <= 0.25f) {
+                ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+                actionView.EnableGetEdgeButton();
+            }
             
         }
         

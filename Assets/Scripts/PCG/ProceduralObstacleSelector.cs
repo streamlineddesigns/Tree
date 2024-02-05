@@ -66,7 +66,7 @@ namespace StudioByStorm.PCG {
             inRangePossibleObstacles = inRangeShuffle.FisherYates(inRangePossibleObstacles);
 
             //UNDER range is simply index <= min and then we shuffle
-            List<ObstacleData> underRangePossibleObstacles = ObstacleDataRepository.data.Where((x, index) => (index <= minObstacleIndex)).ToList();
+            List<ObstacleData> underRangePossibleObstacles = ObstacleDataRepository.data.Where((x, index) => (index < minObstacleIndex)).ToList();
             Shuffle underRangeShuffle = new Shuffle();
             underRangePossibleObstacles = underRangeShuffle.FisherYates(underRangePossibleObstacles);
 

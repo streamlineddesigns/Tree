@@ -78,9 +78,11 @@ namespace StudioByStorm.FX {
         
         protected void GenerateBoids()
         {
-            for (int i = 0; i < colorCount; i++) {
+            for (int i = 0; i < GameManager.Singleton.ColorModel.colorsInUse.Length; i++) {
                 for (int j = 0; j < boidPerColor; j++) {
-                    Color color = GameManager.Singleton.ColorModel.lightColor[i];
+                    NodeColor currentColor = GameManager.Singleton.ColorModel.colorsInUse[i];
+                    int nodeColorIndex = (int) currentColor;
+                    Color color = GameManager.Singleton.ColorModel.lightColor[nodeColorIndex];
                     Boid boid = BoidPool.Get().GetComponent<Boid>();
                     boid.SetColor(color);
                     boid.gameObject.SetActive(true);

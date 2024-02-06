@@ -7,6 +7,7 @@ namespace StudioByStorm {
 
     public class ColorModel : MonoBehaviour
     {
+        public NodeColor[] colorsInUse;
         public Sprite[] ColoredTravelers;
         public Sprite[] ColoredSetters;
         public Sprite[] ColoredGetters;

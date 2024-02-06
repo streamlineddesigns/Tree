@@ -40,6 +40,7 @@ namespace StudioByStorm.Gravity.Player {
         private Material currentMaterial;
         private Color currentColor;
         private bool isHitAnimationPlaying;
+        private bool isHitObstacle;
 
         private Surface surface;
         private bool isOnSurface;
@@ -249,7 +250,8 @@ namespace StudioByStorm.Gravity.Player {
         private void HitObstacle()
         {
             //play the hit animation
-            if (! isHitAnimationPlaying) {
+            if (! isHitObstacle) {
+                isHitObstacle = true;
                 HitObstacleAnimation();
 
                 //check if the player still has hearts left after this
@@ -280,6 +282,7 @@ namespace StudioByStorm.Gravity.Player {
                                 .AppendCallback(() => {
                                     isHitAnimationPlaying = false;
                                     spriteRenderer.material = currentMaterial;
+                                    isHitObstacle = false;
                                 });
         }
 
@@ -366,12 +369,12 @@ namespace StudioByStorm.Gravity.Player {
                     if (! lerping) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
-                        if (! isInAtmosphere && ! isOnSurface) {
+                        if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {
                             PlayerPositionHelper.PlayBack();
                             StartCoroutine(WaitForPositionHelper());
                         }
                         
-                        if (! isHitAnimationPlaying) {
+                        if (! isHitObstacle) {
                             HitObstacle();
                         }
                         

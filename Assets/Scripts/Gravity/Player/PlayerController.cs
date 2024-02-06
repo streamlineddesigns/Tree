@@ -146,7 +146,7 @@ namespace StudioByStorm.Gravity.Player {
             lerping = true;
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1333f);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);
 
             gameObject.transform.DOScale(1.0f, 0.25f);
@@ -164,7 +164,7 @@ namespace StudioByStorm.Gravity.Player {
                 Move();
             });
 
-            yield return new WaitForSeconds(0.75f);
+            yield return new WaitForSeconds(0.7833f);
 
             //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
 

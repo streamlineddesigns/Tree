@@ -13,6 +13,7 @@ namespace StudioByStorm.PCG {
     public class ProceduralLevelGenerator : MonoBehaviour
     {
         public int attempts = 0;
+        [SerializeField] private List<NodeColor> colorsInUse;
         private GraphConstructionManager GraphConstructionManager;
         //stores color: node ids that are the input color
         private Dictionary<NodeColor, List<int>> NodeColorToNodeIDs;
@@ -108,7 +109,7 @@ namespace StudioByStorm.PCG {
             //retrieve all available NodeColors
             List<NodeColor> availableColors = new List<NodeColor>();
             foreach (NodeColor nc in Enum.GetValues(typeof(NodeColor))) {
-                if (nc != NodeColor.GrayScale) {
+                if (nc != NodeColor.GrayScale && colorsInUse.Contains(nc)) {
                     availableColors.Add(nc);
                 }
             }

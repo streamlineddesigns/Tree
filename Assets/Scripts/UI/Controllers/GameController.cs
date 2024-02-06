@@ -73,6 +73,11 @@ namespace StudioByStorm.UI.Controllers {
             ResetButtonClick(NodeColor.White);
         }
 
+        public void ResetOrangeButtonClick()
+        {
+            ResetButtonClick(NodeColor.Orange);
+        }
+
         protected void ResetButtonClick(NodeColor inputColor)
         {
             //Get all the blue nodes
@@ -136,6 +141,7 @@ namespace StudioByStorm.UI.Controllers {
             ResetGreenButtonClick();
             ResetPurpleButtonClick();
             ResetWhiteButtonClick();
+            ResetOrangeButtonClick();
         }
     }
 

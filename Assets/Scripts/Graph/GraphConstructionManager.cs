@@ -73,6 +73,11 @@ namespace StudioByStorm.Graph {
             currentCursorNodeColor = NodeColor.White;
         }
 
+        public void OrangeButtonClick()
+        {
+            currentCursorNodeColor = NodeColor.Orange;
+        }
+
         public void BackButtonClick()
         {
             SceneManager.LoadScene("Main");

@@ -17,7 +17,8 @@ namespace StudioByStorm {
         Green,
         Purple,
         White,
-        GrayScale
+        GrayScale,
+        Orange
     }
 
     public enum ColorType

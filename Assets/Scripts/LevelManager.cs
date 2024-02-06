@@ -90,6 +90,10 @@ namespace StudioByStorm {
                 case GameState.LevelComplete :
                     OnLevelComplete();
                     break;
+
+                case GameState.LevelLost :
+                    StartCoroutine(OnLevelLost());
+                    break;
             }
         }
 
@@ -105,6 +109,22 @@ namespace StudioByStorm {
             LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
             levelCompleteController.Show();
             GameManager.Singleton.FXManager.LaunchFireWork();
+        }
+
+        IEnumerator OnLevelLost()
+        {
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+
+            if (actionController.ActionModel.CurrentEdge != null) {
+                actionController.ActionModel.CurrentEdge.gameObject.SetActive(false);
+                actionController.ActionModel.CurrentEdge = null;
+            }
+
+            GameManager.Singleton.UIController.Close(ViewName.ActionView);
+
+            yield return new WaitForSeconds(3.0f);
+
+            GameManager.Singleton.UIController.ShowView(ViewName.LevelLostView);
         }
 
         public void LoadLevel()

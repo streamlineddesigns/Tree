@@ -52,6 +52,8 @@ namespace StudioByStorm {
         CutSceneSelectButtonView,
         CutSceneView,
         FadeView,
+        HeartView,
+        PlayerHeartsView,
     }
 
     public enum ViewType

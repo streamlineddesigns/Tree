@@ -36,6 +36,9 @@ namespace StudioByStorm.FX {
         public GameObject EdgeLightPrefab;
         [HideInInspector]
         public Pool EdgeLightPool;
+        //PlayerLoseFX
+        public GameObject PlayerLoseFXPrefab;
+        public GameObject PlayerLoseFX;
         
         protected int edgeLightPoolSize = 3;
         protected int nodeRippleInPoolSize = 3;
@@ -64,6 +67,8 @@ namespace StudioByStorm.FX {
 
             EdgeLightPool = ScriptableObject.CreateInstance<Pool>();
             EdgeLightPool.DependencyInjection(EdgeLightPrefab, FXParent, edgeLightPoolSize);
+
+            PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
         }
 
         void Start()

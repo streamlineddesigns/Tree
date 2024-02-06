@@ -12,6 +12,7 @@ using StudioByStorm.GestureRecognition;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Helpers;
 using StudioByStorm.Obstacles;
+using StudioByStorm.FX;
 
 namespace StudioByStorm.Gravity.Player {
 
@@ -21,8 +22,7 @@ namespace StudioByStorm.Gravity.Player {
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
-        [SerializeField] private ParticleSystem gameOverExplosionFX;
-        [SerializeField] private ParticleSystem gameOverGlowingLightFX;
+        [SerializeField] private GameObject trail;
 
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
 
@@ -86,6 +86,8 @@ namespace StudioByStorm.Gravity.Player {
         private bool isJoystickUp = true;
         private Vector2 joystickDownPoint;
         private Vector2 joystickUpPoint;
+        private int playerHeartsCount = 3;
+        private bool isLevelLost = false;
 
         private int playerNodeID = -1;
 
@@ -101,6 +103,9 @@ namespace StudioByStorm.Gravity.Player {
             rigidbodyContacts = new ContactPoint2D[1];
             currentOffSurfaceTimer = offSurfaceTimer;
             originalScale = gameObject.transform.localScale.x;
+
+            bool isInitializingPlayerHearts = true;
+            UpdatePlayerHearts(isInitializingPlayerHearts);
         }
 
         void OnEnable()
@@ -241,6 +246,25 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        private void HitObstacle()
+        {
+            //play the hit animation
+            if (! isHitAnimationPlaying) {
+                HitObstacleAnimation();
+
+                //check if the player still has hearts left after this
+                if ((playerHeartsCount - 1) > 0) {
+                    playerHeartsCount--;
+                    UpdatePlayerHearts();
+
+                } else if (! isLevelLost) {
+                    playerHeartsCount--;
+                    UpdatePlayerHearts();
+                    StartCoroutine(LevelLostAnimation());
+                }
+            }
+        }
+
         private void HitObstacleAnimation()
         {
             Sequence hitSequenceAnimation = DOTween.Sequence();
@@ -259,10 +283,33 @@ namespace StudioByStorm.Gravity.Player {
                                 });
         }
 
-        IEnumerator LevelLoseAnimation()
+        private void UpdatePlayerHearts(bool isInit = false)
         {
-            //play explosion fx
-            //play glowing light fx
+            PlayerHeartsView playerHeartsView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.PlayerHeartsView) as PlayerHeartsView;
+
+            if (isInit) {
+                playerHeartsView.SetPlayerHearts(playerHeartsCount);
+            } else {
+                playerHeartsView.LoseHeart();
+            }
+        }
+
+        IEnumerator LevelLostAnimation()
+        {
+            isLevelLost = true;
+
+            spriteRenderer.enabled = false;
+            trail.SetActive(false);
+            JumpIndicator.SetActive(false);
+            boostIndicator.SetActive(false);
+
+            GameManager.Singleton.FXManager.PlayerLoseFX.transform.position = gameObject.transform.position;
+            GameManager.Singleton.FXManager.PlayerLoseFX.GetComponent<PlayerLoseFX>().Play();
+
+            GameEventPublisher.PublishGameStateChange(GameState.LevelLost);
+
+            gameObject.SetActive(false);
+            
             yield return null;
         }
 
@@ -324,10 +371,10 @@ namespace StudioByStorm.Gravity.Player {
                             StartCoroutine(WaitForPositionHelper());
                         }
                         
-                        //play the hit animation
                         if (! isHitAnimationPlaying) {
-                            HitObstacleAnimation();
+                            HitObstacle();
                         }
+                        
                     }
                 }
             }

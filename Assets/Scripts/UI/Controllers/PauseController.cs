@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI.Controllers {
 
@@ -9,6 +11,31 @@ namespace StudioByStorm.UI.Controllers {
     {
         public GameObject nodeParent;
         public GameObject MockNodes; 
+
+        public TMP_Text headingText;
+        public TMP_Text levelText;
+
+        protected void OnEnable()
+        {
+            base.OnEnable();
+            GameEventPublisher.OnStateChange += OnStateChange;
+        }
+
+        protected void OnDisable()
+        {
+            base.OnDisable();
+            GameEventPublisher.OnStateChange -= OnStateChange;
+        }
+
+        void OnStateChange(GameState state)
+        {
+            if (state == GameState.GameStart) {
+                int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
+                int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
+                headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
+                levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
+            }
+        }
 
         public void HomeButtonClick()
         {
@@ -28,6 +55,13 @@ namespace StudioByStorm.UI.Controllers {
         {
             Time.timeScale = 1.0f;
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);
+        }
+
+        public void RestartButtonClick()
+        {
+            Time.timeScale = 1.0f;
+            LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
+            levelCompleteController.RestartButtonClick();
         }
     }
 

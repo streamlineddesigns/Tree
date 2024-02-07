@@ -11,6 +11,7 @@ namespace StudioByStorm.GestureRecognition {
         
         public bool LongTap  { get { return longtap; } }
         public bool Tap { get { return tap; } }
+        public bool DoubleTap { get { return doubleTap; } }
         public Vector2 SwipeDelta { get { return swipeDelta; } }
         public bool SwipeLeft { get { return swipeLeft; } }
         public bool SwipeRight { get { return swipeRight; } }
@@ -32,7 +33,7 @@ namespace StudioByStorm.GestureRecognition {
         private float longTapTimer = 0.0f;
 
         private const float DEADZONE = 50.0f;
-        private bool longtap, tap, swipeLeft, swipeRight, swipeUp, swipeDown;
+        private bool longtap, tap, doubleTap, swipeLeft, swipeRight, swipeUp, swipeDown;
         private Vector2 swipeDelta, startTouch, currentJoyStickDirection, currentTravelJoyStickDirection, previousJoyStickDirection, previousTravelJoyStickDirection;
 
         public Vector2 BackupStartTouch;
@@ -84,7 +85,7 @@ namespace StudioByStorm.GestureRecognition {
                 return;
             }
             //Resetting all the booleans
-            tap = swipeLeft = swipeRight = swipeDown = swipeUp = false;
+            tap = doubleTap = swipeLeft = swipeRight = swipeDown = swipeUp = false;
 
             //keep track of the joysticks current direction
             ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
@@ -130,7 +131,7 @@ namespace StudioByStorm.GestureRecognition {
             }
             #endregion
 
-            #region Mobile Inputs
+            /*#region Mobile Inputs
             if (Input.touches.Length != 0) {
                 if (Input.touches[0].phase == TouchPhase.Began) {
                     tap = true;
@@ -151,7 +152,7 @@ namespace StudioByStorm.GestureRecognition {
                     longTapTimer = 0.0f;
                 }
             } 
-            #endregion
+            #endregion*/
             if (tap) {
                 longTapTimerStarted = true;                    
             }
@@ -224,6 +225,8 @@ namespace StudioByStorm.GestureRecognition {
                     //What you want to do
                     doubleTapTimer = 0.0f;
                     tapCount = 0;
+                    doubleTap = true;
+                } else {
                 }
             }
             

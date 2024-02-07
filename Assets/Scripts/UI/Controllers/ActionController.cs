@@ -42,6 +42,11 @@ namespace StudioByStorm {
 
         void Update()
         {
+            if (GameManager.Singleton.UIController.CurrentViewScreen.ViewName != ViewName.GameView) {
+                return;
+            }
+
+
             if (! jumpIsUp) {
                 ActionView.OnJumpJoyStickDown();
             }
@@ -71,6 +76,8 @@ namespace StudioByStorm {
                 Vector3 magnitude = new Vector3 (JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling);
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.localScale = magnitude;
             }
+
+            EdgeButtonClickListener();
         }
 
         protected void edgeSelectionCheck()
@@ -300,6 +307,17 @@ namespace StudioByStorm {
         {
             ActionView.DisableGetEdgeButton();
             ActionView.DisableSetEdgeButton();
+        }
+
+        protected void EdgeButtonClickListener()
+        {
+            if (GameManager.Singleton.MobileInput.DoubleTap) {
+                if (ActionView.GetEdgeButton.interactable) {
+                    GetEdgeButtonClick();
+                } else if (ActionView.SetEdgeButton.interactable) {
+                    SetEdgeButtonClick();
+                }
+            }
         }
 
         void EnableActionButtons()

@@ -33,7 +33,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             CameraController.centroid = Centroid.transform;
             GameManager.Singleton.CameraController.MoveToCentroid();
-            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(20, speed).SetEase(Ease.InQuad);
+            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(45, speed).SetEase(Ease.InQuad);
             GameManager.Singleton.UIController.ShowView(ViewName.ZoomView);
         }
 

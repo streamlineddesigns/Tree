@@ -149,24 +149,24 @@ namespace StudioByStorm {
             //ColorSurface.SetActive(true);
             //DarkSurface.SetActive(false);
             //ColorSurface.SetActive(true);
-            LightColored.DOFade(1, 4).SetEase(Ease.InSine);
-            DarkColored.DOFade(1, 4).SetEase(Ease.InSine);
+            LightColored.DOFade(1, 3).SetEase(Ease.InSine);
+            DarkColored.DOFade(1, 3).SetEase(Ease.InSine);
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].DOFade(1, 4);
+                Hairs[i].DOFade(1, 3).SetEase(Ease.InSine);
             }
-            DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 2);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 2).SetEase(Ease.InSine);
         }
 
         public void DisplayGrayScale() {
             //ColorSurface.SetActive(false);
             //DarkSurface.SetActive(true);
             //DarkSurface.SetActive(true);
-            LightColored.DOFade(0, 3);
-            DarkColored.DOFade(0, 3);
+            LightColored.DOFade(0, 2).SetEase(Ease.InSine);
+            DarkColored.DOFade(0, 2).SetEase(Ease.InSine);
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].DOFade(0, 3);
+                Hairs[i].DOFade(0, 2).SetEase(Ease.InSine);
             }
-            DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 3);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 2).SetEase(Ease.InSine);
         }
     }
 

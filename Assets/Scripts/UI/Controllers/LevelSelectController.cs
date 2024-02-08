@@ -39,7 +39,10 @@ namespace StudioByStorm.UI.Controllers {
                 int levelID = 0;
                 int ChapterID = i;
 
-                for (int j = 0; j < GameManager.Singleton.LevelManager.initiallyAvailableLevelRowsPerChapter; j++) {
+                int cutSceneCount = GameManager.Singleton.LevelManager.levelChapters.chapters[i].cutScenes.Count;
+                int cutSceneIterationNumber = (cutSceneCount < GameManager.Singleton.LevelManager.initiallyAvailableLevelRowsPerChapter) ? cutSceneCount : GameManager.Singleton.LevelManager.initiallyAvailableLevelRowsPerChapter;
+
+                for (int j = 0; j < cutSceneIterationNumber; j++) {
                     int cutSceneID = j;
                     string cutSceneKey = (ChapterID +"-"+ cutSceneID);
                     //place a level row 

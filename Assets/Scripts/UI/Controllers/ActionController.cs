@@ -39,6 +39,7 @@ namespace StudioByStorm {
         public LeanJoystick TravelJoyStick;
         public float jumpScaling = 0.75f;
         private bool canParentNodesConnect = true;
+        private const float JUMPTHRESHOLD = 0.2f;
 
         void Update()
         {
@@ -354,6 +355,9 @@ namespace StudioByStorm {
             jumpIsUpSafetySwitch = false;
             StartCoroutine(DeplayedJumpIsUp());
             jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
+            if (jumpJoystickUpPoint.magnitude < JUMPTHRESHOLD) {
+                return;
+            }
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
             GameManager.Singleton.PlayerController.JumpOverride(-jumpJoystickUpPoint);
             ActionView.OnJumpJoyStickUp();

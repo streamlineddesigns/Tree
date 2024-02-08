@@ -46,7 +46,7 @@ namespace StudioByStorm.FX {
         protected int fireworkPoolSize = 5;
         protected int boidPoolSize = 20;
         protected int colorCount = 4;
-        protected int boidPerColor = 8;
+        protected int boidPerColor = 5;
 
         void Awake()
         {

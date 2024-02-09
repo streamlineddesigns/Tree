@@ -13,6 +13,7 @@ namespace StudioByStorm.Graph {
     {
         public LevelConfig LevelConfig;
         public LevelData GlobalLevelData;
+        [HideInInspector] public bool isGlobalLevelDataSet;
         public ColorModel ColorModel;
         public GameObject NodePrefab;
         public GameObject UserPositionPrefab;
@@ -400,6 +401,7 @@ namespace StudioByStorm.Graph {
             LevelData.Centroid = nodeCentroid;
 
             GlobalLevelData = LevelData;
+            isGlobalLevelDataSet = true;
             //Debug.Log(LevelData.Layers.Count);
         }
 

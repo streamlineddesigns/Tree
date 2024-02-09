@@ -43,6 +43,10 @@ namespace StudioByStorm.PCG {
 
         public void Save()
         {
+            if (! GraphConstructionManager.isGlobalLevelDataSet) {
+                GraphConstructionManager.CreateLevelData();
+            }
+
             LevelData LevelData = GraphConstructionManager.GlobalLevelData;
 
             string dir = Application.persistentDataPath + "/" + LevelConfig.subfolder;

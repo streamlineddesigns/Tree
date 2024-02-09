@@ -70,6 +70,11 @@ namespace StudioByStorm {
             return ProgressData.unlockedCutSceneProgress[k];
         }
 
+        public int GetTutorialProgress()
+        {
+            return ProgressData.tutorialProgress;
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -104,6 +109,11 @@ namespace StudioByStorm {
             } else {
                 ProgressData.unlockedCutSceneProgress.Add(k, v);
             }
+        }
+
+        public void UpdateTutorial(int k)
+        {
+            ProgressData.tutorialProgress = k;
         }
 
         private void Serialize<T>(T obj, string filePath)

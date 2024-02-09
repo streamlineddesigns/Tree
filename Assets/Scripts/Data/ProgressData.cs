@@ -30,6 +30,9 @@ namespace StudioByStorm.Data {
          * Value is highest cut scene unlocked for that chapter
          */
         public Dictionary<int, int> unlockedCutSceneProgress = new Dictionary<int, int>();
+
+        //returns the highest tutorial ID completed
+        public int tutorialProgress = -1;
     }
 
 }

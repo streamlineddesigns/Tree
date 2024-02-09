@@ -55,6 +55,7 @@ namespace StudioByStorm {
         FadeView,
         HeartView,
         PlayerHeartsView,
+        TutorialView,
     }
 
     public enum ViewType

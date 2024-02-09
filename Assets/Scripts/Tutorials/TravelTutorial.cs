@@ -1,7 +1,11 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.IK;
+using DG.Tweening;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.ML.Clustering;
 
 namespace StudioByStorm.Tutorials {
 
@@ -9,6 +13,9 @@ namespace StudioByStorm.Tutorials {
     {
         private bool didPlayerTravel = false;
         private bool isLevelComplete = false;
+        private ActionController actionController;
+        private bool isJumpLocked;
+        private Edge secondaryEdge;
 
         protected void OnEnable()
         {
@@ -39,7 +46,63 @@ namespace StudioByStorm.Tutorials {
 
         public override void Init()
         {
+            actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            isJumpLocked = true;
+            actionController.LockJump(isJumpLocked);
+            StartCoroutine(CreateEdgeAnimation());
+        }
+
+        protected IEnumerator CreateEdgeAnimation()
+        {
+            Node currentNode = actionController.ActionModel.CurrentNode;
+            int currentNodeID = currentNode.ID;
+
+            List<int> nearbyNodeIDs = GameManager.Singleton.FullAdjacencyList.Get(currentNodeID);
+            List<GameObject> nearbyNodes = new List<GameObject>();
+
+            nearbyNodeIDs.ForEach(x => {
+                Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(x);
+                if (currentNode.NodeColor == NodeColor.GrayScale) {
+                    nearbyNodes.Add(currentNode.gameObject);
+                } 
+            });
+
+            List<GameObject> nearestNodes = KNN.GetKNearestNeighbors(currentNode.gameObject, nearbyNodes, 1);
+            GameObject nearestNode;
             
+            if (nearestNodes.Count > 0) {
+                Debug.Log("has nodes?");
+                nearestNode = nearestNodes[0];
+
+                actionController.GetEdgeButtonClick();
+
+                Edge currentEdge = actionController.ActionModel.CurrentEdge;
+                FabrikSolver2D fabrikSolver2D = currentEdge.FabrikSolver2D;
+                Transform emptyTarget = currentEdge.emptyTarget.transform;
+                emptyTarget.transform.position = currentNode.gameObject.transform.position;
+                fabrikSolver2D.GetChain(fabrikSolver2D.chainCount).target = emptyTarget;
+
+                Vector2 targetPosition = (Vector2) nearestNode.transform.position;
+
+                //emptyTarget.transform.DOMove(targetPosition, 1.0f).SetEase(Ease.InQuad);
+                emptyTarget.transform.position = targetPosition;
+                yield return null;
+
+                actionController.ActionModel.CurrentNode = nearestNode.GetComponent<Node>();
+                actionController.SetEdgeButtonClick();
+                actionController.ActionModel.CurrentNode = currentNode;
+
+                //get the updated edge which gets created in "SetEdgeButtonClick"
+                secondaryEdge = actionController.ActionModel.CurrentEdge;
+                secondaryEdge.gameObject.SetActive(false);
+
+                actionController.isJumpIndicatorOn = true;
+            } else {
+                Debug.Log("no nodes");
+                _isAborting = true;
+            }
+
+            yield return null;
         }
 
         protected override IEnumerator TutorialUpdate()
@@ -51,12 +114,18 @@ namespace StudioByStorm.Tutorials {
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => didPlayerTravel || isLevelComplete);
+            yield return new WaitUntil(() => didPlayerTravel);
+            isJumpLocked = false;
+            actionController.LockJump(isJumpLocked);
+            actionController.isJumpIndicatorOn = false;
+            secondaryEdge.gameObject.SetActive(true);
             _isFinished = true;
         }
 
         public override void CleanUp()
         {
+            isJumpLocked = false;
+            actionController.LockJump(isJumpLocked);
             Destroy(gameObject);
         }
     }

@@ -12,8 +12,15 @@ namespace StudioByStorm.Tutorials {
             }
         }
 
+        public bool isAborting {
+            get {
+                return _isAborting;
+            }
+        }
+
         protected bool isRunning;
         protected bool _isFinished;
+        protected bool _isAborting;
         
         protected void OnDisable()
         {

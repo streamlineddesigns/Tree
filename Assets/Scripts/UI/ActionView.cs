@@ -90,7 +90,7 @@ namespace StudioByStorm.UI {
         public void GetEdgeButtonClick()
         {
             //need to get the nearest nodes id
-            int nearestNodeID = GameManager.Singleton.nearbyNode.GetData<Node>().ID;
+            int nearestNodeID = ActionModel.CurrentNode.ID;
             //then check the edge registry for an edge with the same id
             Edge edge = GameManager.Singleton.EdgeRegistry.TryGetValue(nearestNodeID);
             //then activate it

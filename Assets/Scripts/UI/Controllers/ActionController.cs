@@ -39,7 +39,8 @@ namespace StudioByStorm {
         public LeanJoystick TravelJoyStick;
         public float jumpScaling = 0.75f;
         private bool canParentNodesConnect = true;
-        private const float JUMPTHRESHOLD = 0.2f;
+        private const float JUMPTHRESHOLD = 0.1f;
+        private bool isJumpLocked;
 
         void Update()
         {
@@ -339,8 +340,17 @@ namespace StudioByStorm {
             }
         }
 
+        public void LockJump(bool isLocked)
+        {
+            isJumpLocked = isLocked;
+        }
+
         public void OnJumpJoyStickDown()
         {
+            if (isJumpLocked) {
+                return;
+            }
+
             //$$HERE
             jumpIsUpSafetySwitch = true;
             jumpIsUp = false;
@@ -352,6 +362,10 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickUp()
         {
+            if (isJumpLocked) {
+                return;
+            }
+
             jumpIsUpSafetySwitch = false;
             StartCoroutine(DeplayedJumpIsUp());
             jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;

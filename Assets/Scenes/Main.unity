@@ -13988,6 +13988,7 @@ GameObject:
   - component: {fileID: 186540541}
   - component: {fileID: 186540540}
   - component: {fileID: 186540539}
+  - component: {fileID: 186540542}
   m_Layer: 5
   m_Name: TutorialView
   m_TagString: Untagged
@@ -14070,6 +14071,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186540537}
   m_CullTransparentMesh: 1
+--- !u!114 &186540542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186540537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 186540540}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 684634127}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.TutorialController,
+          Assembly-CSharp
+        m_MethodName: TutorialDialogClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &191788670
 GameObject:
   m_ObjectHideFlags: 0
@@ -84551,8 +84609,12 @@ MonoBehaviour:
     levelID: 0
     chapterID: 0
     prefab: {fileID: 4567484295463018693, guid: 78960a21e37731b428f197d77d1d0050, type: 3}
-  - message: Phase through obstacles of the same color
+  - message: Aim & jump into connections to travel
     levelID: 2
+    chapterID: 0
+    prefab: {fileID: 4217451847317090821, guid: fd7fb447b2c2595459828cadfedb7b72, type: 3}
+  - message: Phase through obstacles of the same color
+    levelID: 3
     chapterID: 0
     prefab: {fileID: 5807188408184330554, guid: 1b1d300f582b9a34a953089d1e252e4c, type: 3}
   - message: Swipe in air to dash
@@ -84563,10 +84625,6 @@ MonoBehaviour:
     levelID: 6
     chapterID: 0
     prefab: {fileID: 4217451847317090821, guid: 62ab0d4ed6d933d4fbe395e29844db25, type: 3}
-  - message: Aim & jump into connections you make to travel
-    levelID: 8
-    chapterID: 0
-    prefab: {fileID: 4217451847317090821, guid: fd7fb447b2c2595459828cadfedb7b72, type: 3}
   - message: The more cells you use, the more stars you earn!
     levelID: 1
     chapterID: 1
@@ -84579,7 +84637,7 @@ MonoBehaviour:
     levelID: 3
     chapterID: 1
     prefab: {fileID: 0}
-  - message: Chain your jumps & dashs
+  - message: Chain your jumps & dash's
     levelID: 5
     chapterID: 1
     prefab: {fileID: 0}
@@ -272133,8 +272191,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 25
-    m_Right: 25
+    m_Left: 5
+    m_Right: 5
     m_Top: 75
     m_Bottom: 75
   m_ChildAlignment: 4

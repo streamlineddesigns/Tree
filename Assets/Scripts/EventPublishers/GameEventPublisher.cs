@@ -22,6 +22,13 @@ namespace StudioByStorm.EventPublishers {
         public delegate void NodeChangeEvent(int NodeID);//delegate signature
         public static event NodeChangeEvent OnPlayerNodeChange;//subscribable event
 
+        public delegate void PlayerEvent();
+        public static event PlayerEvent OnPlayerJump;
+        public static event PlayerEvent OnPlayerDash;
+        public static event PlayerEvent OnPlayerTravel;
+        public static event PlayerEvent OnPlayerHitCorrectObstacle;
+        public static event PlayerEvent OnPlayerHitWrongObstacle;
+
         void Awake()
         {
             if (Singleton == null) {
@@ -70,6 +77,41 @@ namespace StudioByStorm.EventPublishers {
         {
             if (OnPlayerNodeChange != null) {
                 OnPlayerNodeChange(NodeID);
+            }
+        }
+
+        public static void PublishPlayerJump()
+        {
+            if (OnPlayerJump != null) {
+                OnPlayerJump();
+            }
+        }
+
+        public static void PublishPlayerDash()
+        {
+            if (OnPlayerDash != null) {
+                OnPlayerDash();
+            }
+        }
+
+        public static void PublishPlayerTravel()
+        {
+            if (OnPlayerTravel != null) {
+                OnPlayerTravel();
+            }
+        }
+
+        public static void PublishPlayerHitCorrectObstacle()
+        {
+            if (OnPlayerHitCorrectObstacle != null) {
+                OnPlayerHitCorrectObstacle();
+            }
+        }
+
+        public static void PublishPlayerHitWrongObstacle()
+        {
+            if (OnPlayerHitWrongObstacle != null) {
+                OnPlayerHitWrongObstacle();
             }
         }
     }

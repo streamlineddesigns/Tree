@@ -145,6 +145,9 @@ namespace StudioByStorm.Gravity.Player {
         protected IEnumerator TravelMovement(Vector3[] waypoints)
         {
             lerping = true;
+            
+            GameEventPublisher.PublishPlayerTravel();
+
             gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f);
             yield return new WaitForSeconds(0.1333f);
@@ -251,6 +254,7 @@ namespace StudioByStorm.Gravity.Player {
         {
             //play the hit animation
             if (! isHitObstacle) {
+                GameEventPublisher.PublishPlayerHitWrongObstacle();
                 isHitObstacle = true;
                 HitObstacleAnimation();
 
@@ -362,6 +366,10 @@ namespace StudioByStorm.Gravity.Player {
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
                 if ((isLightColor && obstacleColorType == ColorType.Light) 
                      || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
+                        
+                    if (! lerping) {
+                        GameEventPublisher.PublishPlayerHitCorrectObstacle();
+                    }
 
                 //otherwise
                 } else {
@@ -523,6 +531,8 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void Jump(Vector2 dir)
         {
+            GameEventPublisher.PublishPlayerJump();
+
             ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
             Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
 
@@ -549,6 +559,9 @@ namespace StudioByStorm.Gravity.Player {
         protected void Dash()
         {
             if (canDash && currentOffSurfaceTimer <= 0.0f) {
+
+                GameEventPublisher.PublishPlayerDash();
+
                 float dashForce;
 
                 if (isInAtmosphere) {

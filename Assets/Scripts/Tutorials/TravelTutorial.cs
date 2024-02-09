@@ -71,7 +71,6 @@ namespace StudioByStorm.Tutorials {
             GameObject nearestNode;
             
             if (nearestNodes.Count > 0) {
-                Debug.Log("has nodes?");
                 nearestNode = nearestNodes[0];
 
                 actionController.GetEdgeButtonClick();
@@ -98,7 +97,6 @@ namespace StudioByStorm.Tutorials {
 
                 actionController.isJumpIndicatorOn = true;
             } else {
-                Debug.Log("no nodes");
                 _isAborting = true;
             }
 

@@ -54,6 +54,7 @@ namespace StudioByStorm.UI.Controllers {
         public void TutorialDialogClick()
         {
             isTutorialDismissed = true;
+            HideView();
         }
 
         protected void CheckIfTutorialIsNeeded()
@@ -119,7 +120,7 @@ namespace StudioByStorm.UI.Controllers {
             }
 
             //prevents accidental saving from occuring
-            if (! isLevelCompleted && ! currentTutorial.isAborting) {
+            if (! isLevelCompleted && (currentTutorial == null || !currentTutorial.isAborting)) {
                 //the user dismissed the tutorial 
                 if (isTutorialDismissed) {
                     yield return new WaitForSeconds(0.25f);

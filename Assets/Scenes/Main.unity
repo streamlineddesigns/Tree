@@ -14749,7 +14749,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.79999924}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -60, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &221252145
 MonoBehaviour:
@@ -14798,8 +14798,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -21218,7 +21218,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelChapters:
-    chapters: []
+    chapters:
+    - heading: Chapter 1 Heading
+      subHeading: Chapter 1 Sub Heading
+      cutScenes:
+      - message: 1.1
+      - message: 1.2
+      - message: 1.3
+      - message: 1.4
+      - message: 1.5
+      levels:
+      - levelFile: {fileID: 4900000, guid: a4442b5e00a7fc3419d04a3f959298b7, type: 3}
+      - levelFile: {fileID: 4900000, guid: 294114194941d974d80562b66fed6801, type: 3}
+      - levelFile: {fileID: 4900000, guid: 12656b50a8d884e44940634a8498ad0b, type: 3}
+      - levelFile: {fileID: 4900000, guid: b16eaf69a6484774ea3e2667555da0d1, type: 3}
+      - levelFile: {fileID: 4900000, guid: 2808cec5626ffed42a1b72356ec339fa, type: 3}
+      - levelFile: {fileID: 4900000, guid: 4d267c8254c161f46bb8c623d89b483b, type: 3}
+      - levelFile: {fileID: 4900000, guid: a7531536fa333654fbf1268a654ba1f4, type: 3}
+      - levelFile: {fileID: 4900000, guid: 4905f80fb817218438944743648d8245, type: 3}
+      - levelFile: {fileID: 4900000, guid: 59335e03b1efbb541abdb45b6a055a09, type: 3}
+      - levelFile: {fileID: 4900000, guid: dd8583e533881124eb5aae0cf596a4e4, type: 3}
+      - levelFile: {fileID: 4900000, guid: dc0f0e169eb5423449fcea3b98c0fc6b, type: 3}
+      - levelFile: {fileID: 4900000, guid: 5ea4885e9a205bf4d91bd47aa23a98cc, type: 3}
+      - levelFile: {fileID: 4900000, guid: 6f89c84e11f62a844abda64aa6932589, type: 3}
+      - levelFile: {fileID: 4900000, guid: 807ca5766b5e4714d9b97d1034a5005f, type: 3}
+      - levelFile: {fileID: 4900000, guid: fc05d882af6112b4d9d400a4bdfe61f6, type: 3}
+    - heading: Chapter 2 Heading
+      subHeading: Chapter 2 Sub Heading
+      cutScenes:
+      - message: 2.1
+      - message: 2.2
+      - message: 2.3
+      - message: 2.4
+      - message: 2.5
+      levels:
+      - levelFile: {fileID: 4900000, guid: 4bd60e8a5059bfb488d1fb6d93269e77, type: 3}
+      - levelFile: {fileID: 4900000, guid: d097161bc27bc3d40b816c0aa619b045, type: 3}
+      - levelFile: {fileID: 4900000, guid: a85eed6c11b77834a8dbec0eceb9efe8, type: 3}
+      - levelFile: {fileID: 4900000, guid: 95477235fe540a24ca6f5ae98d8fade7, type: 3}
+      - levelFile: {fileID: 4900000, guid: 230306819f150f74c89de98db972f16e, type: 3}
+      - levelFile: {fileID: 4900000, guid: 10fdb7b1ff2915b4fb9a625b74918027, type: 3}
+      - levelFile: {fileID: 4900000, guid: a9e2b03915b0199468e7a53d853d05ab, type: 3}
+      - levelFile: {fileID: 4900000, guid: 4b6001e7094c980469117e1f25210906, type: 3}
+      - levelFile: {fileID: 4900000, guid: d44be9a1f7e17234f910b52d9000ebf3, type: 3}
+      - levelFile: {fileID: 4900000, guid: 8b387143a1a49b4419a0a7aaf48f85e6, type: 3}
+      - levelFile: {fileID: 4900000, guid: 20898ca915c658449840c2e0fd031c2a, type: 3}
+      - levelFile: {fileID: 4900000, guid: b3b62ba4974890948bc970b5be6a6b92, type: 3}
+      - levelFile: {fileID: 4900000, guid: 6471fa3abea33bb41b60895228d47561, type: 3}
+      - levelFile: {fileID: 4900000, guid: 95b0fa5c7c6ca664abae28ac4e0dcffe, type: 3}
+      - levelFile: {fileID: 4900000, guid: b7368e73b7fc6b242a8c5d89a92061c8, type: 3}
   romanNumerals:
   - 
   - I
@@ -84491,28 +84539,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ViewName: 16
   tutorialData:
-  - message: Double tap to pick up & drop a connection
+  - message: Double tap picks up a connection
     levelID: 0
+    chapterID: 0
+    prefab: {fileID: 6323109025277181187, guid: e4a1438db2b2d5f4ca08be5f72e830b2, type: 3}
   - message: Swipe, aim, & release to jump
     levelID: 0
+    chapterID: 0
+    prefab: {fileID: 7084687509043369383, guid: b8613497b450f21479ebf7be1f46a42a, type: 3}
+  - message: Double tap attaches connections too
+    levelID: 0
+    chapterID: 0
+    prefab: {fileID: 4567484295463018693, guid: 78960a21e37731b428f197d77d1d0050, type: 3}
   - message: Phase through obstacles of the same color
     levelID: 2
-  - message: Aim at nearby connections to safely travel
-    levelID: 3
+    chapterID: 0
+    prefab: {fileID: 5807188408184330554, guid: 1b1d300f582b9a34a953089d1e252e4c, type: 3}
   - message: Swipe in air to dash
     levelID: 4
-  - message: Landing on a cell changes your color
+    chapterID: 0
+    prefab: {fileID: 2147583252487596410, guid: b5c52a36b50d37c49838c30af9f9eb4f, type: 3}
+  - message: Landing on a cell alternates your color
     levelID: 6
-  - message: The more cells you use, the more stars you earn!
+    chapterID: 0
+    prefab: {fileID: 4217451847317090821, guid: 62ab0d4ed6d933d4fbe395e29844db25, type: 3}
+  - message: Aim & jump into connections you make to travel
     levelID: 8
+    chapterID: 0
+    prefab: {fileID: 4217451847317090821, guid: fd7fb447b2c2595459828cadfedb7b72, type: 3}
+  - message: The more cells you use, the more stars you earn!
+    levelID: 1
+    chapterID: 1
+    prefab: {fileID: 0}
   - message: 'Reset buttons remove a color''s connections '
-    levelID: 10
+    levelID: 2
+    chapterID: 1
+    prefab: {fileID: 0}
   - message: Use the map to zoom in and out
-    levelID: 12
+    levelID: 3
+    chapterID: 1
+    prefab: {fileID: 0}
+  - message: Chain your jumps & dashs
+    levelID: 5
+    chapterID: 1
+    prefab: {fileID: 0}
+  - message: Use the alternating color to your advantage
+    levelID: 5
+    chapterID: 1
+    prefab: {fileID: 0}
   - message: Creativity can get you places you wouldn't expect
-    levelID: 14
+    levelID: 6
+    chapterID: 1
+    prefab: {fileID: 0}
   messageText: {fileID: 1579892747}
   messageShadowText: {fileID: 221252145}
+  tutorialsParent: {fileID: 2062295415}
 --- !u!1 &688210857
 GameObject:
   m_ObjectHideFlags: 0
@@ -132401,7 +132482,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224322504}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -180398,7 +180479,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -60, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1579892747
 MonoBehaviour:
@@ -180447,8 +180528,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -191870,7 +191951,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817197763}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -272102,6 +272183,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &2062295415
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2062295416}
+  m_Layer: 0
+  m_Name: TutorialsContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2062295416
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062295415}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2064127351
 GameObject:
   m_ObjectHideFlags: 0

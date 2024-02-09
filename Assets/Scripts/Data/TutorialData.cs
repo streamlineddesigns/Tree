@@ -11,6 +11,9 @@ namespace StudioByStorm.Data {
         public string message;
         //first level the tutorial can be shown
         public int levelID;
+        public int chapterID;
+        //tutorial specific prefab that will be instantiated for specific tutorials
+        public GameObject prefab;
     }
 
 }

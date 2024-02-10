@@ -31,8 +31,6 @@ namespace StudioByStorm.Tutorials {
         public override IEnumerator WaitUntilFinished()
         {
             yield return new WaitUntil(() => actionController.ActionModel.CurrentEdge != null);
-            isJumpLocked = false;
-            actionController.LockJump(isJumpLocked);
             _isFinished = true;
         }
 

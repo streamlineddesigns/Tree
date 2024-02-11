@@ -12,6 +12,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void StartLevelSelectButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             GameManager.Singleton.UIController.ShowView(ViewName.LevelSelectView);
         }
 
@@ -22,6 +23,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void PlayButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             GameManager.Singleton.UIController.ShowView(ViewName.FadeView);
             MockNodes.SetActive(false);
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);

@@ -85,14 +85,17 @@ namespace StudioByStorm {
                 case GameState.GameStart :
                     LoadLevel();
                     GameStart();
+                    AudioManager.Singleton.Play(SoundType.GameStart);
                     break;
 
                 case GameState.LevelComplete :
                     OnLevelComplete();
+                    AudioManager.Singleton.Play(SoundType.LevelComplete);
                     break;
 
                 case GameState.LevelLost :
                     StartCoroutine(OnLevelLost());
+                    AudioManager.Singleton.Play(SoundType.LevelLost);
                     break;
             }
         }

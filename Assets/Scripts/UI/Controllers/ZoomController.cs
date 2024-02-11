@@ -14,6 +14,8 @@ namespace StudioByStorm.UI.Controllers {
         
         public void ZoomOutButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            
             CameraController.centroid = null;
             GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(20, 1.0f).SetEase(Ease.InQuad);
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);

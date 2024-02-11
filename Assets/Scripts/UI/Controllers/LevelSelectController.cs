@@ -121,6 +121,8 @@ namespace StudioByStorm.UI.Controllers {
         public void LevelSelectButtonClick(int ID, int chapterID, bool isLocked = false)
         {
             if (! isLocked) {
+                AudioManager.Singleton.Play(SoundType.ButtonPress);
+
                 GameManager.Singleton.LevelManager.currentLevelID = ID;
                 GameManager.Singleton.LevelManager.currentChapterID = chapterID;
                 StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;
@@ -132,6 +134,8 @@ namespace StudioByStorm.UI.Controllers {
         public void CutSceneSelectButtonClick(int ID, int chapterID, bool isLocked = false)
         {
             if (! isLocked) {
+                AudioManager.Singleton.Play(SoundType.ButtonPress);
+                
                 CutSceneController CutSceneController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.CutSceneView) as CutSceneController;
                 //GameManager.Singleton.UIController.Back();
                 CutSceneController.ShowCutScene(ID, chapterID);

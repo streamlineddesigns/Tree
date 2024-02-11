@@ -39,6 +39,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void HomeButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+
             Time.timeScale = 1.0f;
             /*MockNodes.SetActive(true);
             GameManager.Singleton.CameraController.ResetToOriginalPosition();
@@ -53,12 +55,16 @@ namespace StudioByStorm.UI.Controllers {
 
         public void ResumeButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+
             Time.timeScale = 1.0f;
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);
         }
 
         public void RestartButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            
             Time.timeScale = 1.0f;
             LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
             levelCompleteController.RestartButtonClick();

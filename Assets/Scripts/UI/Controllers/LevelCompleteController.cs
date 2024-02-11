@@ -145,6 +145,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void RestartButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
 
@@ -153,6 +155,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void ContinueButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+
             //check what our current level is
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
@@ -190,6 +194,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void HomeButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            
             PauseController PauseController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.PauseView) as PauseController;
             PauseController.HomeButtonClick();
         }

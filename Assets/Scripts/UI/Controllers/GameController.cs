@@ -25,12 +25,14 @@ namespace StudioByStorm.UI.Controllers {
 
         public void PauseButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             Time.timeScale = 0.0f;
             GameManager.Singleton.UIController.ShowView(ViewName.PauseView);
         }
 
         public void ZoomButtonClick(float speed = 1.0f)
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             CameraController.centroid = Centroid.transform;
             GameManager.Singleton.CameraController.MoveToCentroid();
             GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(45, speed).SetEase(Ease.InQuad);
@@ -80,6 +82,7 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void ResetButtonClick(NodeColor inputColor)
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             //Get all the blue nodes
             List<Node> blueNodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(inputColor);
             //Get all the blue edges

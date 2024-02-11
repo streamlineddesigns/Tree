@@ -91,7 +91,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool isLevelLost = false;
 
         private int playerNodeID = -1;
-
+        private bool isMoving;
         
         void Awake()
         {
@@ -164,6 +164,8 @@ namespace StudioByStorm.Gravity.Player {
                 yield return new WaitUntil(() => gameObject.transform.position == waypoints[i]);
             }*/
 
+            AudioManager.Singleton.Play(SoundType.Travel);
+
             gameObject.transform.DOPath(waypoints, 0.75f, PathType.Linear).SetEase(Ease.Linear).OnComplete(() => {
                 Move();
             });
@@ -179,7 +181,6 @@ namespace StudioByStorm.Gravity.Player {
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f).OnComplete(() => {GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);});
            
             yield return null;
-            Move();
             lerping = false;
         }
 
@@ -254,6 +255,7 @@ namespace StudioByStorm.Gravity.Player {
         {
             //play the hit animation
             if (! isHitObstacle) {
+                AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
                 isHitObstacle = true;
                 HitObstacleAnimation();
@@ -348,7 +350,7 @@ namespace StudioByStorm.Gravity.Player {
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;
-                Move();
+                Move(true);
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);
@@ -369,6 +371,7 @@ namespace StudioByStorm.Gravity.Player {
                         
                     if (! lerping) {
                         GameEventPublisher.PublishPlayerHitCorrectObstacle();
+                        AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
                     }
 
                 //otherwise
@@ -505,10 +508,10 @@ namespace StudioByStorm.Gravity.Player {
             rigidbody.AddForce(gravityDirection * (gravityForce * Time.fixedDeltaTime));
         }
 
-        protected void Move()
+        protected void Move(bool ignoreDuringLerp = false)
         {
-            if (isJoystickUp) {
-                //return;
+            if (ignoreDuringLerp && lerping) {
+                return;
             }
             //Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.player.transform.position;//$$Testing could make it like this if we wanted player to be able to just move on flat ground
             Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.nearbyNode.gameObject.transform.position;
@@ -518,6 +521,8 @@ namespace StudioByStorm.Gravity.Player {
             //rigidbody.DOMove(nearbyNodePosition, movementForce, false);
             rigidbody.velocity = Vector2.zero;
             transform.position = nearbyNodePosition;
+            
+            AudioManager.Singleton.Play(SoundType.CellLand);
         }
 
         protected void ResetMovement()
@@ -531,6 +536,8 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void Jump(Vector2 dir)
         {
+            AudioManager.Singleton.Play(SoundType.Jump);
+
             GameEventPublisher.PublishPlayerJump();
 
             ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
@@ -559,7 +566,7 @@ namespace StudioByStorm.Gravity.Player {
         protected void Dash()
         {
             if (canDash && currentOffSurfaceTimer <= 0.0f) {
-
+                AudioManager.Singleton.Play(SoundType.Dash);
                 GameEventPublisher.PublishPlayerDash();
 
                 float dashForce;

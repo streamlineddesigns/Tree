@@ -42,6 +42,7 @@ namespace StudioByStorm.UI.Controllers {
                 headingText.gameObject.SetActive(true);
                 yield return StartCoroutine(PrintText(headingText, currentChapter.heading));
                 SetTextToFullyOpaque(headingText);
+                AudioManager.Singleton.Play(SoundType.ChapterIntro);
             }
 
             messageText.gameObject.SetActive(true);
@@ -60,12 +61,13 @@ namespace StudioByStorm.UI.Controllers {
             List<char> charList = new List<char>();
             //iterate over characters and show them one at a time
             for (int i = 0; i < charArray.Length; i++) {
+                AudioManager.Singleton.Play(SoundType.Typing);
                 charList.Add(charArray[i]);
                 TMP.text = new string(charList.ToArray());
                 Color targetColor = TMP.color;
                 targetColor.a = (i * 1.0f / charArray.Length);
                 TMP.color = targetColor;
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.075f);
             }
         }
 
@@ -78,6 +80,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void ContinueButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             SaveProgress();
             int levelID = currentCutSceneID * 3;
             LevelSelectController LevelSelectController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelSelectView) as LevelSelectController;

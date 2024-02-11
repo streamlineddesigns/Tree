@@ -172,6 +172,9 @@ namespace StudioByStorm {
                     currentSelectedEdge.LinkSpriteRenderers[i].material = glowingMaterial;
                 }
 
+                AudioManager.Singleton.Play(SoundType.TravelEdgeIndicator);
+
+
                 //update jump indicator
                 GameManager.Singleton.PlayerController.JumpIndicator.SetActive(false);
                 /*Color nc = GameManager.Singleton.ColorModel.lightColor[(int) targetNode.NodeColor];
@@ -394,6 +397,7 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NumOfConnections++;
             ActionView.DisableGetEdgeButton();
             ActionView.GetEdgeButtonClick();
+            AudioManager.Singleton.Play(SoundType.GetEdge);
         }
 
         protected IEnumerator EdgeLightFXTravel(Edge currentEdge)
@@ -408,12 +412,13 @@ namespace StudioByStorm {
                 GameObject edgeLightFX = GameManager.Singleton.FXManager.EdgeLightPool.Get();
                 edgeLightFX.SetActive(true);
                 edgeLightFX.GetComponent<EdgeLight>().SetColor(GameManager.Singleton.ColorModel.lightColor[(int)currentEdge.EdgeColor]);
-
+                AudioManager.Singleton.Play(SoundType.EnergyTravel);
                 //send light along path :)
                 for (int i = 0; i < waypoints.Length; i++) {
                     edgeLightFX.transform.DOMove(waypoints[i], 0.03f, false);
                     yield return new WaitForSeconds(0.03f);
                 }
+                
                 edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.03f, false);
                 edgeLightFX.SetActive(false);
 
@@ -426,6 +431,8 @@ namespace StudioByStorm {
 
         public void SetEdgeButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.SetEdge);
+
             ActionView.DisableSetEdgeButton();
             GameManager.Singleton.LevelManager.currentLevelEdgeCount++;
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentEdge.parentID, ActionModel.CurrentNode.ID);
@@ -468,6 +475,7 @@ namespace StudioByStorm {
                 for (int i = 0; i < nodes.Length; i++) {
                     nodes[i].AddColorRing(true);
                 }
+                AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
             }
             //}$$Experimental: allow players to use more than what we know is the max number of edges a color will need
 

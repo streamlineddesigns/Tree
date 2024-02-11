@@ -53,6 +53,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void TutorialDialogClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             isTutorialDismissed = true;
             HideView();
         }
@@ -160,6 +161,7 @@ namespace StudioByStorm.UI.Controllers {
                 if (isTutorialDismissed) {
                     break;
                 }
+                AudioManager.Singleton.Play(SoundType.Typing);
                 charList.Add(charArray[i]);
                 char[] currentCharacters = charList.ToArray();
                 messageText.text = new string(currentCharacters);

@@ -36,12 +36,16 @@ namespace StudioByStorm.UI.Controllers {
 
         public void HomeButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+
             Time.timeScale = 1.0f;
             SceneManager.LoadScene("Main");
         }
 
         public void RestartButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            
             Time.timeScale = 1.0f;
             LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
             levelCompleteController.RestartButtonClick();

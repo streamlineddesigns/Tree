@@ -16,6 +16,8 @@ namespace StudioByStorm {
 
         //just hold SoundType : int of corresponding index in soundFXData
         private Dictionary<SoundType, int> soundFX = new Dictionary<SoundType, int>();
+        private bool isMusicOn = true;
+        private bool isMusicFadingOut = false;
 
         protected void Awake()
         {
@@ -34,6 +36,39 @@ namespace StudioByStorm {
                 SoundFXData currentSoundFXData = soundFXData[i];
                 soundFX.Add(currentSoundFXData.soundType, i);
             }
+
+            StartCoroutine(UpdateMusic());
+        }
+
+        IEnumerator UpdateMusic()
+        {
+            while(isMusicOn) {
+                float timeLeft = musicAudioSource.clip.length - musicAudioSource.time;
+
+                if (! musicAudioSource.isPlaying) {
+                    FadeMusicIn();
+
+                } else if (timeLeft <= 10.0f && !isMusicFadingOut) {
+                    isMusicFadingOut = true;
+                    FadeMusicOut();
+                }
+                yield return new WaitForSeconds(0.0333f);
+            }
+        }
+
+        protected void FadeMusicIn()
+        {
+            musicAudioSource.volume = 0.0f;
+            musicAudioSource.Play();
+            musicAudioSource.DOFade(0.25f, 15.0f).SetEase(Ease.InSine).OnComplete(() => {
+                //we'll put this in here so there's no chance of fade out being called because the music isn't playing so technically "timeLeft <= 10.0f"
+                isMusicFadingOut = false;
+            }); 
+        }
+
+        protected void FadeMusicOut()
+        {
+            musicAudioSource.DOFade(0.0f, 15.0f).SetEase(Ease.InSine); 
         }
 
         public void Play(SoundType soundType)

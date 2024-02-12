@@ -50,6 +50,12 @@ namespace StudioByStorm.UI.Controllers {
             }
 
             messageText.gameObject.SetActive(true);
+
+            if (currentCutSceneID <= currentChapter.narration.Count - 1) {
+                AudioClip narrationAudioClip = currentChapter.narration[currentCutSceneID];
+                AudioManager.Singleton.PlayNarration(narrationAudioClip);
+            }
+
             yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].message));
             SetTextToFullyOpaque(messageText);
 
@@ -84,6 +90,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void ContinueButtonClick()
         {
+            AudioManager.Singleton.StopNarration();
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             SaveProgress();
             int levelID = currentCutSceneID * 3;

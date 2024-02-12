@@ -13,6 +13,7 @@ namespace StudioByStorm {
         public List<SoundFXData> soundFXData = new List<SoundFXData>();
         public List<AudioSource> audioSources = new List<AudioSource>();
         public AudioSource musicAudioSource;
+        public AudioSource narrationAudioSource;
 
         //just hold SoundType : int of corresponding index in soundFXData
         private Dictionary<SoundType, int> soundFX = new Dictionary<SoundType, int>();
@@ -55,6 +56,17 @@ namespace StudioByStorm {
                 musicChapterID = chapterID;
                 PlayChapterMusic();
             }
+        }
+
+        public void PlayNarration(AudioClip narrationToPlay)
+        {
+            narrationAudioSource.clip = narrationToPlay;
+            narrationAudioSource.Play();
+        }
+
+        public void StopNarration()
+        {
+            narrationAudioSource.Stop();
         }
 
         protected void PlayChapterMusic()

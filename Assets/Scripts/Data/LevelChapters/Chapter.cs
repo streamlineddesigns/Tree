@@ -11,6 +11,7 @@ namespace StudioByStorm.Data.LevelChapters {
         public string subHeading;
         public List<CutScene> cutScenes;
         public List<Level> levels;
+        public List<AudioClip> narration;
         public AudioClip music;
     }
 

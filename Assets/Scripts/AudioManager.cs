@@ -24,6 +24,7 @@ namespace StudioByStorm {
         private bool isChangingMusic;
         private int musicChapterID;
         private float musicTargetVolume = 0.25f;
+        private float soundFXMultiplier = 1.25f;
 
         protected void Awake()
         {
@@ -127,7 +128,7 @@ namespace StudioByStorm {
 
         public void Play(SoundType soundType)
         {
-            AudioSource audioSourceToUse = audioSources.Where(x => !x.isPlaying).First();
+            AudioSource audioSourceToUse = audioSources[(int) soundType];
 
             if (soundFX.ContainsKey(soundType)) {
 
@@ -139,7 +140,7 @@ namespace StudioByStorm {
 
                 SoundFXData currentSoundFXData = soundFXData[index];
                 List<AudioClip> currentAudioClips = currentSoundFXData.audioClips;
-                float targetVolume = currentSoundFXData.volume;
+                float targetVolume = currentSoundFXData.volume * soundFXMultiplier;
                 Ease easeIn = currentSoundFXData.easingIn;
                 Ease easeOut = currentSoundFXData.easingOut;
                 bool doFade = currentSoundFXData.doFade;
@@ -150,6 +151,8 @@ namespace StudioByStorm {
 
                 float halfLifeDuration = audioSourceToUse.clip.length / 2.0f;
                 
+                audioSourceToUse.Stop();
+
                 if (doFade) {
                     audioSourceToUse.volume = 0.0f;
                     audioSourceToUse.Play();

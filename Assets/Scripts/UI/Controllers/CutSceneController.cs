@@ -21,6 +21,10 @@ namespace StudioByStorm.UI.Controllers {
             currentCutSceneID = cutSceneID;
             currentChapterID = chapterID;
             GameManager.Singleton.UIController.ShowView(ViewName.CutSceneView);
+            //plays current chapter music
+            AudioManager.Singleton.SetChapterMusic(chapterID);
+            //save most recently played chapter so we can start with that music
+            GameManager.Singleton.ProgressManager.UpdateMostRecentlyPlayedChapterIDProgress(chapterID);
             StartCoroutine(CutScene());
         }
 

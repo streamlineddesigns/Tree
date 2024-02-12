@@ -33,6 +33,9 @@ namespace StudioByStorm.Data {
 
         //returns the highest tutorial ID completed
         public int tutorialProgress = -1;
+
+        //returns the most recently played chapter
+        public int mostRecentlyPlayedChapterIDProgress = -1;
     }
 
 }

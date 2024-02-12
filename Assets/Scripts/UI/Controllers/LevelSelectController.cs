@@ -123,6 +123,11 @@ namespace StudioByStorm.UI.Controllers {
             if (! isLocked) {
                 AudioManager.Singleton.Play(SoundType.ButtonPress);
 
+                //plays current chapter music
+                AudioManager.Singleton.SetChapterMusic(chapterID);
+                //save most recently played chapter so we can start with that music
+                GameManager.Singleton.ProgressManager.UpdateMostRecentlyPlayedChapterIDProgress(chapterID);
+
                 GameManager.Singleton.LevelManager.currentLevelID = ID;
                 GameManager.Singleton.LevelManager.currentChapterID = chapterID;
                 StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;

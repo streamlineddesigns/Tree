@@ -18,6 +18,11 @@ namespace StudioByStorm {
         private Dictionary<SoundType, int> soundFX = new Dictionary<SoundType, int>();
         private bool isMusicOn = true;
         private bool isMusicFadingOut = false;
+        private float musicFadeDuration = 7.0f;
+
+        private bool isChangingMusic;
+        private int musicChapterID;
+        private float musicTargetVolume = 0.25f;
 
         protected void Awake()
         {
@@ -37,21 +42,58 @@ namespace StudioByStorm {
                 soundFX.Add(currentSoundFXData.soundType, i);
             }
 
-            StartCoroutine(UpdateMusic());
+            int mostRecentlyPlayedChapterID = GameManager.Singleton.ProgressManager.GetMostRecentlyPlayedChapterIDProgress();
+            musicChapterID = (mostRecentlyPlayedChapterID == -1) ? 0 : mostRecentlyPlayedChapterID;
+            AudioClip chapterMusic = GameManager.Singleton.LevelManager.levelChapters.chapters[musicChapterID].music;
+            StartCoroutine(UpdateCurrentPlayingMusic(chapterMusic));
+            StartCoroutine(LoopMusic());
         }
 
-        IEnumerator UpdateMusic()
+        public void SetChapterMusic(int chapterID)
+        {
+            if (musicChapterID != chapterID) {
+                musicChapterID = chapterID;
+                PlayChapterMusic();
+            }
+        }
+
+        protected void PlayChapterMusic()
+        {
+            AudioClip chapterMusic = GameManager.Singleton.LevelManager.levelChapters.chapters[musicChapterID].music;
+            StartCoroutine(UpdateCurrentPlayingMusic(chapterMusic));
+        }
+
+        IEnumerator UpdateCurrentPlayingMusic(AudioClip clipToPlay)
+        {
+            isChangingMusic = true;
+
+            if (musicAudioSource.isPlaying) {
+                FadeMusicOut();
+                yield return new WaitUntil(() => musicAudioSource.volume == 0.0f);
+            }
+            
+            musicAudioSource.clip = clipToPlay;
+            FadeMusicIn();
+            yield return new WaitUntil(() => musicAudioSource.volume == musicTargetVolume);
+            isChangingMusic = false;
+        }
+
+        IEnumerator LoopMusic()
         {
             while(isMusicOn) {
-                float timeLeft = musicAudioSource.clip.length - musicAudioSource.time;
 
-                if (! musicAudioSource.isPlaying) {
-                    FadeMusicIn();
+                if (!isChangingMusic) {
+                    float timeLeft = musicAudioSource.clip.length - musicAudioSource.time;
 
-                } else if (timeLeft <= 10.0f && !isMusicFadingOut) {
-                    isMusicFadingOut = true;
-                    FadeMusicOut();
+                    if (! musicAudioSource.isPlaying) {
+                        FadeMusicIn();
+
+                    } else if (!isMusicFadingOut && timeLeft <= musicFadeDuration) {
+                        isMusicFadingOut = true;
+                        FadeMusicOut();
+                    }
                 }
+
                 yield return new WaitForSeconds(0.0333f);
             }
         }
@@ -60,7 +102,7 @@ namespace StudioByStorm {
         {
             musicAudioSource.volume = 0.0f;
             musicAudioSource.Play();
-            musicAudioSource.DOFade(0.25f, 15.0f).SetEase(Ease.InSine).OnComplete(() => {
+            musicAudioSource.DOFade(musicTargetVolume, musicFadeDuration).SetEase(Ease.Linear).OnComplete(() => {
                 //we'll put this in here so there's no chance of fade out being called because the music isn't playing so technically "timeLeft <= 10.0f"
                 isMusicFadingOut = false;
             }); 
@@ -68,7 +110,7 @@ namespace StudioByStorm {
 
         protected void FadeMusicOut()
         {
-            musicAudioSource.DOFade(0.0f, 15.0f).SetEase(Ease.InSine); 
+            musicAudioSource.DOFade(0.0f, musicFadeDuration).SetEase(Ease.Linear); 
         }
 
         public void Play(SoundType soundType)
@@ -94,14 +136,14 @@ namespace StudioByStorm {
                 audioSourceToUse.clip = currentAudioClips[randomAudioClipIndex];
                 
 
-                float duration = audioSourceToUse.clip.length / 2.0f;
+                float halfLifeDuration = audioSourceToUse.clip.length / 2.0f;
                 
                 if (doFade) {
                     audioSourceToUse.volume = 0.0f;
                     audioSourceToUse.Play();
                     Sequence soundFade = DOTween.Sequence();
-                    soundFade.Append(audioSourceToUse.DOFade(targetVolume, duration).SetEase(easeIn))
-                             .Append(audioSourceToUse.DOFade(0.0f, duration).SetEase(easeOut));
+                    soundFade.Append(audioSourceToUse.DOFade(targetVolume, halfLifeDuration).SetEase(easeIn))
+                             .Append(audioSourceToUse.DOFade(0.0f, halfLifeDuration).SetEase(easeOut));
                 } else {
                     audioSourceToUse.volume = targetVolume;
                     audioSourceToUse.Play();

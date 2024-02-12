@@ -75,6 +75,11 @@ namespace StudioByStorm {
             return ProgressData.tutorialProgress;
         }
 
+        public int GetMostRecentlyPlayedChapterIDProgress()
+        {
+            return ProgressData.mostRecentlyPlayedChapterIDProgress;
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -114,6 +119,11 @@ namespace StudioByStorm {
         public void UpdateTutorial(int k)
         {
             ProgressData.tutorialProgress = k;
+        }
+
+        public void UpdateMostRecentlyPlayedChapterIDProgress(int k)
+        {
+            ProgressData.mostRecentlyPlayedChapterIDProgress = k;
         }
 
         private void Serialize<T>(T obj, string filePath)

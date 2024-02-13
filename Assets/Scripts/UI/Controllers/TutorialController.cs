@@ -114,7 +114,10 @@ namespace StudioByStorm.UI.Controllers {
                 currentTutorial.Begin();
                 StartCoroutine(currentTutorial.WaitUntilFinished());
                 yield return new WaitUntil(() => isLevelCompleted || isTutorialDismissed || currentTutorial.isAborting || (currentTutorial.isFinished && isCurrentTutorialTextPrinted));
-                
+                if (isLevelCompleted && currentTutorial.isFinished) {
+                    CompleteTutorial();
+                }
+
                 //end tutorial & clean up
                 currentTutorial.End();
                 currentTutorial.CleanUp();
@@ -166,7 +169,7 @@ namespace StudioByStorm.UI.Controllers {
                 char[] currentCharacters = charList.ToArray();
                 messageText.text = new string(currentCharacters);
                 messageShadowText.text = new string(currentCharacters);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.075f);
             }
             
             isCurrentTutorialTextPrinted = true;

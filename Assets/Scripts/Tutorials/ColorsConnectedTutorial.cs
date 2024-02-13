@@ -5,7 +5,7 @@ using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.Tutorials {
 
-    public class AlternatingColorTutorial : Tutorial
+    public class ColorsConnectedTutorial : Tutorial
     {
         private bool isLevelComplete = false;
 

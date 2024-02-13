@@ -26,6 +26,7 @@ namespace StudioByStorm.Gravity.Player {
 
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
 
+        [SerializeField] public Material glowMaterial;
         [SerializeField] private Material lightMaterial;
         [SerializeField] private Material darkMaterial;
         [SerializeField] private Color lightColor;

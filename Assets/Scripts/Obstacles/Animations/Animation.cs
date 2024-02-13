@@ -64,6 +64,7 @@ namespace StudioByStorm.Obstacles.Animations {
         {
             animate = false;
             StopCoroutine(AnimationUpdate());
+            StopAllCoroutines();
         }
 
         protected void TeleportBuildingBlocksPosition()

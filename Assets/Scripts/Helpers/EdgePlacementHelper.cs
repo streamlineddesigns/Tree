@@ -149,9 +149,13 @@ namespace StudioByStorm.Helpers {
                     nodes[i].AddColorRing(true);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
+
+                List<int> connectedNodeIDs = new List<int>();
+                Node startNode = GameManager.Singleton.ColorNodeRegistry.TryGetValue(childNode.NodeColor).Where(x => x.NodeType == NodeType.Parent).First();
+                StartCoroutine(CompleteEdgeLightFXTravel(startNode));
             }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
         }
 
         protected IEnumerator EdgeLightFXTravel(Edge currentEdge)
@@ -177,6 +181,40 @@ namespace StudioByStorm.Helpers {
                 edgeLightFX.SetActive(false);
             }
             
+        }
+
+        protected IEnumerator CompleteEdgeLightFXTravel(Node startNode)
+        {
+            List<Vector3> waypoints = new List<Vector3>();
+
+            Stack<int> nodes = new Stack<int>();
+            List<int> visitedNodeIDs = new List<int>();
+            nodes.Push(startNode.ID);
+            
+            while(nodes.Count > 0) {
+                int ID = nodes.Pop();
+                List<int> connectedNodes = GameManager.Singleton.AdjacencyList.Get(ID);
+
+                visitedNodeIDs.Add(ID);
+                waypoints.Add(GameManager.Singleton.NodeRegistry.TryGetValue(ID).gameObject.transform.position);
+
+                connectedNodes.ForEach(x => {
+                    int currentNodeID = x;
+                    if (! visitedNodeIDs.Contains(currentNodeID)) {
+                        nodes.Push(currentNodeID);
+                    }
+                });
+            }
+
+            GameObject edgeLightFX = GameManager.Singleton.FXManager.EdgeLightPool.Get();
+            edgeLightFX.gameObject.transform.position = waypoints[0];
+            edgeLightFX.SetActive(true);
+            edgeLightFX.GetComponent<EdgeLight>().SetColor(GameManager.Singleton.ColorModel.lightColor[(int)startNode.NodeColor]);
+
+            for (int i = 0; i < waypoints.Count; i++) {
+                edgeLightFX.transform.DOMove(waypoints[i], 0.25f, false).SetEase(Ease.Linear);
+                yield return new WaitForSeconds(0.25f);
+            }
         }
 
 

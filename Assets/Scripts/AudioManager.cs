@@ -188,5 +188,6 @@ namespace StudioByStorm {
         Dash,//
         Typing,
         ButtonPress,
+        CantSetEdge,
     }
 }

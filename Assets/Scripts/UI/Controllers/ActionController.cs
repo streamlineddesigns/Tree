@@ -321,6 +321,9 @@ namespace StudioByStorm {
                     GetEdgeButtonClick();
                 } else if (ActionView.SetEdgeButton.interactable) {
                     SetEdgeButtonClick();
+                } else if (! ActionView.SetEdgeButton.interactable && ActionModel.CurrentEdge != null) {
+                    AudioManager.Singleton.Play(SoundType.CantSetEdge);
+                    ActionModel.CurrentEdge.CantSetEdgeAnimation();
                 }
             }
         }

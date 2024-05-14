@@ -9,16 +9,12 @@ namespace StudioByStorm.Tutorials {
     {
         private ActionController actionController;
         private PlayerController playerController;
-        private bool isJumpLocked;
         private int startEdgeID = -1;
 
         public override void Init()
         {
             actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             playerController = GameManager.Singleton.PlayerController;
-
-            isJumpLocked = true;
-            actionController.LockJump(isJumpLocked);
         }
 
         protected override IEnumerator TutorialUpdate()
@@ -29,8 +25,6 @@ namespace StudioByStorm.Tutorials {
                         startEdgeID = actionController.ActionModel.CurrentEdge.gameObject.GetInstanceID();
                     }
                 }
-
-                playerController.JumpIndicator.SetActive(false);
                 yield return new WaitForSeconds(0.0333f);
             }
         }
@@ -43,8 +37,6 @@ namespace StudioByStorm.Tutorials {
 
         public override void CleanUp()
         {
-            isJumpLocked = false;
-            actionController.LockJump(isJumpLocked);
             Destroy(gameObject);
         }
     }

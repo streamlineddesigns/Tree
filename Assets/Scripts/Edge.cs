@@ -20,6 +20,7 @@ namespace StudioByStorm {
         public int activeLinkIndex;
         public GameObject emptyTarget;
         public SpriteRenderer hookSpriteRenderer;
+        public LineRenderer lineRendererFX;
 
         void Start()
         {
@@ -39,7 +40,21 @@ namespace StudioByStorm {
 
             activeLinkIndex = LinkSpriteRenderers.Length - 1;
 
+            lineRendererFX.enabled = false;
+
             fabrikOn(true);
+        }
+
+        public void DisplayLineRendererFX()
+        {
+            Vector3 parentPosition = gameObject.transform.position;
+            Vector3 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childID).gameObject.transform.position;
+
+            lineRendererFX.enabled = true;
+            lineRendererFX.SetPosition(0, parentPosition);
+            lineRendererFX.SetPosition(1, childPosition);
+            lineRendererFX.SetWidth(0.1f, 0.1f);
+            lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
         }
 
         public void CantSetEdgeAnimation()

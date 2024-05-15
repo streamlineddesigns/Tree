@@ -454,6 +454,7 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;
             ActionModel.CurrentEdge.turnFabrikOff();
+            ActionModel.CurrentEdge.DisplayLineRendererFX();
             
             StartCoroutine(EdgeLightFXTravel(ActionModel.CurrentEdge));
 

@@ -45,12 +45,16 @@ namespace StudioByStorm {
         public void CantSetEdgeAnimation()
         {
             Sequence hitSequenceAnimation = DOTween.Sequence();
-            hitSequenceAnimation.Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
+            hitSequenceAnimation.AppendCallback(() => {
+                                    hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+                                }).Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
                                 .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f))
                                 .Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
                                 .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f))
                                 .Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f));
+                                .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f)).AppendCallback(() => {
+                                    hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
+                                });
         }
 
         public void turnFabrikOff()

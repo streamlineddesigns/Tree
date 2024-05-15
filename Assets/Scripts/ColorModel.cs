@@ -14,6 +14,8 @@ namespace StudioByStorm {
         public Color[] lightColor;
         public Color[] darkColor;
         public GameObject[] coloredRings;
+        public Material litMaterial;
+        public Material unlitMaterial;
     }
 
 }

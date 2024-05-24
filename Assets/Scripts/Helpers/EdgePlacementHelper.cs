@@ -130,6 +130,7 @@ namespace StudioByStorm.Helpers {
             childNode.NumOfConnections++;
             edge.childID = childNode.ID;
             edge.turnFabrikOff();
+            edge.DisplayLineRendererFX(0.3f);
             
             StartCoroutine(EdgeLightFXTravel(edge));
 

@@ -17,6 +17,9 @@ namespace StudioByStorm.Helpers {
         public Vector3 TargetPosition;
         public GameObject FourConnected;
         public GameObject NodeContainer;
+        public GameObject ObstacleContainer;
+        public GameObject Canvas;
+        public bool enableCanvasAfter = false;
         public float SpinDuration;
         public Vector3 TargetEndRotation;
         public float ScaleTo;
@@ -59,6 +62,7 @@ namespace StudioByStorm.Helpers {
             CameraController.gameObject.transform.position = StartPosition;
             PlayerController.gameObject.SetActive(false);
             NodeContainer.SetActive(false);
+            ObstacleContainer.SetActive(false);
 
     
             yield return new WaitForSeconds(2.0f);
@@ -90,11 +94,16 @@ namespace StudioByStorm.Helpers {
             yield return new WaitForSeconds(0.5f);
 
             NodeContainer.SetActive(true);
+            ObstacleContainer.SetActive(true);
             GameController.ZoomButtonClick();
 
             yield return new WaitForSeconds(1.0f);
 
             EdgePlacementHelper.LinearPlacement();
+
+            yield return new WaitForSeconds(5.0f);
+
+            if (enableCanvasAfter) Canvas.SetActive(true);
         }
 
         protected void Update()

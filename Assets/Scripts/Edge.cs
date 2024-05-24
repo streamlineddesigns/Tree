@@ -45,7 +45,7 @@ namespace StudioByStorm {
             fabrikOn(true);
         }
 
-        public void DisplayLineRendererFX()
+        public void DisplayLineRendererFX(float size = 0.1f)
         {
             Vector3 parentPosition = gameObject.transform.position;
             Vector3 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childID).gameObject.transform.position;
@@ -53,7 +53,7 @@ namespace StudioByStorm {
             lineRendererFX.enabled = true;
             lineRendererFX.SetPosition(0, parentPosition);
             lineRendererFX.SetPosition(1, childPosition);
-            lineRendererFX.SetWidth(0.1f, 0.1f);
+            lineRendererFX.SetWidth(size, size);
             lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
         }
 

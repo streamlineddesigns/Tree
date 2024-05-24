@@ -23,21 +23,24 @@ namespace StudioByStorm.Obstacles.Animations {
 
         protected void Awake()
         {
-            buildingBlockPositions = new Vector3[buildingBlocks.Length];
-            buildingBlockRotations = new Quaternion[buildingBlocks.Length];
-            buildingBlockPositionIndexs = new int[buildingBlocks.Length];
-            buildingBlockRotationIndexs = new int[buildingBlocks.Length];
+            int size = (buildingBlocks != null) ? buildingBlocks.Length : 0;
+            buildingBlockPositions = new Vector3[size];
+            buildingBlockRotations = new Quaternion[size];
+            buildingBlockPositionIndexs = new int[size];
+            buildingBlockRotationIndexs = new int[size];
         }
 
         protected void Start()
         {
-            for (int i = 0; i < buildingBlocks.Length; i++) {
-                buildingBlockPositions[i] = buildingBlocks[i].transform.localPosition;
-                buildingBlockRotations[i] = buildingBlocks[i].transform.localRotation;
-                buildingBlockPositionIndexs[i] = i;
-                buildingBlockRotationIndexs[i] = i;
+            if (buildingBlocks != null) {
+                for (int i = 0; i < buildingBlocks.Length; i++) {
+                    buildingBlockPositions[i] = buildingBlocks[i].transform.localPosition;
+                    buildingBlockRotations[i] = buildingBlocks[i].transform.localRotation;
+                    buildingBlockPositionIndexs[i] = i;
+                    buildingBlockRotationIndexs[i] = i;
+                }
             }
-
+            
             //perform initial position teleport
             for (int j = 0; j < initialPositionTeleport; j++) {
                 TeleportBuildingBlocksPosition();

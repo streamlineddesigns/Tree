@@ -80,6 +80,11 @@ namespace StudioByStorm.UI.Controllers {
             ResetButtonClick(NodeColor.Orange);
         }
 
+        public void ResetYellowButtonClick()
+        {
+            ResetButtonClick(NodeColor.Yellow);
+        }
+
         protected void ResetButtonClick(NodeColor inputColor)
         {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
@@ -150,6 +155,7 @@ namespace StudioByStorm.UI.Controllers {
             ResetPurpleButtonClick();
             ResetWhiteButtonClick();
             ResetOrangeButtonClick();
+            ResetYellowButtonClick();
         }
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace StudioByStorm.Obstacles.Animations {
     public class ScaleInOutAnimation : Animation
     {
         public float delayTilScale = 1.0f;
+        [SerializeField] private float scaleMultiplier = 0.0f;
         protected Vector3 targetScale;
         protected Vector3 originalScale;
         protected bool bScaleSwitch;
@@ -27,7 +29,7 @@ namespace StudioByStorm.Obstacles.Animations {
                     if (bScaleSwitch) {
                         targetScale = originalScale;
                     } else {
-                        targetScale = Vector3.zero;
+                        targetScale = originalScale * scaleMultiplier;
                     }
 
                     buildingBlocks[i].transform.DOScale(targetScale, time).SetEase(easing);
@@ -48,7 +50,7 @@ namespace StudioByStorm.Obstacles.Animations {
                 }
                 
                 //teleport to next position if parts are not visible
-                if (targetScale == Vector3.zero) {
+                if (targetScale == originalScale * scaleMultiplier) {
                     TeleportBuildingBlocksPosition();
                 }
 

@@ -323,7 +323,8 @@ namespace StudioByStorm {
                     SetEdgeButtonClick();
                 } else if (! ActionView.SetEdgeButton.interactable && ActionModel.CurrentEdge != null) {
                     AudioManager.Singleton.Play(SoundType.CantSetEdge);
-                    ActionModel.CurrentEdge.CantSetEdgeAnimation();
+                    //v1.13ActionModel.CurrentEdge.CantSetEdgeAnimation();
+                    StartCoroutine(ActionModel.CurrentEdge.CantSetEdgeAnimation());
                 }
             }
         }
@@ -447,7 +448,7 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NodeType = (ActionModel.CurrentNode.NodeType == NodeType.Disjoint) ? NodeType.Child : ActionModel.CurrentNode.NodeType;
             //make the current nodes color the same as the current edges parent nodes color
             ActionModel.CurrentNode.NodeColor = ActionModel.CurrentEdge.parentNode.NodeColor;
-            ActionModel.CurrentNode.DisplayColor();
+            //v1.13ActionModel.CurrentNode.DisplayColor();
             ActionModel.CurrentNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) ActionModel.CurrentNode.NodeColor];
             ActionModel.CurrentNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) ActionModel.CurrentNode.NodeColor];
             ActionModel.CurrentNode.DisplayHairColor();
@@ -477,7 +478,7 @@ namespace StudioByStorm {
                 GameManager.Singleton.LevelManager.parentColorsConnected[ActionModel.CurrentNode.NodeColor] = true;
                 Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent).ToArray();
                 for (int i = 0; i < nodes.Length; i++) {
-                    nodes[i].AddColorRing(true);
+                    //v1.13nodes[i].AddColorRing(true);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
             }

@@ -75,6 +75,9 @@ namespace StudioByStorm.Helpers {
                         case NodeColor.Orange:
                             gameController.ResetOrangeButtonClick();
                             break;
+                        case NodeColor.Yellow:
+                            gameController.ResetYellowButtonClick();
+                            break;
                     }
 
                     yield return new WaitForSeconds(0.1f);
@@ -124,7 +127,7 @@ namespace StudioByStorm.Helpers {
                 childNode.DisplayColor();
                 childNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) childNode.NodeColor];
                 childNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) childNode.NodeColor];
-                childNode.DisplayHairColor();
+                //v1.13childNode.DisplayHairColor();
             }
             
             childNode.NumOfConnections++;
@@ -147,7 +150,7 @@ namespace StudioByStorm.Helpers {
                 GameManager.Singleton.LevelManager.parentColorsConnected[childNode.NodeColor] = true;
                 Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(childNode.NodeColor).Where(x => x.NodeType != NodeType.Parent).ToArray();
                 for (int i = 0; i < nodes.Length; i++) {
-                    nodes[i].AddColorRing(true);
+                    //v1.13nodes[i].AddColorRing(true);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
 

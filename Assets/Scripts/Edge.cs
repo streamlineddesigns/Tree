@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,19 +58,49 @@ namespace StudioByStorm {
             lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
         }
 
-        public void CantSetEdgeAnimation()
+        public IEnumerator CantSetEdgeAnimation()//v1.13
         {
-            Sequence hitSequenceAnimation = DOTween.Sequence();
-            hitSequenceAnimation.AppendCallback(() => {
-                                    hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
-                                }).Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.red, 0.075f))
-                                .Append(hookSpriteRenderer.DOColor(Color.white, 0.075f)).AppendCallback(() => {
-                                    hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
-                                });
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+
+            yield return new WaitForSeconds(0.075f);
+
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
+
+            yield return new WaitForSeconds(0.075f);
+
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+
+            yield return new WaitForSeconds(0.075f);
+
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
+
+            yield return new WaitForSeconds(0.075f);
+
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+
+            yield return new WaitForSeconds(0.075f);
+
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
+
+            yield return new WaitForSeconds(0.075f);
         }
 
         public void turnFabrikOff()

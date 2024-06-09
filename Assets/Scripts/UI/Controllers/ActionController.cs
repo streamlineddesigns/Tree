@@ -448,9 +448,11 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NodeType = (ActionModel.CurrentNode.NodeType == NodeType.Disjoint) ? NodeType.Child : ActionModel.CurrentNode.NodeType;
             //make the current nodes color the same as the current edges parent nodes color
             ActionModel.CurrentNode.NodeColor = ActionModel.CurrentEdge.parentNode.NodeColor;
-            //v1.13ActionModel.CurrentNode.DisplayColor();
+
             ActionModel.CurrentNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) ActionModel.CurrentNode.NodeColor];
             ActionModel.CurrentNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) ActionModel.CurrentNode.NodeColor];
+            ActionModel.CurrentNode.DisplayColor();
+            
             ActionModel.CurrentNode.DisplayHairColor();
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;

@@ -166,7 +166,8 @@ namespace StudioByStorm.Gravity.Player {
             }*/
 
             AudioManager.Singleton.Play(SoundType.Travel);
-
+            
+            transform.up = waypoints[waypoints.Length - 1];
             gameObject.transform.DOPath(waypoints, 0.75f, PathType.Linear).SetEase(Ease.Linear).OnComplete(() => {
                 Move();
             });
@@ -181,6 +182,8 @@ namespace StudioByStorm.Gravity.Player {
             //yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f).OnComplete(() => {GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);});
            
+            transform.up = Vector3.up;
+
             yield return null;
             lerping = false;
         }
@@ -588,12 +591,20 @@ namespace StudioByStorm.Gravity.Player {
                 }
 
                 rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
+                transform.up = dashDirection;
 
                 //set boost indication
                 if (boostIndicator.activeSelf) {
-                    boostIndicator.GetComponent<Animator>().SetTrigger("Scale");
-                    float angle = Mathf.Atan2(-dashDirection.y, -dashDirection.x) * Mathf.Rad2Deg;
-                    boostIndicator.transform.parent.rotation = Quaternion.Euler(0, 0, angle);
+                    //boostIndicator.GetComponent<Animator>().SetTrigger("Scale");
+                    //float angle = Mathf.Atan2(-dashDirection.y, -dashDirection.x) * Mathf.Rad2Deg;
+                    //boostIndicator.transform.parent.rotation = Quaternion.Euler(0, 0, angle);
+
+                    // Calculate the angle between the direction and the X axis
+                    ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+                    float angle = Mathf.Atan2(actionView.JumpJoyStick.ScaledValue.y, actionView.JumpJoyStick.ScaledValue.x) * Mathf.Rad2Deg;
+
+                    // Rotate the object around the Z axis to match the direction
+                    //boostIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                 }
             }
 

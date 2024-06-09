@@ -121,6 +121,7 @@ namespace StudioByStorm {
             if (actionController.ActionModel.CurrentEdge != null) {
                 actionController.ActionModel.CurrentEdge.gameObject.SetActive(false);
                 actionController.ActionModel.CurrentEdge = null;
+                GameEventPublisher.PublishPlayerEdgeChange(-1);
             }
 
             GameManager.Singleton.UIController.Close(ViewName.ActionView);
@@ -235,6 +236,7 @@ namespace StudioByStorm {
             NodePool.DeactivateAll();
             ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             actionController.ActionModel.CurrentEdge = null;
+            GameEventPublisher.PublishPlayerEdgeChange(-1);
         }
 
         protected void GameStart()

@@ -6,6 +6,7 @@ using UnityEngine;
 using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
 using StudioByStorm.UI.Controllers;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.FX {
 
@@ -36,10 +37,15 @@ namespace StudioByStorm.FX {
         public GameObject EdgeLightPrefab;
         [HideInInspector]
         public Pool EdgeLightPool;
+        //ConnectionIndicatorFX
+        public GameObject ConnectionIndicatorPrefab;
+        [HideInInspector]
+        public Pool ConnectionIndicatorPool;
         //PlayerLoseFX
         public GameObject PlayerLoseFXPrefab;
         public GameObject PlayerLoseFX;
         
+        protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
         protected int nodeRippleInPoolSize = 3;
         protected int nodeWindInPoolSize = 3;
@@ -47,6 +53,51 @@ namespace StudioByStorm.FX {
         protected int boidPoolSize = 20;
         protected int colorCount = 4;
         protected int boidPerColor = 5;
+
+        void OnEnable()
+        {
+            GameEventPublisher.OnPlayerEdgeChange += OnPlayerEdgeChange;
+        }
+
+        void OnDisable()
+        {
+            GameEventPublisher.OnPlayerEdgeChange -= OnPlayerEdgeChange;
+        }
+
+        protected void OnPlayerEdgeChange(int ParentNodeID)
+        {
+            //send -1 if deactivating an edge
+            if (ParentNodeID == -1) {
+                ConnectionIndicatorPool.DeactivateAll();
+                return;
+            }
+
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            if (actionController == null || actionController.ActionModel.CurrentEdge == null) {
+                return;
+            }
+
+            List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ParentNodeID);
+            ConnectionIndicatorPool.DeactivateAll();
+            
+            for (int i = 0; i < connectedNodes.Count; i++) {
+                int nid = connectedNodes[i];
+                Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(nid);
+
+                if  (
+                        //the other parent
+                        (nearbyNode.currentEdge.childID == -1 && nearbyNode.NodeColor == actionController.ActionModel.CurrentEdge.EdgeColor) || 
+                        //disjoint
+                        (nearbyNode.NodeType == NodeType.Disjoint)
+                    ){
+                    
+                    //show a connection indicator at the same position of the cell if it can be connected to
+                    GameObject connectionIndicator = ConnectionIndicatorPool.Get();
+                    connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
+                    connectionIndicator.SetActive(true);
+                }
+            }
+        }
 
         void Awake()
         {
@@ -67,6 +118,9 @@ namespace StudioByStorm.FX {
 
             EdgeLightPool = ScriptableObject.CreateInstance<Pool>();
             EdgeLightPool.DependencyInjection(EdgeLightPrefab, FXParent, edgeLightPoolSize);
+
+            ConnectionIndicatorPool = ScriptableObject.CreateInstance<Pool>();
+            ConnectionIndicatorPool.DependencyInjection(ConnectionIndicatorPrefab, FXParent, connectionIndicatorPoolSize);
 
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
         }

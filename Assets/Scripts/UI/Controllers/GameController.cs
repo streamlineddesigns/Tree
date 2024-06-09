@@ -107,6 +107,7 @@ namespace StudioByStorm.UI.Controllers {
                 ActionController.ActionModel.CurrentEdge.gameObject.SetActive(false);
                 ActionController.ActionModel.CurrentEdge.parentNode.NumOfConnections--;
                 ActionController.ActionModel.CurrentEdge = null;
+                GameEventPublisher.PublishPlayerEdgeChange(-1);
                 ActionController.ActionView.DisableSetEdgeButton();
             }
             int colorIndex = (int) inputColor;

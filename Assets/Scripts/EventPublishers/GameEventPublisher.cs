@@ -21,6 +21,7 @@ namespace StudioByStorm.EventPublishers {
 
         public delegate void NodeChangeEvent(int NodeID);//delegate signature
         public static event NodeChangeEvent OnPlayerNodeChange;//subscribable event
+        public static event NodeChangeEvent OnPlayerEdgeChange;//subscribable event
 
         public delegate void PlayerEvent();
         public static event PlayerEvent OnPlayerJump;
@@ -77,6 +78,13 @@ namespace StudioByStorm.EventPublishers {
         {
             if (OnPlayerNodeChange != null) {
                 OnPlayerNodeChange(NodeID);
+            }
+        }
+
+        public static void PublishPlayerEdgeChange(int ParentNodeID)
+        {
+            if (OnPlayerEdgeChange != null) {
+                OnPlayerEdgeChange(ParentNodeID);
             }
         }
 

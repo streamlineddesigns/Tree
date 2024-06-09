@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Lean.Gui;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI {
 
@@ -98,6 +99,7 @@ namespace StudioByStorm.UI {
             //add edge to player
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName) as ActionController;
             ActionController.ActionModel.CurrentEdge = edge; //$$cyclic dependencies. need a central location for this data seperated from player action and action view
+            GameEventPublisher.PublishPlayerEdgeChange(edge.parentID);
         }
 
         public void SetEdgeButtonClick(Edge edge)
@@ -105,6 +107,7 @@ namespace StudioByStorm.UI {
             //remove edge from player
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName) as ActionController;
             ActionController.ActionModel.CurrentEdge = null;
+            GameEventPublisher.PublishPlayerEdgeChange(-1);
         }
 
         public void TravelButtonClick()

@@ -69,9 +69,11 @@ namespace StudioByStorm.Tutorials {
 
             List<GameObject> nearestNodes = KNN.GetKNearestNeighbors(currentNode.gameObject, nearbyNodes, 1);
             GameObject nearestNode;
+            Node nearbyNode;
             
             if (nearestNodes.Count > 0) {
                 nearestNode = nearestNodes[0];
+                nearbyNode = nearestNode.GetComponent<Node>();
 
                 actionController.GetEdgeButtonClick();
 
@@ -89,6 +91,11 @@ namespace StudioByStorm.Tutorials {
 
                 actionController.ActionModel.CurrentNode = nearestNode.GetComponent<Node>();
                 actionController.SetEdgeButtonClick();
+                
+                nearbyNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) currentNode.NodeColor];
+                nearbyNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) currentNode.NodeColor];
+                nearbyNode.DisplayColor();
+
                 actionController.ActionModel.CurrentNode = currentNode;
 
                 //get the updated edge which gets created in "SetEdgeButtonClick"

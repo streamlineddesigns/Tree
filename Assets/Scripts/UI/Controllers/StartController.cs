@@ -31,6 +31,11 @@ namespace StudioByStorm.UI.Controllers {
             StartCoroutine(ActivatePlayer());
         }
 
+        public void CharacterButtonClick()
+        {
+            GameManager.Singleton.UIController.ShowView(ViewName.CharacterSelectView);
+        }
+
         IEnumerator ActivatePlayer()
         {
             yield return 0;

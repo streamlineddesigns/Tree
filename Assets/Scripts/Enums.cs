@@ -57,6 +57,7 @@ namespace StudioByStorm {
         HeartView,
         PlayerHeartsView,
         TutorialView,
+        CharacterSelectView,
     }
 
     public enum ViewType

@@ -150,7 +150,9 @@ namespace StudioByStorm.Helpers {
                 GameManager.Singleton.LevelManager.parentColorsConnected[childNode.NodeColor] = true;
                 Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(childNode.NodeColor).Where(x => x.NodeType != NodeType.Parent).ToArray();
                 for (int i = 0; i < nodes.Length; i++) {
-                    //v1.13nodes[i].AddColorRing(true);
+                    nodes[i].AddColorRing(true);
+                    //nodes[i].ActivateHairs();
+                    //nodes[i].DisplayHairColor();
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
 

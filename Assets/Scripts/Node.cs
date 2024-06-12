@@ -128,6 +128,13 @@ namespace StudioByStorm {
             }
         }
 
+        public void ActivateHairs()
+        {
+            for (int i = 0; i < Hairs.Length; i++) {
+                Hairs[i].transform.parent.gameObject.SetActive(true);
+            }
+        }
+
         public void AddColorRing(bool ScaleInRing = false)
         {
             coloredRing = GameManager.Singleton.ColorRingPoolRegistry.TryGetValue(NodeColor).Get();//Instantiate(GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor], gameObject.transform);

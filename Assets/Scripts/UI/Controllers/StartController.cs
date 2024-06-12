@@ -33,7 +33,14 @@ namespace StudioByStorm.UI.Controllers {
 
         public void CharacterButtonClick()
         {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
             GameManager.Singleton.UIController.ShowView(ViewName.CharacterSelectView);
+        }
+
+        public void ShopButtonClick()
+        {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            GameManager.Singleton.UIController.ShowView(ViewName.ShopView);
         }
 
         IEnumerator ActivatePlayer()

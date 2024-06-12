@@ -59,6 +59,10 @@ namespace StudioByStorm {
         TutorialView,
         CharacterSelectView,
         ShopView,
+        NewsView,
+        SettingsView,
+        CreditsView,
+        AccountView,
     }
 
     public enum ViewType

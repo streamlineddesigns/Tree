@@ -43,6 +43,30 @@ namespace StudioByStorm.UI.Controllers {
             GameManager.Singleton.UIController.ShowView(ViewName.ShopView);
         }
 
+        public void SettingsButtonClick()
+        {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            GameManager.Singleton.UIController.ShowView(ViewName.SettingsView);
+        }
+
+        public void NewsButtonClick()
+        {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            GameManager.Singleton.UIController.ShowView(ViewName.NewsView);
+        }
+
+        public void AccountButtonClick()
+        {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            GameManager.Singleton.UIController.ShowView(ViewName.AccountView);
+        }
+
+        public void CreditsButtonClick()
+        {
+            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            GameManager.Singleton.UIController.ShowView(ViewName.CreditsView);
+        }
+
         IEnumerator ActivatePlayer()
         {
             yield return 0;

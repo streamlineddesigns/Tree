@@ -113,11 +113,31 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
+            FTUECheck();
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
+        }
+
+        private void FTUECheck()
+        {
+            if (GameManager.Singleton.LevelManager.currentChapterID == 0) {
+                isLightColor = false;
+                light2D.SetActive(false);
+                spriteRenderer.color = darkColor;
+                spriteRenderer.material = darkMaterial;
+                currentColor = darkColor;
+                currentMaterial = darkMaterial;
+            } else if (GameManager.Singleton.LevelManager.currentChapterID == 1) {
+                isLightColor = true;
+                light2D.SetActive(true);
+                spriteRenderer.color = lightColor;
+                spriteRenderer.material = lightMaterial;
+                currentColor = lightColor;
+                currentMaterial = lightMaterial;
+            }
         }
 
         public bool isPlayerGrounded() 
@@ -252,7 +272,7 @@ namespace StudioByStorm.Gravity.Player {
                     currentColor = darkColor;
                     currentMaterial = darkMaterial;
                 }
-            }
+            }  
         }
 
         private void HitObstacle()
@@ -350,7 +370,7 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
-                StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
+                if (GameManager.Singleton.LevelManager.currentChapterID >= 2) StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;

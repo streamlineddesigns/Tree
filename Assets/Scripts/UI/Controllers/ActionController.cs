@@ -79,7 +79,9 @@ namespace StudioByStorm {
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.localScale = magnitude;
             }
 
-            EdgeButtonClickListener();
+            //EdgeButtonClickListener();
+
+            AutoConnectionHelperListener();
         }
 
         protected void edgeSelectionCheck()
@@ -312,6 +314,15 @@ namespace StudioByStorm {
         {
             ActionView.DisableGetEdgeButton();
             ActionView.DisableSetEdgeButton();
+        }
+
+        protected void AutoConnectionHelperListener()
+        {
+            if (ActionView.GetEdgeButton.interactable) {
+                GetEdgeButtonClick();
+            } else if (ActionView.SetEdgeButton.interactable) {
+                SetEdgeButtonClick();
+            }
         }
 
         protected void EdgeButtonClickListener()

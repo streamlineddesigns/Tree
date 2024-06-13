@@ -142,12 +142,12 @@ namespace StudioByStorm {
 
         IEnumerator UpdateNearbyObstacles()
         {
-            yield return new WaitUntil(() => Obstacles.Count == CurrentLevelData.obstacleNames.Count && horizontalVerticalAdjacencyList != null);
+            yield return new WaitUntil(() => Obstacles.Count == CurrentLevelData.obstacleNames.Count && GameManager.Singleton.FullAdjacencyList != null);
             yield return new WaitForSeconds(0.1f);   
 
             if (nodeIDsWithAnimations != null) {
                 //get any connected nodes to the players current node
-                List<int> connectedNodes = horizontalVerticalAdjacencyList.Get(playerNodeID);
+                List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
                 List<int> connectedNodesWithAnimations = (connectedNodes != null) ? connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList() : new List<int>();
                 //also add the current node if it has an animation too

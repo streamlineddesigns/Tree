@@ -322,12 +322,15 @@ namespace StudioByStorm {
             if (ActionModel.CurrentNode != null && ActionView.GetEdgeButton.interactable) {
                 GetEdgeButtonClick();
             } else if (ActionModel.CurrentEdge != null && ActionView.SetEdgeButton.interactable) {
+                ActionModel.CurrentEdge.isOutOfBounds = false;
+                ActionModel.CurrentEdge.InBoundsIndicator();
                 SetEdgeButtonClick();
             }
 
             if (ActionModel.CurrentEdge != null && !ActionModel.CurrentEdge.isOutOfBounds && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) > EdgeDistanceThreshold) {
                 ActionModel.CurrentEdge.isOutOfBounds = true;
                 StartCoroutine(ActionModel.CurrentEdge.CantSetEdgeAnimation());
+                AudioManager.Singleton.Play(SoundType.CantSetEdge);
             } else if (ActionModel.CurrentEdge != null && ActionModel.CurrentEdge.isOutOfBounds && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) < EdgeDistanceThreshold) {
                 ActionModel.CurrentEdge.InBoundsIndicator();
                 ActionModel.CurrentEdge.isOutOfBounds = false;

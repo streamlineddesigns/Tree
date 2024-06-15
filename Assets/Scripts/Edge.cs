@@ -45,6 +45,9 @@ namespace StudioByStorm {
             lineRendererFX.enabled = false;
 
             fabrikOn(true);
+
+            isOutOfBounds = false;
+            InBoundsIndicator();
         }
 
         public void DisplayLineRendererFX(float size = 0.1f)

@@ -103,12 +103,31 @@ namespace StudioByStorm.UI.Controllers {
 
             Edge activeEdgeDuringReset = ActionController.ActionModel.CurrentEdge;
 
+            //when someone resets a color, & they have an edge in use, we need to know if the reset used is for the same color as that edge 
+            //and if its the nearby node is a parent and if its connected to the other parent. If so, enable the get edge button again!
+            //this is an edge case; no pun intended lol
+            bool isEdgeCase = false;
+            Node nearbyNode = GameManager.Singleton.nearbyNode.GetData<Node>();
+            if (activeEdgeDuringReset != null &&  activeEdgeDuringReset.EdgeColor == inputColor && nearbyNode.NodeType == NodeType.Parent && !GameManager.Singleton.LevelManager.parentColorsConnected[nearbyNode.NodeColor] && Vector3.Distance(nearbyNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) <= 0.25f) {
+                //
+                if (ActionController.ActionModel.CurrentEdge.parentID == ActionController.ActionModel.CurrentNode.ID) {
+                    isEdgeCase = true;
+                    ActionController.ActionView.EnableGetEdgeButton();
+                } else {
+                    
+                }
+            }
+
             if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.EdgeColor == inputColor) {
                 ActionController.ActionModel.CurrentEdge.gameObject.SetActive(false);
                 ActionController.ActionModel.CurrentEdge.parentNode.NumOfConnections--;
                 ActionController.ActionModel.CurrentEdge = null;
-                GameEventPublisher.PublishPlayerEdgeChange(-1);
-                ActionController.ActionView.DisableSetEdgeButton();
+                if (!isEdgeCase) {
+                    GameEventPublisher.PublishPlayerEdgeChange(-1);
+                    ActionController.ActionView.DisableSetEdgeButton();
+                } else {
+                    //GameEventPublisher.PublishPlayerEdgeChange(nearbyNode.ID);
+                }
             }
             int colorIndex = (int) inputColor;
             ActionController.ActionModel.ColorConnectionsCount[colorIndex] = 0;
@@ -122,6 +141,7 @@ namespace StudioByStorm.UI.Controllers {
                 for (int i = 0; i < blueNodes.Count; i++) {
                     blueNodes[i].gameObject.SetActive(false);
                     blueNodes[i].gameObject.SetActive(true);
+                    blueNodes[i].ResetToFactorySettings();
                 }
             }
             //make sure the tracked edge count goes back down 
@@ -130,16 +150,6 @@ namespace StudioByStorm.UI.Controllers {
                 for (int i = 0; i < blueEdges.Count; i++) {
                     blueEdges[i].gameObject.SetActive(false);
                 }
-            }
-
-            //when someone resets a color, & they have an edge in use, we need to know if the reset used is for the same color as that edge 
-            //and if its the nearby node is a parent and if its connected to the other parent. If so, enable the get edge button again!
-            //this is an edge case; no pun intended lol
-            Node nearbyNode = GameManager.Singleton.nearbyNode.GetData<Node>();
-            
-            if (activeEdgeDuringReset != null &&  activeEdgeDuringReset.EdgeColor == inputColor && nearbyNode.NodeType == NodeType.Parent && !GameManager.Singleton.LevelManager.parentColorsConnected[nearbyNode.NodeColor] && Vector3.Distance(nearbyNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) <= 0.25f) {
-                ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
-                actionView.EnableGetEdgeButton();
             }
             
         }

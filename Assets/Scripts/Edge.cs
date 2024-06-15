@@ -22,6 +22,7 @@ namespace StudioByStorm {
         public GameObject emptyTarget;
         public SpriteRenderer hookSpriteRenderer;
         public LineRenderer lineRendererFX;
+        public bool isOutOfBounds;
 
         void Start()
         {
@@ -30,7 +31,7 @@ namespace StudioByStorm {
 
         void OnEnable()
         {
-            EdgeColor = GameManager.Singleton.NodeRegistry.TryGetValue(parentID).NodeColor;
+            EdgeColor = (parentNode != null) ? parentNode.NodeColor : GameManager.Singleton.NodeRegistry.TryGetValue(parentID).NodeColor;
             int colorIndex = (int) EdgeColor;
 
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
@@ -56,6 +57,22 @@ namespace StudioByStorm {
             lineRendererFX.SetPosition(1, childPosition);
             lineRendererFX.SetWidth(size, size);
             lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
+        }
+
+        public void OutOfBoundsIndicator()
+        {
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+        }
+
+        public void InBoundsIndicator()
+        {
+            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
+                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
+            }
+            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
         }
 
         public IEnumerator CantSetEdgeAnimation()//v1.13
@@ -101,6 +118,8 @@ namespace StudioByStorm {
             hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
 
             yield return new WaitForSeconds(0.075f);
+
+            if (isOutOfBounds) OutOfBoundsIndicator();
         }
 
         public void turnFabrikOff()
@@ -141,7 +160,7 @@ namespace StudioByStorm {
             //$$jiggle the edge
             Vector3 edgeTarget = Vector3.zero;
             edgeTarget.y += 0.2f;
-            gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 0, 0.2f, false);
+            //gameObject.transform.DOPunchPosition(edgeTarget, 0.2f, 0, 0.2f, false);
 
             //need to get the nearest nodes id
             //Node nearestNode = GameManager.Singleton.nearbyNode.GetData<Node>();

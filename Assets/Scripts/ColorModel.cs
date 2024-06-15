@@ -11,6 +11,7 @@ namespace StudioByStorm {
         public Sprite[] ColoredTravelers;
         public Sprite[] ColoredSetters;
         public Sprite[] ColoredGetters;
+        public Sprite[] ColoredInners;
         public Color[] lightColor;
         public Color[] darkColor;
         public GameObject[] coloredRings;

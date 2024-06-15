@@ -93,7 +93,7 @@ namespace StudioByStorm.UI {
             //need to get the nearest nodes id
             int nearestNodeID = ActionModel.CurrentNode.ID;
             //then check the edge registry for an edge with the same id
-            Edge edge = GameManager.Singleton.EdgeRegistry.TryGetValue(nearestNodeID);
+            Edge edge = ActionModel.CurrentNode.currentEdge;//GameManager.Singleton.EdgeRegistry.TryGetValue(nearestNodeID);
             //then activate it
             edge.gameObject.SetActive(true);
             //add edge to player

@@ -101,22 +101,32 @@ namespace StudioByStorm {
                 randomizedSpriteRenderer[j].sprite = randomSprites[UnityEngine.Random.Range(0, randomSprites.Length)];
             }
 
+            ResetToFactorySettings();
+
+            //InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
+        }
+
+        public void ResetToFactorySettings()
+        {
             //Either show gray scale or color depending on the NodeColor value
-            if (NodeColor == NodeColor.GrayScale) {
+            if (OriginalNodeColor == NodeColor.GrayScale) {
                 DisplayGrayScale();
             } else {
+                Color d = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
+                Color l = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
+                DarkColored.color = d;
+                LightColored.color = l;
                 DisplayColor();
-                DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
-                LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
                 DisplayHairColor();
             }
 
 
 
             //add a color ring for the parent nodes
-            if (NodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
+            if (OriginalNodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
                 AddColorRing();
-            } else if (coloredRing != null && NodeType == NodeType.Parent) {
+                //ActivateHairs();
+            } else if (coloredRing != null && OriginalNodeType == NodeType.Parent) {
                 coloredRing.SetActive(true);
             }
         }
@@ -124,7 +134,7 @@ namespace StudioByStorm {
         public void DisplayHairColor()
         {
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].color = GameManager.Singleton.ColorModel.darkColor[(int)NodeColor];
+                Hairs[i].color = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
             }
         }
 
@@ -153,27 +163,28 @@ namespace StudioByStorm {
         }
 
         public void DisplayColor() {
+            //InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
             //ColorSurface.SetActive(true);
             //DarkSurface.SetActive(false);
             //ColorSurface.SetActive(true);
-            LightColored.DOFade(1, 3).SetEase(Ease.InSine);
-            DarkColored.DOFade(1, 3).SetEase(Ease.InSine);
+            LightColored.DOFade(1, 1.0f).SetEase(Ease.InSine);
+            DarkColored.DOFade(1, 1.0f).SetEase(Ease.InSine);
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].DOFade(1, 3).SetEase(Ease.InSine);
+                Hairs[i].DOFade(1, 1.0f).SetEase(Ease.InSine);
             }
-            DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 2).SetEase(Ease.InSine);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(0, 1.0f).SetEase(Ease.InSine);
         }
 
         public void DisplayGrayScale() {
             //ColorSurface.SetActive(false);
             //DarkSurface.SetActive(true);
             //DarkSurface.SetActive(true);
-            LightColored.DOFade(0, 2).SetEase(Ease.InSine);
-            DarkColored.DOFade(0, 2).SetEase(Ease.InSine);
+            LightColored.DOFade(0, 1.0f).SetEase(Ease.InSine);
+            DarkColored.DOFade(0, 1.0f).SetEase(Ease.InSine);
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].DOFade(0, 2).SetEase(Ease.InSine);
+                Hairs[i].DOFade(0, 1.0f).SetEase(Ease.InSine);
             }
-            DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 2).SetEase(Ease.InSine);
+            DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 1.0f).SetEase(Ease.InSine);
         }
     }
 

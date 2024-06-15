@@ -93,6 +93,8 @@ namespace StudioByStorm.Gravity.Player {
 
         private int playerNodeID = -1;
         private bool isMoving;
+
+        private bool isToggleColorOn = false;
         
         void Awake()
         {
@@ -123,7 +125,7 @@ namespace StudioByStorm.Gravity.Player {
 
         private void FTUECheck()
         {
-            if (GameManager.Singleton.LevelManager.currentChapterID == 0) {
+            if (GameManager.Singleton.LevelManager.currentChapterID == 0 || GameManager.Singleton.LevelManager.currentChapterID == 5) {
                 isLightColor = false;
                 light2D.SetActive(false);
                 spriteRenderer.color = darkColor;
@@ -137,6 +139,8 @@ namespace StudioByStorm.Gravity.Player {
                 spriteRenderer.material = lightMaterial;
                 currentColor = lightColor;
                 currentMaterial = lightMaterial;
+            } else {
+                isToggleColorOn = true;
             }
         }
 
@@ -370,7 +374,7 @@ namespace StudioByStorm.Gravity.Player {
 
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
-                if (GameManager.Singleton.LevelManager.currentChapterID >= 2) StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
+                if (isToggleColorOn) StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;

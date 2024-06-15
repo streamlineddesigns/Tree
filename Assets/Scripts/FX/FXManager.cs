@@ -54,6 +54,8 @@ namespace StudioByStorm.FX {
         protected int colorCount = 4;
         protected int boidPerColor = 5;
 
+        int playerEdgeChangeID = -1;
+
         void OnEnable()
         {
             GameEventPublisher.OnPlayerEdgeChange += OnPlayerEdgeChange;
@@ -72,13 +74,25 @@ namespace StudioByStorm.FX {
                 return;
             }
 
+            if (playerEdgeChangeID == ParentNodeID) {
+                return;
+            }
+
+            playerEdgeChangeID = ParentNodeID;
+
             ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             if (actionController == null || actionController.ActionModel.CurrentEdge == null) {
                 return;
             }
 
+            StartCoroutine(DelayedOnPlayerEdgeChange(ParentNodeID, actionController));
+        }
+
+        IEnumerator DelayedOnPlayerEdgeChange(int ParentNodeID, ActionController actionController)
+        {
+            yield return null;
+
             List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ParentNodeID);
-            ConnectionIndicatorPool.DeactivateAll();
             
             for (int i = 0; i < connectedNodes.Count; i++) {
                 int nid = connectedNodes[i];

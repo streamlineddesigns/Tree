@@ -90,6 +90,8 @@ namespace StudioByStorm.FX {
 
         IEnumerator DelayedOnPlayerEdgeChange(int ParentNodeID, ActionController actionController)
         {
+            ConnectionIndicatorPool.DeactivateAll();
+
             yield return null;
 
             List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ParentNodeID);

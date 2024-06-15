@@ -87,6 +87,15 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void ResetButtonClick(NodeColor inputColor)
         {
+            ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            Edge activeEdgeDuringReset = ActionController.ActionModel.CurrentEdge;
+
+            if ((activeEdgeDuringReset != null && activeEdgeDuringReset.EdgeColor == inputColor) || GameManager.Singleton.ColorEdgeRegistry.TryGetValue(inputColor) != null) {
+
+            } else {
+                return;
+            }
+
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             //Get all the blue nodes
             List<Node> blueNodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(inputColor);
@@ -96,26 +105,16 @@ namespace StudioByStorm.UI.Controllers {
             
             //remove nodes and edges from registries
             GameManager.Singleton.ColorNodeRegistry.Remove(inputColor);
-            GameManager.Singleton.ColorEdgeRegistry.Remove(inputColor);
+            GameManager.Singleton.ColorEdgeRegistry.Remove(inputColor);            
 
-            //reset action controller state
-            ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
-
-            Edge activeEdgeDuringReset = ActionController.ActionModel.CurrentEdge;
-
-            //when someone resets a color, & they have an edge in use, we need to know if the reset used is for the same color as that edge 
-            //and if its the nearby node is a parent and if its connected to the other parent. If so, enable the get edge button again!
+            //when someone resets a color, & they have an edge in use
+            //we need to know if the nearby node is a parent. If so, enable the get edge button again!
             //this is an edge case; no pun intended lol
             bool isEdgeCase = false;
             Node nearbyNode = GameManager.Singleton.nearbyNode.GetData<Node>();
-            if (activeEdgeDuringReset != null &&  activeEdgeDuringReset.EdgeColor == inputColor && nearbyNode.NodeType == NodeType.Parent && !GameManager.Singleton.LevelManager.parentColorsConnected[nearbyNode.NodeColor] && Vector3.Distance(nearbyNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) <= 0.25f) {
-                //
-                if (ActionController.ActionModel.CurrentEdge.parentID == ActionController.ActionModel.CurrentNode.ID) {
-                    isEdgeCase = true;
-                    ActionController.ActionView.EnableGetEdgeButton();
-                } else {
-                    
-                }
+            if (activeEdgeDuringReset != null && nearbyNode.NodeType == NodeType.Parent && !GameManager.Singleton.LevelManager.parentColorsConnected[nearbyNode.NodeColor] && Vector3.Distance(nearbyNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) <= 0.25f) {
+                isEdgeCase = true;
+                ActionController.ActionView.EnableGetEdgeButton();
             }
 
             if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.EdgeColor == inputColor) {

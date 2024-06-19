@@ -22,6 +22,7 @@ namespace StudioByStorm.Helpers {
         public List<KeyboardDirection> KeyboardDirections = new List<KeyboardDirection>();
 
         public Texture2D cursorTexture;
+        public Texture2D cursorClickTexture;
         public TMP_Text BottomText;
 
         private PlayerController PlayerController;
@@ -44,9 +45,23 @@ namespace StudioByStorm.Helpers {
         {
             string key = "";
 
+            //left click held down
+            if (Input.GetMouseButton(0)) {   
+                Cursor.SetCursor(cursorClickTexture, Vector3.zero, CursorMode.Auto);
+            } else {
+            //reset the cursor
+                Cursor.SetCursor(cursorTexture, Vector3.zero, CursorMode.Auto);
+            }
+
+            //left click
+            if (Input.GetMouseButtonDown(0)) {
+                Cursor.SetCursor(cursorClickTexture, Vector3.zero, CursorMode.Auto);
+            }
+
+
             if (Input.GetKey(KeyCode.Space)) 
             {
-                Cursor.SetCursor(cursorTexture, Vector3.zero, CursorMode.Auto);
+                //Cursor.SetCursor(cursorTexture, Vector3.zero, CursorMode.Auto);
                 StartCoroutine(PrintText("Teleport"));
             }
 

@@ -51,7 +51,7 @@ namespace StudioByStorm.Tutorials {
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => didPlayerPhase || isLevelComplete);
+            yield return new WaitUntil(() => /*didPlayerPhase ||*/ isLevelComplete);
             _isFinished = true;
         }
 

@@ -80,52 +80,28 @@ namespace StudioByStorm {
 
         public IEnumerator CantSetEdgeAnimation()//v1.13
         {
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
+            int numberOfFlashes = 3;
+
+            for (int i = 0; i < numberOfFlashes; i++) {            
+                for(int j = 0; j < LinkConnectorSpriteRenderers.Length; j++) {
+                    LinkConnectorSpriteRenderers[j].material = GameManager.Singleton.ColorModel.unlitMaterial;
+                }
+                hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
+
+                yield return new WaitForSeconds(0.15f);
+
+                for(int k = 0; k < LinkConnectorSpriteRenderers.Length; k++) {
+                    LinkConnectorSpriteRenderers[k].material = GameManager.Singleton.ColorModel.litMaterial;
+                }
+                hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
+
+                yield return new WaitForSeconds(0.15f);
             }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
-
-            yield return new WaitForSeconds(0.075f);
-
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
-            }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
-
-            yield return new WaitForSeconds(0.075f);
-
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
-            }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
-
-            yield return new WaitForSeconds(0.075f);
-
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
-            }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
-
-            yield return new WaitForSeconds(0.075f);
-
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.unlitMaterial;
-            }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.unlitMaterial;
-
-            yield return new WaitForSeconds(0.075f);
-
-            for(int i = 0; i < LinkConnectorSpriteRenderers.Length; i++) {
-                LinkConnectorSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
-            }
-            hookSpriteRenderer.material = GameManager.Singleton.ColorModel.litMaterial;
-
-            yield return new WaitForSeconds(0.075f);
 
             //Do the jiggle
             Vector3 dir = (GameManager.Singleton.player.transform.position - parentNode.gameObject.transform.position).normalized;
             Vector3 scaledTargetPosition = (dir * 0.5f);
-            transform.DOPunchPosition(scaledTargetPosition, 0.4f, 0, 1.0f, false);
+            transform.DOPunchPosition(scaledTargetPosition, 0.5f, 0, 1.0f, false);
 
             if (isOutOfBounds) OutOfBoundsIndicator();
         }

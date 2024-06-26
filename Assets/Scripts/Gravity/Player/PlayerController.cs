@@ -378,7 +378,12 @@ namespace StudioByStorm.Gravity.Player {
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;
-                Move(true);
+                Move(true);    
+                
+                ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+                if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.isOutOfBounds) {
+                    StartCoroutine(ActionController.ActionModel.CurrentEdge.StretchTowardsPlayerAnimation());
+                }            
                 
                 //$$jiggle the node
                 //Vector3 dir = ((gameObject.transform.position - GameManager.Singleton.nearbyNode.gameObject.transform.position).normalized * 0.015f);

@@ -99,12 +99,18 @@ namespace StudioByStorm {
                 yield return new WaitForSeconds(0.15f);
             }
 
-            //Do the jiggle
-            Vector3 dir = (GameManager.Singleton.player.transform.position - parentNode.gameObject.transform.position).normalized;
-            Vector3 scaledTargetPosition = (dir * 0.5f);
-            transform.DOPunchPosition(scaledTargetPosition, 0.5f, 0, 1.0f, false);
-
             if (isOutOfBounds) OutOfBoundsIndicator();
+        }
+
+        public IEnumerator StretchTowardsPlayerAnimation()
+        {
+            yield return new WaitForSeconds(0.1f);
+            if (this.gameObject.activeSelf) {
+                //Do the jiggle
+                Vector3 dir = (GameManager.Singleton.player.transform.position - parentNode.gameObject.transform.position).normalized;
+                Vector3 scaledTargetPosition = (dir * 0.75f);
+                transform.DOPunchPosition(scaledTargetPosition, 0.5f, 0, 1.0f, false);
+            }
         }
 
         public IEnumerator DoPlayerPathAnimation(SpriteRenderer[] linksToAnimate)

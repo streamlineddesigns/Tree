@@ -269,7 +269,8 @@ namespace StudioByStorm {
             //Debug.Log("Lerping");
             
             lerping = true;
-            Vector3[] waypoints = edge.LinkSpriteRenderers.Select(x => x.gameObject.transform.position).Take(edge.activeLinkIndex).ToArray();
+            IEnumerable<SpriteRenderer> SpriteRenderers = edge.LinkSpriteRenderers.Select(x => x).Take(edge.activeLinkIndex);
+            Vector3[] waypoints = SpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();
             Vector3 waypointTarget = Vector3.zero;
 
             //activate node ripple FX
@@ -287,11 +288,13 @@ namespace StudioByStorm {
             if (ML.Math.GetDistance(waypoints[0], GameManager.Singleton.player.transform.position) < ML.Math.GetDistance(waypoints[waypoints.Length - 1], GameManager.Singleton.player.transform.position)) {
                 waypointTarget = waypoints[0];
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints);
+                StartCoroutine(edge.DoPlayerPathAnimation(SpriteRenderers.ToArray()));
 
             //otherwise, if the last waypoint is closer than the first, use the reverse order
             } else {
                 waypointTarget = waypoints[waypoints.Length - 1];
                 GameManager.Singleton.PlayerController.DoPathMovement(waypoints.Reverse().ToArray());
+                StartCoroutine(edge.DoPlayerPathAnimation(SpriteRenderers.Reverse().ToArray()));
             }
 
             Node EndNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID);

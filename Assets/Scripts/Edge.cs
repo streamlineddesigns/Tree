@@ -35,6 +35,7 @@ namespace StudioByStorm {
             int colorIndex = (int) EdgeColor;
 
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
+                LinkSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
                 LinkSpriteRenderers[i].sprite = GameManager.Singleton.ColorModel.ColoredGetters[colorIndex];
                 LinkSpriteRenderers[i].gameObject.SetActive(true);
                 if (i < LinkConnectorSpriteRenderers.Length) LinkConnectorSpriteRenderers[i].gameObject.SetActive(true);
@@ -104,6 +105,21 @@ namespace StudioByStorm {
             transform.DOPunchPosition(scaledTargetPosition, 0.5f, 0, 1.0f, false);
 
             if (isOutOfBounds) OutOfBoundsIndicator();
+        }
+
+        public IEnumerator DoPlayerPathAnimation(SpriteRenderer[] linksToAnimate)
+        {
+            for (int i = 0; i < linksToAnimate.Length; i++) {
+                if (this.gameObject.activeSelf) StartCoroutine(linkAnimation(linksToAnimate[i]));
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        IEnumerator linkAnimation(SpriteRenderer sr)
+        {
+            sr.material = GameManager.Singleton.ColorModel.unlitMaterial;
+            yield return new WaitForSeconds(0.2f);
+            sr.material = GameManager.Singleton.ColorModel.litMaterial;
         }
 
         public void turnFabrikOff()

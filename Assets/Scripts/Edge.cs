@@ -104,12 +104,15 @@ namespace StudioByStorm {
 
         public IEnumerator StretchTowardsPlayerAnimation()
         {
+            Vector3 startPosition = gameObject.transform.position;
             yield return new WaitForSeconds(0.1f);
             if (this.gameObject.activeSelf) {
                 //Do the jiggle
                 Vector3 dir = (GameManager.Singleton.player.transform.position - parentNode.gameObject.transform.position).normalized;
                 Vector3 scaledTargetPosition = (dir * 0.75f);
                 transform.DOPunchPosition(scaledTargetPosition, 0.5f, 0, 1.0f, false);
+                yield return new WaitForSeconds(0.5f);
+                gameObject.transform.position = startPosition;
             }
         }
 

@@ -31,7 +31,7 @@ namespace StudioByStorm.Tutorials {
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => GameManager.Singleton.LevelManager.currentLevelEdgeCount >= 1 || (actionController.ActionModel.CurrentEdge != null && actionController.ActionModel.CurrentEdge.gameObject.GetInstanceID() != startEdgeID));
+            yield return new WaitUntil(() => GameManager.Singleton.LevelManager.currentLevelEdgeCount >= 1);
             _isFinished = true;
         }
 

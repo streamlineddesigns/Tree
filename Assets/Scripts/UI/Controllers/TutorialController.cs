@@ -41,7 +41,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             switch(state) {
                 case GameState.GameStart :
-                    CheckIfTutorialIsNeeded();
+                    StartCoroutine(DelayedCheckIfTutorialIsNeeded());
                     break;
 
                 case GameState.LevelComplete :
@@ -56,6 +56,12 @@ namespace StudioByStorm.UI.Controllers {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             isTutorialDismissed = true;
             HideView();
+        }
+
+        IEnumerator DelayedCheckIfTutorialIsNeeded()
+        {
+            yield return new WaitForSeconds(4.0f);
+            CheckIfTutorialIsNeeded();
         }
 
         protected void CheckIfTutorialIsNeeded()

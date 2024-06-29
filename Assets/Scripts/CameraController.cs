@@ -67,18 +67,28 @@ namespace StudioByStorm {
             List<GameObject> gos = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
             GameObject highestObject = gos.OrderByDescending(x => x.transform.position.y).FirstOrDefault();
             GameObject lowestObject = gos.OrderByDescending(x => x.transform.position.y).Reverse().FirstOrDefault();
+
+            GameObject rightestObject = gos.OrderByDescending(x => x.transform.position.x).FirstOrDefault();
+            GameObject leftestObject = gos.OrderByDescending(x => x.transform.position.x).Reverse().FirstOrDefault();
+
             Vector3 targetPosition = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid - offset;
 
             Vector3 maxPosition = targetPosition;
-            maxPosition.y = highestObject.transform.position.y;
             Vector3 minPosition = targetPosition;
-            minPosition.y = lowestObject.transform.position.y;
+
+            if (ML.Math.GetDistance(highestObject.transform.position.y, lowestObject.transform.position.y) > ML.Math.GetDistance(rightestObject.transform.position.x, leftestObject.transform.position.x)) {
+                maxPosition.y = highestObject.transform.position.y;
+                minPosition.y = lowestObject.transform.position.y;
+            } else {
+                maxPosition.x = rightestObject.transform.position.x;
+                minPosition.x = leftestObject.transform.position.x;
+            }
 
             Sequence levelDemo = DOTween.Sequence();
-                    levelDemo.Append(transform.DOMove(maxPosition, 1.0f, false))
-                             .Append(transform.DOMove(minPosition, 2.0f, false).SetEase(Ease.InOutCubic));
+                    levelDemo.Append(transform.DOMove(maxPosition, 1.5f, false))
+                             .Append(transform.DOMove(minPosition, 2.5f, false).SetEase(Ease.InOutCubic));
 
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(4.0f);
             GameManager.Singleton.player.SetActive(true);
         }
     

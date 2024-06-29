@@ -115,12 +115,41 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
+            GameEventPublisher.OnStateChange += OnStateChange;
             FTUECheck();
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
+            GameEventPublisher.OnStateChange -= OnStateChange;
+        }
+
+        public void OnStateChange(GameState state)
+        {
+            switch(state) {
+                case GameState.GameStart :                    
+                    break;
+
+                case GameState.LevelComplete :
+                    OnLevelComplete();
+                    break;
+
+                case GameState.LevelLost :                    
+                    break;
+            }
+        }
+
+        protected void OnLevelComplete()
+        {
+            rigidbody.bodyType = RigidbodyType2D.Static;
+            Vector3 playerTargetPosition = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+
+            List<GameObject> gos = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
+            GameObject highestObject = gos.OrderByDescending(x => x.transform.position.y).FirstOrDefault();
+            playerTargetPosition.y = highestObject.transform.position.y + 7.5f;
+
+            gameObject.transform.DOMove(playerTargetPosition, 2.0f, false).SetEase(Ease.InQuad);
         }
 
         private void FTUECheck()

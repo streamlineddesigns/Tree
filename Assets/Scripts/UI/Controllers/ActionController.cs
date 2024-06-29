@@ -380,7 +380,7 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickDown()
         {
-            if (isJumpLocked) {
+            if (isJumpLocked || !GameManager.Singleton.player.activeSelf) {
                 return;
             }
 
@@ -395,7 +395,7 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickUp()
         {
-            if (isJumpLocked) {
+            if (isJumpLocked || !GameManager.Singleton.player.activeSelf) {
                 return;
             }
 

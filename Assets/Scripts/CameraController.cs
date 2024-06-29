@@ -63,6 +63,23 @@ namespace StudioByStorm {
             yield return new WaitForSeconds(0.1f);
             List<GameObject> nodes = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
             bounds = ML.Math.ComputeAABB(nodes.Select(x => x.transform.position).ToList());
+
+            List<GameObject> gos = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
+            GameObject highestObject = gos.OrderByDescending(x => x.transform.position.y).FirstOrDefault();
+            GameObject lowestObject = gos.OrderByDescending(x => x.transform.position.y).Reverse().FirstOrDefault();
+            Vector3 targetPosition = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid - offset;
+
+            Vector3 maxPosition = targetPosition;
+            maxPosition.y = highestObject.transform.position.y;
+            Vector3 minPosition = targetPosition;
+            minPosition.y = lowestObject.transform.position.y;
+
+            Sequence levelDemo = DOTween.Sequence();
+                    levelDemo.Append(transform.DOMove(maxPosition, 1.0f, false))
+                             .Append(transform.DOMove(minPosition, 2.0f, false).SetEase(Ease.InOutCubic));
+
+            yield return new WaitForSeconds(3.0f);
+            GameManager.Singleton.player.SetActive(true);
         }
     
         private void OnDrawGizmos()

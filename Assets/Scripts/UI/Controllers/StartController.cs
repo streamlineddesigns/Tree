@@ -28,7 +28,6 @@ namespace StudioByStorm.UI.Controllers {
             MockNodes.SetActive(false);
             GameManager.Singleton.UIController.ShowView(ViewName.GameView);
             GameEventPublisher.PublishGameStateChange(GameState.GameStart);
-            StartCoroutine(ActivatePlayer());
         }
 
         public void CharacterButtonClick()
@@ -65,12 +64,6 @@ namespace StudioByStorm.UI.Controllers {
         {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             GameManager.Singleton.UIController.ShowView(ViewName.CreditsView);
-        }
-
-        IEnumerator ActivatePlayer()
-        {
-            yield return 0;
-            GameManager.Singleton.player.SetActive(true);
         }
     }
 

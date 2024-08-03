@@ -53,7 +53,7 @@ namespace StudioByStorm.UI.Controllers {
 
             if (currentCutSceneID <= currentChapter.narration.Count - 1) {
                 AudioClip narrationAudioClip = currentChapter.narration[currentCutSceneID];
-                AudioManager.Singleton.PlayNarration(narrationAudioClip);
+                //AudioManager.Singleton.PlayNarration(narrationAudioClip);
             }
 
             yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].message));
@@ -71,14 +71,16 @@ namespace StudioByStorm.UI.Controllers {
             List<char> charList = new List<char>();
             //iterate over characters and show them one at a time
             for (int i = 0; i < charArray.Length; i++) {
-                AudioManager.Singleton.Play(SoundType.Typing);
+                //AudioManager.Singleton.Play(SoundType.Typing);
                 charList.Add(charArray[i]);
                 TMP.text = new string(charList.ToArray());
                 Color targetColor = TMP.color;
                 targetColor.a = (i * 1.0f / charArray.Length);
                 TMP.color = targetColor;
-                yield return new WaitForSeconds(0.075f);
+                //yield return new WaitForSeconds(0.075f);
             }
+
+            yield return null;
         }
 
         protected void SetTextToFullyOpaque(TMP_Text TMP)

@@ -8,6 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using GameAnalyticsSDK;
 using StudioByStorm.Data;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
@@ -38,7 +39,17 @@ namespace StudioByStorm {
         public List<Node> CurrentLevel = new List<Node>();
         public LevelData CurrentLevelData;
         public int currentLevelID;
+        public int displayLevelID {
+            get {
+                return currentLevelID + 1;
+            }
+        }
         public int currentChapterID;
+        public int displayChapterID {
+            get {
+                return currentChapterID + 1;
+            }
+        }
         public int initiallyAvailableLevelRowsPerChapter = 3;
         protected Pool NodePool;
         protected Pool EdgeRendererPool;
@@ -86,6 +97,7 @@ namespace StudioByStorm {
                     LoadLevel();
                     GameStart();
                     AudioManager.Singleton.Play(SoundType.GameStart);
+                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Start, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID);
                     break;
 
                 case GameState.LevelComplete :
@@ -96,6 +108,7 @@ namespace StudioByStorm {
                 case GameState.LevelLost :
                     StartCoroutine(OnLevelLost());
                     AudioManager.Singleton.Play(SoundType.LevelLost);
+                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Fail, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID);
                     break;
             }
         }

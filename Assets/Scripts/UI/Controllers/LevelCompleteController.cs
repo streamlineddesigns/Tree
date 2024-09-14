@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using GameAnalyticsSDK;
 using StudioByStorm.Data.LevelChapters;
 
 namespace StudioByStorm.UI.Controllers {
@@ -86,6 +87,7 @@ namespace StudioByStorm.UI.Controllers {
 
             SetProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
             SaveProgress(currentChapterID, currentLevelID, starsAwarded);
+            AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Complete, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID, starsAwarded);
 
             headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];

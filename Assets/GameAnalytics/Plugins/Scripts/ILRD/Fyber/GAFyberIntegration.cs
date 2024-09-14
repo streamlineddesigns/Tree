@@ -16,7 +16,7 @@ public class GAFyberIntegration
 
         public void OnShow(string placementId, Fyber.ImpressionData impressionData)
         {
-            callback(impressionData.ToString());
+            callback(impressionData.ToJsonString());
         }
 
         public void OnClick(string placementId) {}
@@ -46,7 +46,7 @@ public class GAFyberIntegration
 
         public void OnShow(string placementId, Fyber.ImpressionData impressionData)
         {
-            callback(impressionData.ToString());
+            callback(impressionData.ToJsonString());
         }
 
         public void OnClick(string placementId) {}
@@ -64,7 +64,7 @@ public class GAFyberIntegration
 
         public void OnShow(string placementId, Fyber.ImpressionData impressionData)
         {
-            callback(impressionData.ToString());
+            callback(impressionData.ToJsonString());
         }
 
         public void OnClick(string placementId) {}

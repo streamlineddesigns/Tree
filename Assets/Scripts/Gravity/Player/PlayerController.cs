@@ -22,6 +22,11 @@ namespace StudioByStorm.Gravity.Player {
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
+        public bool isLight {
+            get {
+                return isLightColor;
+            }
+        }
         [SerializeField] private GameObject trail;
 
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
@@ -94,7 +99,7 @@ namespace StudioByStorm.Gravity.Player {
         private int playerNodeID = -1;
         private bool isMoving;
 
-        private bool isToggleColorOn = false;
+        private bool isToggleColorOn = true;
         
         void Awake()
         {
@@ -154,7 +159,7 @@ namespace StudioByStorm.Gravity.Player {
 
         private void FTUECheck()
         {
-            if (GameManager.Singleton.LevelManager.currentChapterID == 0 || GameManager.Singleton.LevelManager.currentChapterID == 5) {
+            /*if (GameManager.Singleton.LevelManager.currentChapterID == 0 || GameManager.Singleton.LevelManager.currentChapterID == 5) {
                 isLightColor = false;
                 light2D.SetActive(false);
                 spriteRenderer.color = darkColor;
@@ -170,7 +175,7 @@ namespace StudioByStorm.Gravity.Player {
                 currentMaterial = lightMaterial;
             } else {
                 isToggleColorOn = true;
-            }
+            }*/
         }
 
         public bool isPlayerGrounded() 

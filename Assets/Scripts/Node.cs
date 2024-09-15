@@ -103,7 +103,7 @@ namespace StudioByStorm {
 
             ResetToFactorySettings();
 
-            //InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
+            InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
         }
 
         public void ResetToFactorySettings()
@@ -134,7 +134,9 @@ namespace StudioByStorm {
         public void DisplayHairColor()
         {
             for (int i = 0; i < Hairs.Length; i++) {
-                Hairs[i].color = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
+                Color withNoAlpha = GameManager.Singleton.ColorModel.lightColor[(int)NodeColor];
+                withNoAlpha.a = 0.0f;
+                Hairs[i].color = withNoAlpha;
             }
         }
 
@@ -163,7 +165,7 @@ namespace StudioByStorm {
         }
 
         public void DisplayColor() {
-            //InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
+            InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
             //ColorSurface.SetActive(true);
             //DarkSurface.SetActive(false);
             //ColorSurface.SetActive(true);

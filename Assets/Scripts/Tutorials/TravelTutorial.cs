@@ -11,6 +11,10 @@ namespace StudioByStorm.Tutorials {
 
     public class TravelTutorial : Tutorial
     {
+        [SerializeField] private int[] startNodeIDToEndNodeIDForTutorials;
+        [SerializeField] private bool[] isTutorialForNodeIDStarted;
+        [SerializeField] private bool[] isTutorialForNodeIDAvailable;
+        
         private bool didPlayerTravel = false;
         private bool isLevelComplete = false;
         private ActionController actionController;
@@ -113,6 +117,19 @@ namespace StudioByStorm.Tutorials {
         protected override IEnumerator TutorialUpdate()
         {
             while(isRunning) {
+                //for the swipe tutorial
+                int nodeID = actionController.ActionModel.CurrentNode.ID;
+                if (isTutorialForNodeIDAvailable[nodeID] && !isTutorialForNodeIDStarted[nodeID]) {
+                    isTutorialForNodeIDStarted[nodeID] = true;
+                    GameObject startGO = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject;
+                    GameObject endGO = GameManager.Singleton.NodeRegistry.TryGetValue(startNodeIDToEndNodeIDForTutorials[nodeID]).gameObject;
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Reset();
+                    if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
+                    }
+                }
                 yield return new WaitForSeconds(0.0333f);
             }
         }
@@ -132,6 +149,8 @@ namespace StudioByStorm.Tutorials {
             isJumpLocked = false;
             actionController.LockJump(isJumpLocked);
             Destroy(gameObject);
+            GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+            GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
         }
     }
 

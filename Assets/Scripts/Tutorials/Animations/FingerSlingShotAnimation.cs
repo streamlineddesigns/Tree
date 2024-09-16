@@ -17,7 +17,12 @@ namespace StudioByStorm.Tutorials.Animations {
         [SerializeField] private Sprite tapDarkSprite;
         [SerializeField] private Sprite swipeSprite;
 
-        private bool isAnimating = false;
+        public bool isAnimating {
+            get {
+                return _isAnimating;
+            }
+        }
+        private bool _isAnimating = false;
         private Vector3 startPosition;
         private Vector3 targetPosition;
         private Vector3 direction;
@@ -42,19 +47,28 @@ namespace StudioByStorm.Tutorials.Animations {
 
         public void Animate()
         {
-            isAnimating = true;
+            _isAnimating = true;
             StartCoroutine(AnimationUpdate());
         }
 
         public void Stop()
         {
-            isAnimating = false;
+            _isAnimating = false;
             StopCoroutine(AnimationUpdate());
+        }
+
+        public void Reset()
+        {
+            transform.position = startPosition;
+            spriteRenderer.sprite = swipeSprite;
+            spriteRenderer.DOFade(0.0f, 0.0f);
+            jumpIndicator.transform.DOScale(new Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+            jumpIndicator.SetActive(true);
         }
 
         protected IEnumerator AnimationUpdate()
         {
-            while (isAnimating) {
+            while (_isAnimating) {
                 //reset all the start data
                 transform.position = startPosition;
                 spriteRenderer.sprite = swipeSprite;
@@ -64,7 +78,7 @@ namespace StudioByStorm.Tutorials.Animations {
                 jumpIndicator.SetActive(true);
                 yield return new WaitForSeconds(1.0f);
                 //show the "tapping" animation 2 times
-                int timesToTap = 2;
+                int timesToTap = 1;
                 for (int i = 0; i < timesToTap; i++) {
                     spriteRenderer.sprite = (GameManager.Singleton.PlayerController.isLight) ? tapLightSprite : tapDarkSprite;
                     yield return new WaitForSeconds(0.5f);

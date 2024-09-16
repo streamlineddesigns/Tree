@@ -7,6 +7,7 @@ using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.Tutorials.Animations;
 
 namespace StudioByStorm.FX {
 
@@ -44,6 +45,10 @@ namespace StudioByStorm.FX {
         //PlayerLoseFX
         public GameObject PlayerLoseFXPrefab;
         public GameObject PlayerLoseFX;
+        //Tutorial Animations
+        public GameObject fingerSlingShotAnimationPrefab;
+        public FingerSlingShotAnimation fingerSlingShotAnimation;
+        public Transform tutorialParent;
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
@@ -139,6 +144,8 @@ namespace StudioByStorm.FX {
             ConnectionIndicatorPool.DependencyInjection(ConnectionIndicatorPrefab, FXParent, connectionIndicatorPoolSize);
 
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
+
+            fingerSlingShotAnimation = Instantiate(fingerSlingShotAnimationPrefab, tutorialParent).GetComponent<FingerSlingShotAnimation>();
         }
 
         void Start()

@@ -125,6 +125,7 @@ namespace StudioByStorm {
             LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
             levelCompleteController.Show();
             GameManager.Singleton.FXManager.LaunchFireWork();
+            GameManager.Singleton.FXManager.MakeEdgeLineRendererFXVisible();
         }
 
         IEnumerator OnLevelLost()

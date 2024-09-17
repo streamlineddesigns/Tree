@@ -204,7 +204,10 @@ namespace StudioByStorm.FX {
             StartCoroutine(DelayedLaunchFireWork());
         }
 
-        
+        public void MakeEdgeLineRendererFXVisible()
+        {
+            GameManager.Singleton.EdgeRegistry.getAllAsList().ForEach(x => x.lineRendererFX.SetWidth(0.2f, 0.2f));
+        }
     }
 
 }

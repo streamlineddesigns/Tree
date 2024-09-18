@@ -14,6 +14,8 @@ namespace StudioByStorm.Tutorials {
         [SerializeField] private int[] startNodeIDToEndNodeIDForTutorials;
         [SerializeField] private bool[] isTutorialForNodeIDStarted;
         [SerializeField] private bool[] isTutorialForNodeIDAvailable;
+        private GameObject safeNodeToTeleportTo;
+        private bool didTeleportToSafeNode = false;
         
         private bool didPlayerTravel = false;
         private bool isLevelComplete = false;
@@ -61,7 +63,7 @@ namespace StudioByStorm.Tutorials {
             }
             List<GameObject> nearbySafeNodes = KNN.GetKNearestNeighbors(GameManager.Singleton.player, safeNodes, 1);
             GameObject nearestNode = nearbySafeNodes[0];
-            GameManager.Singleton.player.transform.position = nearestNode.transform.position;
+            safeNodeToTeleportTo = nearestNode;
 
             StartCoroutine(CreateEdgeAnimation());
         }
@@ -131,16 +133,22 @@ namespace StudioByStorm.Tutorials {
                 int nodeID = actionController.ActionModel.CurrentNode.ID;
                 if (isTutorialForNodeIDAvailable[nodeID] && !isTutorialForNodeIDStarted[nodeID]) {
                     isTutorialForNodeIDStarted[nodeID] = true;
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
                     GameObject startGO = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject;
                     GameObject endGO = GameManager.Singleton.NodeRegistry.TryGetValue(startNodeIDToEndNodeIDForTutorials[nodeID]).gameObject;
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                     GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Reset();
                     if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
                     }
                 }
                 yield return new WaitForSeconds(0.0333f);
+
+                if (! didTeleportToSafeNode && safeNodeToTeleportTo != null) {
+                    didTeleportToSafeNode = true;
+                    GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
+                }
             }
         }
 

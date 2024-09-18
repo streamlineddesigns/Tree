@@ -49,12 +49,13 @@ namespace StudioByStorm.Tutorials {
                         wasPlayerStatic = true;
                         GameManager.Singleton.PlayerController.SetRigidBodyType(RigidbodyType2D.Static);
                         //show the finger swipe animation
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
                         GameObject startGO = GameManager.Singleton.player;
                         GameObject endGO = nearestNode;
-                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
-                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.Reset();
                         if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
+                            GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
                         }
                     }

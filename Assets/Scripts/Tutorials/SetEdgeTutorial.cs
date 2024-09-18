@@ -35,12 +35,13 @@ namespace StudioByStorm.Tutorials {
                 int nodeID = actionController.ActionModel.CurrentNode.ID;
                 if (isTutorialForNodeIDAvailable[nodeID] && !isTutorialForNodeIDStarted[nodeID]) {
                     isTutorialForNodeIDStarted[nodeID] = true;
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
                     GameObject startGO = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject;
                     GameObject endGO = GameManager.Singleton.NodeRegistry.TryGetValue(startNodeIDToEndNodeIDForTutorials[nodeID]).gameObject;
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                     GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Reset();
                     if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
                     }
                 }

@@ -12,6 +12,7 @@ namespace StudioByStorm.Tutorials.Animations {
         [SerializeField] private GameObject targetDebug;
 
         [SerializeField] private GameObject jumpIndicator;
+        [SerializeField] private GameObject fingerIndicatorContainer;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Sprite tapLightSprite;
         [SerializeField] private Sprite tapDarkSprite;
@@ -71,6 +72,8 @@ namespace StudioByStorm.Tutorials.Animations {
             while (_isAnimating) {
                 //reset all the start data
                 transform.position = startPosition;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                fingerIndicatorContainer.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                 spriteRenderer.sprite = swipeSprite;
                 spriteRenderer.DOFade(0.0f, 0.0f);
                 spriteRenderer.DOFade(1.0f, 1.0f);
@@ -85,8 +88,6 @@ namespace StudioByStorm.Tutorials.Animations {
                     spriteRenderer.sprite = swipeSprite;
                     yield return new WaitForSeconds(0.25f);
                 }
-                //calculate the angle between the direction and the X axis
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 //rotate the object around the Z axis to match the direction
                 jumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                 //move the hand to the target position

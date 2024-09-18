@@ -714,7 +714,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2950386670298299342}
-  - {fileID: 7642846946001684806}
+  - {fileID: 6673922091335852647}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1140849031799756353
@@ -785,6 +785,7 @@ MonoBehaviour:
   startDebug: {fileID: 0}
   targetDebug: {fileID: 0}
   jumpIndicator: {fileID: 3226921115657174958}
+  fingerIndicatorContainer: {fileID: 9211620974629448165}
   spriteRenderer: {fileID: 6108967097738226803}
   tapLightSprite: {fileID: 21300000, guid: 2bf522656b1d1c14ea70c968cab94c08, type: 3}
   tapDarkSprite: {fileID: 21300000, guid: 1079876192cbd05488fa44ca6ceefdf5, type: 3}
@@ -819,7 +820,7 @@ Transform:
   m_LocalScale: {x: 4.5, y: 4.5, z: 4.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2908501447722250690}
+  m_Father: {fileID: 6673922091335852647}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6108967097738226803
 SpriteRenderer:
@@ -1125,3 +1126,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &9211620974629448165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6673922091335852647}
+  m_Layer: 0
+  m_Name: FingerIndicatorContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6673922091335852647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9211620974629448165}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7642846946001684806}
+  m_Father: {fileID: 2908501447722250690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

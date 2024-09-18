@@ -1,13 +1,18 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.ML.Clustering;
 
 namespace StudioByStorm.Tutorials {
 
     public class DashTutorial : Tutorial
     {
+        //we'll guide the player to swipe towards one of these node ids to demonstrate dashing
+        [SerializeField] private int[] nodeIDsWithSwipeAnimation;
         private bool didPlayerDash = false;
+        private bool wasPlayerStatic = false;
 
         protected void OnEnable()
         {
@@ -22,6 +27,7 @@ namespace StudioByStorm.Tutorials {
 
         protected void OnPlayerDash()
         {
+            GameManager.Singleton.PlayerController.SetRigidBodyType(RigidbodyType2D.Dynamic);
             didPlayerDash = true;
         }
 
@@ -32,7 +38,28 @@ namespace StudioByStorm.Tutorials {
 
         protected override IEnumerator TutorialUpdate()
         {
+            List<GameObject> allNodes = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
+
             while(isRunning) {
+                if (!wasPlayerStatic) {
+                    List<GameObject> nearbyNodes = KNN.GetKNearestNeighbors(GameManager.Singleton.player, allNodes, 1);
+                    GameObject nearestNode = nearbyNodes[0];
+                    if (nodeIDsWithSwipeAnimation.Contains(nearestNode.GetComponent<Node>().ID)) {
+                        //prevent player from moving
+                        wasPlayerStatic = true;
+                        GameManager.Singleton.PlayerController.SetRigidBodyType(RigidbodyType2D.Static);
+                        //show the finger swipe animation
+                        GameObject startGO = GameManager.Singleton.player;
+                        GameObject endGO = nearestNode;
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
+                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.Reset();
+                        if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
+                            GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
+                        }
+                    }
+                }
+                
                 yield return new WaitForSeconds(0.0333f);
             }
         }
@@ -46,6 +73,8 @@ namespace StudioByStorm.Tutorials {
         public override void CleanUp()
         {
             Destroy(gameObject);
+            GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+            GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
         }
     }
 

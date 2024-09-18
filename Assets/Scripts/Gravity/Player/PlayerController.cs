@@ -150,11 +150,16 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        public void SetRigidBodyType(RigidbodyType2D rbtype)
+        {
+            rigidbody.bodyType = rbtype;
+        }
+
         protected void OnLevelComplete()
         {
             JumpIndicator.SetActive(false);
 
-            rigidbody.bodyType = RigidbodyType2D.Static;
+            SetRigidBodyType(RigidbodyType2D.Static);
             Vector3 playerTargetPosition = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
 
             List<GameObject> gos = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();

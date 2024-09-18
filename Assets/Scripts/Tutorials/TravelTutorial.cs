@@ -53,6 +53,16 @@ namespace StudioByStorm.Tutorials {
             actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             isJumpLocked = true;
             actionController.LockJump(isJumpLocked);
+            //place player in a "safe place" for tutorial to occur
+            List<GameObject> safeNodes = new List<GameObject>();
+            for (int i = 0; i < isTutorialForNodeIDAvailable.Length; i++) {
+                int nodeID = i;
+                if (isTutorialForNodeIDAvailable[nodeID]) safeNodes.Add(GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject);
+            }
+            List<GameObject> nearbySafeNodes = KNN.GetKNearestNeighbors(GameManager.Singleton.player, safeNodes, 1);
+            GameObject nearestNode = nearbySafeNodes[0];
+            GameManager.Singleton.player.transform.position = nearestNode.transform.position;
+
             StartCoroutine(CreateEdgeAnimation());
         }
 

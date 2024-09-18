@@ -147,6 +147,8 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void OnLevelComplete()
         {
+            JumpIndicator.SetActive(false);
+            
             rigidbody.bodyType = RigidbodyType2D.Static;
             Vector3 playerTargetPosition = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
 

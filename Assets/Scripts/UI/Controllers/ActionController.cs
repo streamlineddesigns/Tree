@@ -380,7 +380,7 @@ namespace StudioByStorm {
 
         public void OnJumpJoyStickDown()
         {
-            if (isJumpLocked || !GameManager.Singleton.player.activeSelf) {
+            if (isJumpLocked || !GameManager.Singleton.player.activeSelf || !GameManager.Singleton.PlayerController.isDashAvailable) {
                 return;
             }
 

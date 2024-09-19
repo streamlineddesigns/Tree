@@ -207,9 +207,6 @@ namespace StudioByStorm.Gravity.Player {
 
         public void DoPathMovement(Vector3[] waypoints)
         {
-            if (lerping) {
-                return;
-            }
             StartCoroutine(TravelMovement(waypoints));
         }
 

@@ -105,6 +105,8 @@ namespace StudioByStorm.Gravity.Player {
         private bool isMoving;
 
         private bool isToggleColorOn = true;
+        private Tween PlayerScaleUpTween;
+        private Tween PlayerScaleDownTween;
         
         void Awake()
         {
@@ -213,6 +215,9 @@ namespace StudioByStorm.Gravity.Player {
         protected IEnumerator TravelMovement(Vector3[] waypoints)
         {
             lerping = true;
+
+            PlayerScaleUpTween.Kill();
+            PlayerScaleDownTween.Kill();
             
             GameEventPublisher.PublishPlayerTravel();
 
@@ -221,7 +226,7 @@ namespace StudioByStorm.Gravity.Player {
             yield return new WaitForSeconds(0.1333f);
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);
 
-            gameObject.transform.DOScale(1.0f, 0.25f);
+            PlayerScaleDownTween = gameObject.transform.DOScale(1.0f, 0.25f);
 
             /*for (int i = 0; i < waypoints.Length; i++) {
                 if (i % 2 == 0) {
@@ -243,7 +248,7 @@ namespace StudioByStorm.Gravity.Player {
 
             //gameObject.transform.DOPath(waypoints, 1.0f, PathType.Linear);
 
-            gameObject.transform.DOScale(originalScale, 0.25f);
+            PlayerScaleUpTween = gameObject.transform.DOScale(originalScale, 0.25f);
             //gameObject.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.1f, false);
             
             //yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
@@ -520,8 +525,12 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-        public void JumpOverride(Vector2 dir)
+        public void JumpOverride(Vector2 dir, bool calledByCoyote = false)
         {
+            if (!isOnSurface && !calledByCoyote) {
+                StartCoroutine(CoyoteJump(dir));
+            }
+
             if (lerping) {
                 return;
             }
@@ -530,10 +539,26 @@ namespace StudioByStorm.Gravity.Player {
                 isJumping = true;
                 isPowerJumping = true;
                 Jump(dir);
+                if (calledByCoyote) {
+                    //Debug.Log("JUMP calledByCoyote");
+                }
 
             } else {
                 dashDirection = dir;
             }
+        }
+
+        IEnumerator CoyoteJump(Vector2 dir)
+        {
+            float coyoteTime = 0.3f;
+            float timer = 0.0f;
+
+            while (timer < coyoteTime) {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            JumpOverride(dir, true);
         }
 
         public void OnJoyStickDown()

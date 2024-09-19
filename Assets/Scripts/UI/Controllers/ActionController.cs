@@ -207,20 +207,25 @@ namespace StudioByStorm {
             OnTravelJoystickDirectionChange(Vector2.zero);
         }
         
-        void OnTravelJoystickDirectionChange(Vector2 Direction)
+        void OnTravelJoystickDirectionChange(Vector2 Direction, bool calledByCoyote = false)
         {
+            if (lerping && !calledByCoyote) {
+                StartCoroutine(CoyoteLerp(-TravelJoyStick.ScaledValue));
+                return;
+            }
+
             if (!travelIsUp || !GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) {
                 return;
             }
             //check the direction of the joystick
             //Vector2 joystickDir = UpPoint - DownPoint;
-            Vector2 joystickDir = -TravelJoyStick.ScaledValue;
+            Vector2 joystickDir = (calledByCoyote) ? Direction : -TravelJoyStick.ScaledValue;
             //get a list of the ids the current node is connected to from the adjacency list
             List<int> levelAdjacentNodeIDS = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
 
             List<int> adjacentNodeIDS = GameManager.Singleton.AdjacencyList.Get(ActionModel.CurrentNode.ID);
 
-            if (lerping || adjacentNodeIDS == null || levelAdjacentNodeIDS == null) {
+            if (adjacentNodeIDS == null || levelAdjacentNodeIDS == null) {
                 return;
             }
             //calculate the directions from the current node to the connected node
@@ -253,16 +258,37 @@ namespace StudioByStorm {
 
                 Edge currentEdge = ActionModel.CurrentNode.currentEdge;
                 Edge targetNodeEdge = targetNode.currentEdge;
+                Edge edgeToTravel = null;
 
                 //which edge connects both together?
                 if (targetNodeEdge.childID == ActionModel.CurrentNode.ID) {
-                    StartCoroutine(Lerp(targetNodeEdge));
+                    edgeToTravel = targetNodeEdge;
                 } else if (currentEdge.childID == targetNode.ID) {
-                    StartCoroutine(Lerp(currentEdge));
+                    edgeToTravel = currentEdge;
+                }
 
+                StartCoroutine(Lerp(edgeToTravel));
+                if (calledByCoyote) {
+                    //Debug.Log("LERP calledByCoyote");
                 }
             }
             
+        }
+
+        IEnumerator CoyoteLerp(Vector2 dir)
+        {
+            float coyoteTime = 0.6f;
+            float timer = 0.0f;
+
+            while (timer < coyoteTime) {
+                timer += Time.deltaTime;
+                if (GameManager.Singleton.PlayerController.isPlayerGrounded() && !lerping) {
+                    timer = coyoteTime;
+                }
+                yield return null;
+            }
+
+            OnTravelJoystickDirectionChange(dir, true);
         }
 
         IEnumerator Lerp(Edge edge)

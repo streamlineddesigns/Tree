@@ -23,6 +23,7 @@ namespace StudioByStorm {
         public SpriteRenderer hookSpriteRenderer;
         public LineRenderer lineRendererFX;
         public bool isOutOfBounds;
+        public bool areLinksDisabled = false;
 
         void Start()
         {
@@ -49,6 +50,7 @@ namespace StudioByStorm {
 
             isOutOfBounds = false;
             InBoundsIndicator();
+            areLinksDisabled = false;
         }
 
         public void DisplayLineRendererFX(float size = 0.1f)
@@ -191,6 +193,7 @@ namespace StudioByStorm {
             }
 
             activeLinkIndex = targetIndex;
+            areLinksDisabled = true;
         }
 
         protected void fabrikOn(bool isOn)

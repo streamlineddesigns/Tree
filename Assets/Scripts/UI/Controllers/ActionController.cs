@@ -277,7 +277,7 @@ namespace StudioByStorm {
 
         IEnumerator CoyoteLerp(Vector2 dir)
         {
-            float coyoteTime = 0.6f;
+            float coyoteTime = 0.9f;
             float timer = 0.0f;
 
             while (timer < coyoteTime) {
@@ -294,7 +294,7 @@ namespace StudioByStorm {
         IEnumerator Lerp(Edge edge)
         {
             //Debug.Log("Lerping");
-            
+            yield return new WaitUntil(() => edge.areLinksDisabled);
             lerping = true;
             IEnumerable<SpriteRenderer> SpriteRenderers = edge.LinkSpriteRenderers.Select(x => x).Take(edge.activeLinkIndex);
             Vector3[] waypoints = SpriteRenderers.Select(x => x.gameObject.transform.position).ToArray();

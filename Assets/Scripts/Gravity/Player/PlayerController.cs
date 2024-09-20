@@ -527,11 +527,13 @@ namespace StudioByStorm.Gravity.Player {
 
         public void JumpOverride(Vector2 dir, bool calledByCoyote = false)
         {
-            if (!isOnSurface && !calledByCoyote) {
-                StartCoroutine(CoyoteJump(dir));
+            if (lerping && !calledByCoyote) {
+                StartCoroutine(CoyoteJump(dir, 0.6f));
+                return;
             }
 
-            if (lerping) {
+            if (!isOnSurface && !calledByCoyote) {
+                StartCoroutine(CoyoteJump(dir));
                 return;
             }
 
@@ -548,13 +550,16 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
-        IEnumerator CoyoteJump(Vector2 dir)
+        IEnumerator CoyoteJump(Vector2 dir, float coyoteTime = 0.3f)
         {
-            float coyoteTime = 0.3f;
             float timer = 0.0f;
 
             while (timer < coyoteTime) {
                 timer += Time.deltaTime;
+                if (isOnSurface && !lerping) {
+                    timer = coyoteTime;
+                    yield return null;
+                }
                 yield return null;
             }
 

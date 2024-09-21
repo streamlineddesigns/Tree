@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Lean.Gui;
+using MoreMountains.NiceVibrations;
 using StudioByStorm;
 using StudioByStorm.Registries;
 using StudioByStorm.Optimizations;
@@ -339,6 +340,7 @@ namespace StudioByStorm.Gravity.Player {
             //play the hit animation
             if (! isHitObstacle) {
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
+                MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
                 isHitObstacle = true;
                 HitObstacleAnimation();

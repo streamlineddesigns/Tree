@@ -8,6 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using MoreMountains.NiceVibrations;
 using GameAnalyticsSDK;
 using StudioByStorm.Data;
 using StudioByStorm.EventPublishers;
@@ -103,11 +104,13 @@ namespace StudioByStorm {
                 case GameState.LevelComplete :
                     OnLevelComplete();
                     AudioManager.Singleton.Play(SoundType.LevelComplete);
+                    MMVibrationManager.Haptic(HapticTypes.Success);
                     break;
 
                 case GameState.LevelLost :
                     StartCoroutine(OnLevelLost());
                     AudioManager.Singleton.Play(SoundType.LevelLost);
+                    MMVibrationManager.Haptic(HapticTypes.Failure);
                     AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Fail, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID);
                     break;
             }

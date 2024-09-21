@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
 using StudioByStorm.UI.Controllers;
@@ -60,6 +61,8 @@ namespace StudioByStorm.FX {
         protected int boidPerColor = 5;
 
         int playerEdgeChangeID = -1;
+
+        private int rewardAnimationCount = 0;
 
         void OnEnable()
         {
@@ -202,6 +205,64 @@ namespace StudioByStorm.FX {
         public void LaunchFireWork()
         {
             StartCoroutine(DelayedLaunchFireWork());
+        }
+
+        public IEnumerator LevelCompleteRewardAnimation()
+        {
+            //zoom out
+            GameController GameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
+            GameController.ZoomButtonClick(2.0f);
+            //close the zoom view
+            GameManager.Singleton.UIController.Close(ViewName.ZoomView);
+            yield return new WaitForSeconds(2.0f);
+
+            List<NodeColor> connectedColors = GameManager.Singleton.LevelManager.parentColorsConnected.Keys.ToList();
+
+            for (int i = 0; i < connectedColors.Count; i++) {
+                NodeColor currentColor = connectedColors[i];
+                Node parentColorNode = GameManager.Singleton.ColorNodeRegistry.TryGetValue(currentColor).Where(x => x.NodeType == NodeType.Parent && x.currentEdge.gameObject.activeSelf).First();
+                StartCoroutine(HighLightCell(parentColorNode));
+            }
+
+            yield return new WaitUntil(() => rewardAnimationCount >= connectedColors.Count);
+
+            LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
+            levelCompleteController.Show();
+        }
+
+        IEnumerator HighLightCell(Node node)
+        {
+            float originalScale = node.gameObject.transform.localScale.x;
+            float targetScale = originalScale * 1.5f;
+
+            //scale up
+            node.gameObject.transform.DOScale(targetScale, 0.25f).OnComplete(() => {
+                //scale back down
+                node.gameObject.transform.DOScale(originalScale, 0.25f);
+            });
+
+            //show edgeLightFX Animation
+            AudioManager.Singleton.Play(SoundType.EnergyTravel);
+            GameObject edgeLightFX = GameManager.Singleton.FXManager.EdgeLightPool.Get();
+            edgeLightFX.GetComponent<EdgeLight>().SetColor(GameManager.Singleton.ColorModel.lightColor[(int)node.NodeColor]);
+            edgeLightFX.transform.position = node.gameObject.transform.position;
+            edgeLightFX.SetActive(true);
+            edgeLightFX.transform.DOMove(GameManager.Singleton.player.transform.position, 0.5f).OnComplete(() => {
+                edgeLightFX.SetActive(false);
+            });
+            
+            if (node.currentEdge.gameObject.activeSelf) {
+                //show link animation
+                SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
+                StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers));
+                //wait for the animation to finish
+                yield return new WaitForSeconds(0.1f * SpriteRenderers.Length);
+                //continue for child node
+                Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(node.currentEdge.childID);
+                StartCoroutine(HighLightCell(childNode));
+            } else {
+                rewardAnimationCount++;
+            }
         }
 
         public void MakeEdgeLineRendererFXVisible()

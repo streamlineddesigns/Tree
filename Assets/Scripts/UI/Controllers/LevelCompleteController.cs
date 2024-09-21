@@ -91,15 +91,8 @@ namespace StudioByStorm.UI.Controllers {
 
             headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
-            
-            //zoom out
-            GameController GameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
-            GameController.ZoomButtonClick(2.0f);
 
-            //close the zoom view
-            GameManager.Singleton.UIController.Close(ViewName.ZoomView);
-
-            yield return new WaitForSeconds(4.0f);
+            yield return new WaitForSeconds(2.0f);
 
             //show the level complete view
             View levelCompleteView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelCompleteView) as View;

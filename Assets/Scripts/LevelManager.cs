@@ -125,9 +125,8 @@ namespace StudioByStorm {
         protected void OnLevelComplete()
         {
             GameManager.Singleton.PlayerController.LockMovement(true);
-            LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
-            levelCompleteController.Show();
             GameManager.Singleton.FXManager.LaunchFireWork();
+            StartCoroutine(GameManager.Singleton.FXManager.LevelCompleteRewardAnimation());
             GameManager.Singleton.FXManager.MakeEdgeLineRendererFXVisible();
         }
 
@@ -273,7 +272,7 @@ namespace StudioByStorm {
                     nodePositions.Add(new float[2]{currentNode.gameObject.transform.position.x, currentNode.gameObject.transform.position.y});
                     currentNode.ID = ID;
                     currentNode.NodeColor = CurrentLevelData.Layers[i].nodeColors[j];
-                    if (! parentColorsConnected.ContainsKey(currentNode.NodeColor)) {
+                    if (! parentColorsConnected.ContainsKey(currentNode.NodeColor) && currentNode.NodeColor != NodeColor.GrayScale) {
                         parentColorsConnected.Add(currentNode.NodeColor, false);
                     }
                     currentNode.NumOfConnections = 0;

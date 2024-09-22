@@ -23,6 +23,7 @@ namespace StudioByStorm {
         private Vector3 currentVelocity;
         private Vector2 swipeStart;
         private bool IsLevelComplete = false;
+        private bool isShaking;
 
         public void MoveToCentroid()
         {
@@ -147,6 +148,35 @@ namespace StudioByStorm {
         {
             gameObject.transform.DOMove(originalPosition, 1.0f, false);
         }
+
+        public void Shake(float intensity, float duration)
+        {
+            if (! isShaking) {
+                isShaking = true;
+                StartCoroutine(ShakeCoroutine(intensity, duration));
+            }
+        }
+
+        private IEnumerator ShakeCoroutine(float intensity, float duration)
+        {
+            Vector3 originalPosition = gameObject.transform.localPosition;
+            float elapsed = 0.0f;
+
+            while (elapsed < duration)
+            {
+                float xOffset = Random.Range(-1f, 1f) * intensity;
+                float yOffset = Random.Range(-1f, 1f) * intensity;
+
+                gameObject.transform.localPosition = originalPosition + new Vector3(xOffset, yOffset, 0);
+
+                elapsed += Time.deltaTime;
+
+                yield return null;
+            }
+
+            isShaking = false;
+        }
+
     }
 
 }

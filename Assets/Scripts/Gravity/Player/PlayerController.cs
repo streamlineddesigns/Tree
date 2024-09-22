@@ -169,14 +169,14 @@ namespace StudioByStorm.Gravity.Player {
             GameObject highestObject = gos.OrderByDescending(x => x.transform.position.y).FirstOrDefault();
             playerTargetPosition.y = highestObject.transform.position.y + 7.5f;
 
-            gameObject.transform.DOMove(playerTargetPosition, 2.0f, false).SetEase(Ease.InQuad);
-
-            isLightColor = true;
-            light2D.SetActive(true);
-            spriteRenderer.color = lightColor;
-            spriteRenderer.material = lightMaterial;
-            currentColor = lightColor;
-            currentMaterial = lightMaterial;
+            gameObject.transform.DOMove(playerTargetPosition, 2.0f, false).SetEase(Ease.InQuad).OnComplete(() => {
+                isLightColor = true;
+                light2D.SetActive(true);
+                spriteRenderer.color = lightColor;
+                spriteRenderer.material = lightMaterial;
+                currentColor = lightColor;
+                currentMaterial = lightMaterial;
+            });
         }
 
         private void FTUECheck()

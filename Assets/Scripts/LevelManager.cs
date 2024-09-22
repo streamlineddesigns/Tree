@@ -127,7 +127,6 @@ namespace StudioByStorm {
             GameManager.Singleton.PlayerController.LockMovement(true);
             GameManager.Singleton.FXManager.LaunchFireWork();
             StartCoroutine(GameManager.Singleton.FXManager.LevelCompleteRewardAnimation());
-            GameManager.Singleton.FXManager.MakeEdgeLineRendererFXVisible();
         }
 
         IEnumerator OnLevelLost()

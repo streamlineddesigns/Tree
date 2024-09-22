@@ -63,6 +63,7 @@ namespace StudioByStorm {
         SettingsView,
         CreditsView,
         AccountView,
+        CellsUsedView,
     }
 
     public enum ViewType

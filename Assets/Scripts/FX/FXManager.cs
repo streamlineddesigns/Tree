@@ -6,6 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 using StudioByStorm.Optimizations;
 using StudioByStorm.FX.Boids;
+using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Tutorials.Animations;
@@ -215,6 +216,8 @@ namespace StudioByStorm.FX {
             //close the zoom view
             GameManager.Singleton.UIController.Close(ViewName.ZoomView);
             yield return new WaitForSeconds(2.0f);
+            //show cells used view
+            GameManager.Singleton.UIController.ShowView(ViewName.CellsUsedView);
 
             List<NodeColor> connectedColors = GameManager.Singleton.LevelManager.parentColorsConnected.Keys.ToList();
 
@@ -226,6 +229,7 @@ namespace StudioByStorm.FX {
 
             yield return new WaitUntil(() => rewardAnimationCount >= connectedColors.Count);
 
+            //show level complete view
             LevelCompleteController levelCompleteController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelCompleteView) as LevelCompleteController;
             levelCompleteController.Show();
         }
@@ -235,8 +239,16 @@ namespace StudioByStorm.FX {
             float originalScale = node.gameObject.transform.localScale.x;
             float targetScale = originalScale * 1.5f;
 
+            //rotate node
+            Vector3 StartNodeTargetRotation = node.gameObject.transform.localEulerAngles;
+            StartNodeTargetRotation.z -= 180.0f;
+            node.gameObject.transform.DORotate(StartNodeTargetRotation, 0.5f, RotateMode.LocalAxisAdd);
+            
             //scale up
             node.gameObject.transform.DOScale(targetScale, 0.25f).OnComplete(() => {
+                //increment cells used text
+                CellsUsedView cellsUsedView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.CellsUsedView) as CellsUsedView;
+                cellsUsedView.incrementUsedCells(1);
                 //scale back down
                 node.gameObject.transform.DOScale(originalScale, 0.25f);
             });
@@ -252,22 +264,22 @@ namespace StudioByStorm.FX {
             });
             
             if (node.currentEdge.gameObject.activeSelf) {
+                //hide lineRendererFX 
+                node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
                 StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers));
                 //wait for the animation to finish
                 yield return new WaitForSeconds(0.1f * SpriteRenderers.Length);
+                //show lineRendererFX
+                node.currentEdge.lineRendererFX.SetWidth(0.2f, 0.2f);
                 //continue for child node
                 Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(node.currentEdge.childID);
                 StartCoroutine(HighLightCell(childNode));
+                
             } else {
                 rewardAnimationCount++;
             }
-        }
-
-        public void MakeEdgeLineRendererFXVisible()
-        {
-            GameManager.Singleton.EdgeRegistry.getAllAsList().ForEach(x => x.lineRendererFX.SetWidth(0.2f, 0.2f));
         }
     }
 

@@ -93,6 +93,8 @@ namespace StudioByStorm.UI.Controllers {
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
 
             yield return new WaitForSeconds(2.0f);
+            //close cells used view
+            GameManager.Singleton.UIController.Close(ViewName.CellsUsedView);
 
             //show the level complete view
             View levelCompleteView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelCompleteView) as View;

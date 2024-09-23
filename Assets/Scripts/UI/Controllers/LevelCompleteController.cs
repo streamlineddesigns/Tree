@@ -90,8 +90,8 @@ namespace StudioByStorm.UI.Controllers {
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[2]) ? 2 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[1]) ? 1 : 0;
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
-            SetStarProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
-
+            
+            //get cells used for xp purposes
             int totalCellsUsed = 0;
             int totalCellsAvailable = GameManager.Singleton.LevelManager.currentLevelNodeCount;
             List<List<Node>> connectedNodes = GameManager.Singleton.ColorNodeRegistry.getAllAsList();
@@ -101,8 +101,8 @@ namespace StudioByStorm.UI.Controllers {
                 }
             }
             int previousCellsAwarded = GameManager.Singleton.ProgressManager.GetLevelXPProgress(key);
-            SetXPProgress(previousCellsAwarded, totalCellsUsed, totalCellsAvailable);
             
+            //save the progress
             SaveProgress(key, currentChapterID, currentLevelID, starsAwarded, previousStarsAwarded, totalCellsUsed, previousCellsAwarded);
             AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Complete, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID, starsAwarded);
 
@@ -110,6 +110,9 @@ namespace StudioByStorm.UI.Controllers {
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
 
             yield return new WaitForSeconds(2.0f);
+            //display the star/xp animations
+            StartCoroutine(SetXPProgress(previousCellsAwarded, totalCellsUsed, totalCellsAvailable));
+            StartCoroutine(SetStarProgress(previousStarsAwarded, starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor));
             //close cells used view
             GameManager.Singleton.UIController.Close(ViewName.CellsUsedView);
 
@@ -120,26 +123,69 @@ namespace StudioByStorm.UI.Controllers {
             //levelCompleteView.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.5f).SetEase(Ease.InQuad);
         }
 
-        private void SetXPProgress(int previousCellsAwarded, int used, int available)
+        IEnumerator SetXPProgress(int previousCellsAwarded, int used, int available)
         {
-            bool isPreviousAwardedLarger = (previousCellsAwarded > used);
+            bool isPreviousAwardedLarger = (previousCellsAwarded >= used);
 
             float usedPercent = (isPreviousAwardedLarger) ? (previousCellsAwarded * 1.0f) / (available * 1.0f) : (used * 1.0f) / (available * 1.0f);
             int earnedPercentInt = (int) (usedPercent * 100.0f);
             int remainingPercentInt = 100 - earnedPercentInt;
 
-            xpSlider.value = usedPercent;
-            earnedXPText.text = earnedPercentInt.ToString() + "%";
-            remainingXPText.text = remainingPercentInt.ToString() + "%";
+            float easedUsedPercent = 0.0f;
+            float easedEarnedPercent = 0.0f;
+            float easedRemainingPercentInt = 100.0f;
+
+            float duration = 1.0f;
+            float timer = 0.0f;
+
+            if (! isPreviousAwardedLarger) {
+                while(easedUsedPercent < usedPercent) {
+                    timer += Time.deltaTime;
+                    float percent = timer / duration;
+                    float cappedPercent = Mathf.Min(percent, 1.0f);
+                    easedUsedPercent = DOVirtual.EasedValue(0, usedPercent, cappedPercent, Ease.InOutQuad);
+                    easedEarnedPercent = (int) DOVirtual.EasedValue(0, earnedPercentInt, cappedPercent, Ease.InOutQuad);
+                    easedRemainingPercentInt = (int) DOVirtual.EasedValue(100.0f, remainingPercentInt, cappedPercent, Ease.InOutQuad);
+
+                    xpSlider.value = easedUsedPercent;
+                    earnedXPText.text = easedEarnedPercent.ToString() + "%";
+                    remainingXPText.text = easedRemainingPercentInt.ToString() + "%";
+                    yield return null;
+                }
+            } else {
+                xpSlider.value = usedPercent;
+                earnedXPText.text = earnedPercentInt.ToString() + "%";
+                remainingXPText.text = remainingPercentInt.ToString() + "%";
+            }
+
+            yield return null;
         }
 
-        private void SetStarProgress(int completionValue, Color completionColor)
+        IEnumerator SetStarProgress(int previousStarsAwarded, int completionValue, Color completionColor)
         {
-            for (int i = 0; i < starImages.Length; i++) {
-                if (completionValue > i) {
-                    starImages[i].color = completionColor;
+            bool isPreviousAwardedLarger = (previousStarsAwarded >= completionValue);
+            float originalScale = starImages[0].gameObject.transform.localScale.x;
+            float targetScale = originalScale * 1.25f;
+
+            if (! isPreviousAwardedLarger) {
+                for (int i = 0; i < starImages.Length; i++) {
+                    if (completionValue > i) {
+                        starImages[i].gameObject.transform.DOScale(targetScale, 0.1665f).OnComplete(() => {
+                            starImages[i].color = completionColor;
+                            starImages[i].gameObject.transform.DOScale(originalScale, 0.1665f);
+                        });
+                        yield return new WaitForSeconds(0.333f);
+                    }
+                }
+            } else {
+                for (int i = 0; i < starImages.Length; i++) {
+                    if (completionValue > i) {
+                        starImages[i].color = completionColor;
+                    }
                 }
             }
+
+            yield return null;
         }
 
         private void SaveProgress(string key, int currentChapterID, int currentLevelID, int starsAwarded, int previousStarsAwarded, int cellsUsed, int previousCellsAwarded)

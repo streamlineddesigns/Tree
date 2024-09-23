@@ -173,6 +173,7 @@ namespace StudioByStorm.UI.Controllers {
                         starImages[i].gameObject.transform.DOScale(targetScale, 0.1665f).OnComplete(() => {
                             starImages[i].color = completionColor;
                             starImages[i].gameObject.transform.DOScale(originalScale, 0.1665f);
+                            AudioManager.Singleton.Play(SoundType.GetEdge);
                         });
                         yield return new WaitForSeconds(0.333f);
                     }

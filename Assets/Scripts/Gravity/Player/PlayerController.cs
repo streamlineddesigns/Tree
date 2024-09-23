@@ -342,7 +342,7 @@ namespace StudioByStorm.Gravity.Player {
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
-                GameManager.Singleton.CameraController.Shake(0.1f, 0.1f);
+                GameManager.Singleton.CameraController.Shake(0.15f, 0.15f);
                 isHitObstacle = true;
                 HitObstacleAnimation();
 

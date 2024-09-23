@@ -18,6 +18,9 @@ namespace StudioByStorm.UI.Controllers {
         public TMP_Text headingText;
         public TMP_Text levelText;
         public Image[] starImages;
+        public Slider xpSlider;
+        public TMP_Text earnedXPText;
+        public TMP_Text remainingXPText;
         private int framesToWait = 2;
         private float[] percentOfLevelCompletedToStarTierMapping = new float[4]{0.0f, 0.0f, 0.75f, 1.0f};
 
@@ -71,10 +74,12 @@ namespace StudioByStorm.UI.Controllers {
 
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
+            //handles progress
+            string key = (currentChapterID + "-" + currentLevelID);
 
             int currentLevelEdgeCount = GameManager.Singleton.LevelManager.currentLevelEdgeCount;
             int totalEdgeCount = (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2));
-            float edgePercent = currentLevelEdgeCount * 1.0f / totalEdgeCount * 1.0f;
+            float edgePercent = (currentLevelEdgeCount * 1.0f) / (totalEdgeCount * 1.0f);
             
             //Debug.Log("currentLevelEdgeCount: " + currentLevelEdgeCount);
             //Debug.Log("totalEdgeCount: " + totalEdgeCount);
@@ -84,9 +89,21 @@ namespace StudioByStorm.UI.Controllers {
             int starsAwarded = (edgePercent >= percentOfLevelCompletedToStarTierMapping[3]) ? 3 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[2]) ? 2 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[1]) ? 1 : 0;
+            int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
+            SetStarProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
 
-            SetProgress(starsAwarded, GameManager.Singleton.LevelManager.levelCompletionColor);
-            SaveProgress(currentChapterID, currentLevelID, starsAwarded);
+            int totalCellsUsed = 0;
+            int totalCellsAvailable = GameManager.Singleton.LevelManager.currentLevelNodeCount;
+            List<List<Node>> connectedNodes = GameManager.Singleton.ColorNodeRegistry.getAllAsList();
+            for (int i = 0; i < connectedNodes.Count; i++) {
+                for (int j = 0; j < connectedNodes[i].Count; j++) {
+                    totalCellsUsed++;
+                }
+            }
+            int previousCellsAwarded = GameManager.Singleton.ProgressManager.GetLevelXPProgress(key);
+            SetXPProgress(previousCellsAwarded, totalCellsUsed, totalCellsAvailable);
+            
+            SaveProgress(key, currentChapterID, currentLevelID, starsAwarded, previousStarsAwarded, totalCellsUsed, previousCellsAwarded);
             AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Complete, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID, starsAwarded);
 
             headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
@@ -103,7 +120,20 @@ namespace StudioByStorm.UI.Controllers {
             //levelCompleteView.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.5f).SetEase(Ease.InQuad);
         }
 
-        private void SetProgress(int completionValue, Color completionColor)
+        private void SetXPProgress(int previousCellsAwarded, int used, int available)
+        {
+            bool isPreviousAwardedLarger = (previousCellsAwarded > used);
+
+            float usedPercent = (isPreviousAwardedLarger) ? (previousCellsAwarded * 1.0f) / (available * 1.0f) : (used * 1.0f) / (available * 1.0f);
+            int earnedPercentInt = (int) (usedPercent * 100.0f);
+            int remainingPercentInt = 100 - earnedPercentInt;
+
+            xpSlider.value = usedPercent;
+            earnedXPText.text = earnedPercentInt.ToString() + "%";
+            remainingXPText.text = remainingPercentInt.ToString() + "%";
+        }
+
+        private void SetStarProgress(int completionValue, Color completionColor)
         {
             for (int i = 0; i < starImages.Length; i++) {
                 if (completionValue > i) {
@@ -112,17 +142,17 @@ namespace StudioByStorm.UI.Controllers {
             }
         }
 
-        private void SaveProgress(int currentChapterID, int currentLevelID, int starsAwarded)
+        private void SaveProgress(string key, int currentChapterID, int currentLevelID, int starsAwarded, int previousStarsAwarded, int cellsUsed, int previousCellsAwarded)
         {
             bool needsToSave = false;
 
-            //handle star progress
-            string key = (currentChapterID + "-" + currentLevelID);
-
-            int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
-
             if (starsAwarded > previousStarsAwarded) {
                 GameManager.Singleton.ProgressManager.UpdateLevel(key, starsAwarded);
+                needsToSave = true;
+            }
+
+            if (cellsUsed > previousCellsAwarded) {
+                GameManager.Singleton.ProgressManager.UpdateLevelXP(key, cellsUsed);
                 needsToSave = true;
             }
 

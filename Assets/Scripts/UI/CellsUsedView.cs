@@ -16,11 +16,12 @@ namespace StudioByStorm.UI {
         private int usedCells = 0;
         private int totalCells = 0;
         private bool isAnimating = false;
+        private int xpMultiplier = 10;
 
         protected void OnEnable()
         {
             originalScale = cellsUsedContainer.transform.localScale.x;
-            totalCells = GameManager.Singleton.LevelManager.currentLevelNodeCount;
+            totalCells = GameManager.Singleton.LevelManager.currentLevelNodeCount * xpMultiplier;
             //set text
             string value = "0/" + totalCells.ToString();
             cellsUsedText.text = value;
@@ -28,7 +29,7 @@ namespace StudioByStorm.UI {
             
         public void incrementUsedCells(int val)
         {
-            valuesToAdd.Enqueue(val);
+            valuesToAdd.Enqueue(val * xpMultiplier);
         }
 
         private void Update()

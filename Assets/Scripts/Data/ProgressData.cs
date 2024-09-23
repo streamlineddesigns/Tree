@@ -14,6 +14,12 @@ namespace StudioByStorm.Data {
         public Dictionary<string, int> levelProgress = new Dictionary<string, int>();
 
         /*
+         * Key is string(ChapterID + "-" + LevelID)
+         * Value is how much xp was received
+         */
+        public Dictionary<string, int> levelXPProgress = new Dictionary<string, int>();
+
+        /*
          * Key is string(ChapterID + "-" + CutSceneID)
          * Value is just a boolean for if the cut scene was watched or not
          */

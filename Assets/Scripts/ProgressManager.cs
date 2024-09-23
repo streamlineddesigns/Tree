@@ -40,6 +40,16 @@ namespace StudioByStorm {
             return ProgressData.levelProgress[k];
         }
 
+        //Key is string(ChapterID + "-" + LevelID)
+        public int GetLevelXPProgress(string k)
+        {
+            if (! ProgressData.levelXPProgress.ContainsKey(k)) {
+                return 0;
+            }
+
+            return ProgressData.levelXPProgress[k];
+        }
+
         //Key is string(ChapterID + "-" + CutSceneID)
         public bool GetCutSceneProgress(string k)
         {
@@ -86,6 +96,15 @@ namespace StudioByStorm {
                 ProgressData.levelProgress[k] = v;
             } else {
                 ProgressData.levelProgress.Add(k, v);
+            }
+        }
+
+        public void UpdateLevelXP(string k, int v)
+        {
+            if (ProgressData.levelXPProgress.ContainsKey(k)) {
+                ProgressData.levelXPProgress[k] = v;
+            } else {
+                ProgressData.levelXPProgress.Add(k, v);
             }
         }
 

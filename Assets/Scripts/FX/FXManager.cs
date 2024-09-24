@@ -51,6 +51,13 @@ namespace StudioByStorm.FX {
         public GameObject fingerSlingShotAnimationPrefab;
         public FingerSlingShotAnimation fingerSlingShotAnimation;
         public Transform tutorialParent;
+        //node connect
+        [HideInInspector]
+        public Dictionary<NodeColor, Pool> nodeConnectPools = new Dictionary<NodeColor, Pool>();
+        public GameObject BlueNodeConnectPrefab;
+        public GameObject GreenNodeConnectPrefab;
+        public GameObject PurpleNodeConnectPrefab;
+        public GameObject OrangeNodeConnectPrefab;
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
@@ -60,6 +67,7 @@ namespace StudioByStorm.FX {
         protected int boidPoolSize = 20;
         protected int colorCount = 4;
         protected int boidPerColor = 5;
+        protected int nodeConnectPoolSizes = 2;
 
         int playerEdgeChangeID = -1;
 
@@ -150,6 +158,22 @@ namespace StudioByStorm.FX {
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
 
             fingerSlingShotAnimation = Instantiate(fingerSlingShotAnimationPrefab, tutorialParent).GetComponent<FingerSlingShotAnimation>();
+        
+            Pool BlueNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            BlueNodeConnectPool.DependencyInjection(BlueNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Blue, BlueNodeConnectPool);
+
+            Pool GreenNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            GreenNodeConnectPool.DependencyInjection(GreenNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Green, GreenNodeConnectPool);
+
+            Pool PurpleNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            PurpleNodeConnectPool.DependencyInjection(PurpleNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Purple, PurpleNodeConnectPool);
+
+            Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            OrangeNodeConnectPool.DependencyInjection(OrangeNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);
         }
 
         void Start()

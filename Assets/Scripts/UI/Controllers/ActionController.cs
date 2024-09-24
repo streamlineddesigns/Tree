@@ -505,6 +505,12 @@ namespace StudioByStorm {
         {
             AudioManager.Singleton.Play(SoundType.SetEdge);
 
+            if (ActionModel.CurrentNode.NodeType == NodeType.Disjoint) {
+                GameObject connectFX = GameManager.Singleton.FXManager.nodeConnectPools[ActionModel.CurrentEdge.parentNode.NodeColor].Get();
+                connectFX.transform.position = ActionModel.CurrentNode.gameObject.transform.position;
+                connectFX.SetActive(true);
+            }
+
             ActionView.DisableSetEdgeButton();
             GameManager.Singleton.LevelManager.currentLevelEdgeCount++;
             GameManager.Singleton.AdjacencyList.Add(ActionModel.CurrentEdge.parentID, ActionModel.CurrentNode.ID);

@@ -64,6 +64,7 @@ namespace StudioByStorm {
         CreditsView,
         AccountView,
         CellsUsedView,
+        VideoHintView,
     }
 
     public enum ViewType
@@ -104,6 +105,11 @@ namespace StudioByStorm {
         TripleNode,
         BetweenNode,
         OnNode
+    }
+
+    public enum VideoHintName {
+        LightObstacle,
+        DarkObstacle,
     }
     
 }

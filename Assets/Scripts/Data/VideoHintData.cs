@@ -7,6 +7,7 @@ namespace StudioByStorm.Data {
 
     [System.Serializable]
     public struct VideoHintData {
+        public int chapterID;
         public int levelID;
         public int nodeID;
         public VideoClip clip;

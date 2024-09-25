@@ -17,6 +17,8 @@ namespace StudioByStorm.UI.Controllers {
         public TMP_Text messageText;
         [SerializeField]
         private List<VideoHintData> videoHints = new List<VideoHintData>();
+        [SerializeField]
+        private GameObject resumeButton;
 
         private ActionController actionController; 
         private List<(int, int)> currentHintIndexs;
@@ -53,7 +55,8 @@ namespace StudioByStorm.UI.Controllers {
                 //check if a hint for the current level exists
                 currentHintIndexs = videoHints
                     .Select((hint, index) => new { hint, index })  // Create an anonymous object with element and index
-                    .Where(x => x.hint.levelID == GameManager.Singleton.LevelManager.currentLevelID)  // Filter by levelID
+                    .Where(x => x.hint.levelID == GameManager.Singleton.LevelManager.currentLevelID // Filter by LevelID
+                             && x.hint.chapterID == GameManager.Singleton.LevelManager.currentChapterID)  // Filter by ChapterID
                     .Select(x => (x.index, x.hint.nodeID))      // Select a tuple of (index, nodeID)
                     .ToList();
             }
@@ -62,6 +65,9 @@ namespace StudioByStorm.UI.Controllers {
         public void ResumeButtonClick()
         {
             isShowingHint = false;
+            resumeButton.SetActive(false);
+            bool isJumpLocked = false;
+            actionController.LockJump(isJumpLocked);
             GameManager.Singleton.UIController.Close(ViewName);
         }
 
@@ -76,6 +82,9 @@ namespace StudioByStorm.UI.Controllers {
                         //ensure it only runs one time and not every x frames
                         isShowingHint = true;
                         hintsShown.Add(actionController.ActionModel.CurrentNode.ID);
+                        //lock player movement while hint view is shown
+                        bool isJumpLocked = true;
+                        actionController.LockJump(isJumpLocked);
                         //retrieve the index/node tuple
                         (int, int) hintIndexTuple = currentHintIndexs.First(t => t.Item2 == actionController.ActionModel.CurrentNode.ID);
                         //retrieve the actual hint data object
@@ -85,6 +94,9 @@ namespace StudioByStorm.UI.Controllers {
                         videoPlayer.clip = videoHintData.clip;
                         //show the view
                         GameManager.Singleton.UIController.ShowView(ViewName);
+                        //wait a second before activating the resume button
+                        yield return new WaitForSeconds(1.0f);
+                        resumeButton.SetActive(true);
                     }
                 }
                 

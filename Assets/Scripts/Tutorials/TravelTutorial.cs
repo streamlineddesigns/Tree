@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.U2D.IK;
 using DG.Tweening;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.UI.Controllers;
 using StudioByStorm.ML.Clustering;
 
 namespace StudioByStorm.Tutorials {
@@ -19,6 +20,7 @@ namespace StudioByStorm.Tutorials {
         
         private bool didPlayerTravel = false;
         private bool isLevelComplete = false;
+        private GameController gameController;
         private ActionController actionController;
         private bool isJumpLocked;
         private Edge secondaryEdge;
@@ -53,6 +55,7 @@ namespace StudioByStorm.Tutorials {
         public override void Init()
         {
             actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            gameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
             isJumpLocked = true;
             actionController.LockJump(isJumpLocked);
             //place player in a "safe place" for tutorial to occur
@@ -70,6 +73,23 @@ namespace StudioByStorm.Tutorials {
 
         protected IEnumerator CreateEdgeAnimation()
         {
+            //go to the safe node
+            if (! didTeleportToSafeNode && safeNodeToTeleportTo != null) {
+                didTeleportToSafeNode = true;
+                GameManager.Singleton.player.transform.DOMove(safeNodeToTeleportTo.transform.position, 0.1f).OnComplete(() => {
+                    GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
+                    //reset every color
+                    gameController.ResetBlueButtonClick();
+                    gameController.ResetGreenButtonClick();
+                    gameController.ResetPurpleButtonClick();
+                    gameController.ResetWhiteButtonClick();
+                    gameController.ResetOrangeButtonClick();
+                    gameController.ResetYellowButtonClick();
+                });
+            }
+
+            yield return new WaitForSeconds(0.25f);
+
             Node currentNode = actionController.ActionModel.CurrentNode;
             int currentNodeID = currentNode.ID;
 
@@ -144,11 +164,6 @@ namespace StudioByStorm.Tutorials {
                     }
                 }
                 yield return new WaitForSeconds(0.0333f);
-
-                if (! didTeleportToSafeNode && safeNodeToTeleportTo != null) {
-                    didTeleportToSafeNode = true;
-                    GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
-                }
             }
         }
 

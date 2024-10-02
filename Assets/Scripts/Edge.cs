@@ -55,6 +55,10 @@ namespace StudioByStorm {
 
         public void DisplayLineRendererFX(float size = 0.1f)
         {
+            if (GameManager.Singleton.NodeRegistry.TryGetValue(childID) == null) {
+                return;
+            }
+            
             Vector3 parentPosition = gameObject.transform.position;
             Vector3 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childID).gameObject.transform.position;
 

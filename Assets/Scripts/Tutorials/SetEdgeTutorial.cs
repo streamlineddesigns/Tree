@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StudioByStorm.Gravity.Player;
 using StudioByStorm.FX;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.Tutorials {
 
@@ -15,6 +16,27 @@ namespace StudioByStorm.Tutorials {
         private ActionController actionController;
         private PlayerController playerController;
         private int startEdgeID = -1;
+        private bool isLevelComplete = false;
+
+        protected void OnEnable()
+        {
+            GameEventPublisher.OnStateChange += OnStateChange;
+        }
+
+        protected void OnDisable()
+        {
+            base.OnDisable();
+            GameEventPublisher.OnStateChange -= OnStateChange;
+        }
+        
+        protected void OnStateChange(GameState state)
+        {
+            switch(state) {
+                case GameState.LevelComplete :
+                    isLevelComplete = true;
+                    break;
+            }
+        }
 
         public override void Init()
         {
@@ -52,7 +74,7 @@ namespace StudioByStorm.Tutorials {
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => GameManager.Singleton.LevelManager.currentLevelEdgeCount >= 1);
+            yield return new WaitUntil(() => isLevelComplete);
             _isFinished = true;
         }
 

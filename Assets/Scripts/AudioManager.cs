@@ -189,5 +189,7 @@ namespace StudioByStorm {
         Typing,
         ButtonPress,
         CantSetEdge,
+        StarAwarded,
+        Applause,
     }
 }

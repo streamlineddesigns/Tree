@@ -47,6 +47,22 @@ namespace StudioByStorm.FX {
         //PlayerLoseFX
         public GameObject PlayerLoseFXPrefab;
         public GameObject PlayerLoseFX;
+        //Wrong Obstacle Hit FX
+        public GameObject WrongObstacleHitFX;
+        [HideInInspector]
+        public Pool WrongObstacleHitPool;
+        //Correct Obstacle Hit FX
+        public GameObject CorrectObstacleHitFX;
+        [HideInInspector]
+        public Pool CorrectObstacleHitPool;
+        //Player Trail FX
+        public GameObject PlayerTrailFX;
+        [HideInInspector]
+        public Pool PlayerTrailPool;
+        //Jump FX
+        public GameObject PlayerJumpFX;
+        [HideInInspector]
+        public Pool PlayerJumpPool;
         //Tutorial Animations
         public GameObject fingerSlingShotAnimationPrefab;
         public FingerSlingShotAnimation fingerSlingShotAnimation;
@@ -68,10 +84,15 @@ namespace StudioByStorm.FX {
         protected int colorCount = 4;
         protected int boidPerColor = 5;
         protected int nodeConnectPoolSizes = 2;
+        protected int wrongObstacleHitPoolSize = 3;
+        protected int correctObstacleHitPoolSize = 3;
+        protected int playerTrailPoolSize = 3;
+        protected int playerJumpPoolSize = 2;
 
         int playerEdgeChangeID = -1;
 
         private int rewardAnimationCount = 0;
+        private List<Edge> edgesWithAnimationsOn = new List<Edge>();
 
         void OnEnable()
         {
@@ -174,11 +195,36 @@ namespace StudioByStorm.FX {
             Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             OrangeNodeConnectPool.DependencyInjection(OrangeNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);
+
+            WrongObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
+            WrongObstacleHitPool.DependencyInjection(WrongObstacleHitFX, FXParent, wrongObstacleHitPoolSize);
+
+            CorrectObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
+            CorrectObstacleHitPool.DependencyInjection(CorrectObstacleHitFX, FXParent, correctObstacleHitPoolSize);
+
+            PlayerTrailPool = ScriptableObject.CreateInstance<Pool>();
+            PlayerTrailPool.DependencyInjection(PlayerTrailFX, FXParent, playerTrailPoolSize);
+
+            PlayerJumpPool = ScriptableObject.CreateInstance<Pool>();
+            PlayerJumpPool.DependencyInjection(PlayerJumpFX, FXParent, playerJumpPoolSize);
         }
 
         void Start()
         {
             GenerateBoids();
+        }
+
+        public IEnumerator nodesLookAtPlayerAnimation(List<Node> nodes)
+        {
+            while(true) {
+                for (int i = 0; i < nodes.Count; i++) {
+                    Vector3 directionToPlayer = GameManager.Singleton.player.transform.position - nodes[i].transform.position;
+                    Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, directionToPlayer);
+                    nodes[i].InnerGraphic.transform.rotation = targetRotation;
+                }
+
+                yield return new WaitForSeconds(0.0333f);
+            }
         }
         
         protected void GenerateBoids()
@@ -234,6 +280,10 @@ namespace StudioByStorm.FX {
 
         public IEnumerator LevelCompleteRewardAnimation()
         {
+            //slow-mo
+            StartCoroutine(SlowMoEffect());
+            //link loop
+            StartCoroutine(LinkLoopAnimation());
             //zoom out
             GameController GameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
             GameController.ZoomButtonClick(2.0f);
@@ -285,6 +335,7 @@ namespace StudioByStorm.FX {
             edgeLightFX.SetActive(true);
             edgeLightFX.transform.DOMove(GameManager.Singleton.player.transform.position, 0.5f).OnComplete(() => {
                 edgeLightFX.SetActive(false);
+                GameManager.Singleton.PlayerController.BounceAnimation();
             });
             
             if (node.currentEdge.gameObject.activeSelf) {
@@ -292,9 +343,11 @@ namespace StudioByStorm.FX {
                 node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
-                StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers));
+                StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers, 0.05f));
                 //wait for the animation to finish
-                yield return new WaitForSeconds(0.1f * SpriteRenderers.Length);
+                yield return new WaitForSeconds(0.05f * SpriteRenderers.Length);
+                //add to link loop animations
+                edgesWithAnimationsOn.Add(node.currentEdge);
                 //show lineRendererFX
                 node.currentEdge.lineRendererFX.SetWidth(0.2f, 0.2f);
                 //continue for child node
@@ -304,6 +357,40 @@ namespace StudioByStorm.FX {
             } else {
                 rewardAnimationCount++;
             }
+        }
+
+        IEnumerator LinkLoopAnimation()
+        {
+            while(true) {
+                for (int i = 0; i < edgesWithAnimationsOn.Count; i++) {
+                    SpriteRenderer[] SpriteRenderers = edgesWithAnimationsOn[i].LinkSpriteRenderers.Select(x => x).Take(edgesWithAnimationsOn[i].activeLinkIndex).ToArray();
+                    StartCoroutine(edgesWithAnimationsOn[i].DoPlayerPathAnimation(SpriteRenderers, 0.05f));
+                }
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+
+        IEnumerator SlowMoEffect()
+        {
+            float duration = 0.5f;
+            float timer = 0.0f;
+            bool completed = false;
+
+            Time.timeScale = 0.5f;
+
+            while(! completed) {
+                if (timer < duration) {
+                    timer += Time.deltaTime;
+                    float percent = timer / duration;
+                    float easedValue = DOVirtual.EasedValue(0.5f, 1.0f, percent, Ease.InBack);
+                    Time.timeScale = easedValue;
+                } else {
+                    completed = true;
+                }
+                yield return new WaitForSeconds(0.01667f);
+            }
+
+            Time.timeScale = 1.0f;
         }
     }
 

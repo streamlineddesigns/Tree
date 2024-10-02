@@ -303,6 +303,8 @@ namespace StudioByStorm {
         {
             yield return new WaitUntil(() => GameManager.Singleton.NodeRegistry.Count() == CurrentLevelData.Layers.Sum(x => x.nodeCount));
 
+            //StartCoroutine(GameManager.Singleton.FXManager.nodesLookAtPlayerAnimation(GameManager.Singleton.NodeRegistry.getAllAsList()));
+
             horizontalVerticalAdjacencyList = new AdjacencyList();
             float[] angleOffsets = new float[5]{0.0f, -180.0f, 180.0f, 90.0f, -90.0f};
 

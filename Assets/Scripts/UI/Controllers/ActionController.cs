@@ -75,9 +75,21 @@ namespace StudioByStorm {
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
 
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.position = GameManager.Singleton.PlayerController.gameObject.transform.position;
-
+                
                 Vector3 magnitude = new Vector3 (JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling);
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.localScale = magnitude;
+
+                //do the same stuff for the player too
+                if (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) {
+                    //rotate the player sprite too
+                    GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+                    //scale the player sprite too
+                    float percent = JumpJoyStick.ScaledValue.magnitude / 1.0f;
+                    float clampedPercent = Mathf.Min(percent, 1.0f);
+                    float easedValue = DOVirtual.EasedValue(0.1f, 0.2f, clampedPercent, Ease.Linear);
+                    Vector3 playerScale = new Vector3(0.1f, easedValue, 0.1f);
+                    //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
+                }
             }
 
             //EdgeButtonClickListener();
@@ -353,6 +365,11 @@ namespace StudioByStorm {
 
         protected void AutoConnectionHelperListener()
         {
+            //edge case
+            if (ActionModel.CurrentNode != null && ActionModel.CurrentNode.NodeType == NodeType.Parent && !ActionModel.CurrentNode.currentEdge.gameObject.activeSelf) {
+                ManualOnTriggerEnter2D(ActionModel.CurrentNode);
+            }
+
             if (ActionModel.CurrentNode != null && ActionView.GetEdgeButton.interactable) {
                 GetEdgeButtonClick();
             } else if (ActionModel.CurrentEdge != null && ActionView.SetEdgeButton.interactable) {
@@ -495,6 +512,8 @@ namespace StudioByStorm {
                     //edgeTarget.x += 0.1f;
                     currentEdge.gameObject.transform.DOPunchPosition(scaledTargetPosition, 0.2f, 1, 0.1f, false);
                 }
+
+                currentEdge.DisplayLineRendererFX();
             }
 
             
@@ -542,7 +561,6 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;
             ActionModel.CurrentEdge.turnFabrikOff();
-            ActionModel.CurrentEdge.DisplayLineRendererFX();
             
             StartCoroutine(EdgeLightFXTravel(ActionModel.CurrentEdge));
 

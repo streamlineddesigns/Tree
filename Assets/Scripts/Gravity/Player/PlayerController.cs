@@ -33,6 +33,11 @@ namespace StudioByStorm.Gravity.Player {
                 return canDash;
             }
         }
+        public SpriteRenderer sprite {
+            get {
+                return spriteRenderer;
+            }
+        }
         [SerializeField] private GameObject trail;
 
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
@@ -108,6 +113,10 @@ namespace StudioByStorm.Gravity.Player {
         private bool isToggleColorOn = true;
         private Tween PlayerScaleUpTween;
         private Tween PlayerScaleDownTween;
+
+        private Vector3 originalSpriteScale;
+
+        private GameObject previousTrailFX;
         
         void Awake()
         {
@@ -120,6 +129,7 @@ namespace StudioByStorm.Gravity.Player {
             rigidbodyContacts = new ContactPoint2D[1];
             currentOffSurfaceTimer = offSurfaceTimer;
             originalScale = gameObject.transform.localScale.x;
+            originalSpriteScale = spriteRenderer.transform.localScale;
 
             bool isInitializingPlayerHearts = true;
             UpdatePlayerHearts(isInitializingPlayerHearts);
@@ -130,6 +140,7 @@ namespace StudioByStorm.Gravity.Player {
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
             FTUECheck();
+            StartCoroutine(SpawnTrailFXUpdateLoop());
         }
 
         void OnDisable()
@@ -170,6 +181,8 @@ namespace StudioByStorm.Gravity.Player {
             playerTargetPosition.y = highestObject.transform.position.y + 7.5f;
 
             gameObject.transform.DOMove(playerTargetPosition, 2.0f, false).SetEase(Ease.InQuad).OnComplete(() => {
+                transform.rotation = Quaternion.Euler(Vector3.zero);
+                spriteRenderer.transform.rotation = Quaternion.Euler(Vector3.zero);
                 isLightColor = true;
                 light2D.SetActive(true);
                 spriteRenderer.color = lightColor;
@@ -247,7 +260,7 @@ namespace StudioByStorm.Gravity.Player {
 
             AudioManager.Singleton.Play(SoundType.Travel);
             
-            transform.up = waypoints[waypoints.Length - 1];
+            //transform.up = waypoints[waypoints.Length - 1];
             gameObject.transform.DOPath(waypoints, 0.75f, PathType.Linear).SetEase(Ease.Linear).OnComplete(() => {
                 Move();
             });
@@ -262,10 +275,27 @@ namespace StudioByStorm.Gravity.Player {
             //yield return new WaitUntil(() => (Vector2)gameObject.transform.position == GameManager.Singleton.nearbyNode.GetPosition());
             GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(0.85f, 0.1f).OnComplete(() => {GameManager.Singleton.nearbyNode.GetData<Node>().InnerGraphic.gameObject.transform.DOScale(1.0f, 0.1f);});
            
-            transform.up = Vector3.up;
+            //transform.up = Vector3.up;
 
             yield return null;
             lerping = false;
+        }
+
+        IEnumerator SpawnTrailFXUpdateLoop()
+        {
+            while(true) {
+                if (!lerping && (previousTrailFX == null || Vector2.Distance(previousTrailFX.transform.position, transform.position) > 0.75f)) {
+                    PlayerTrailFX currentTrailFX = GameManager.Singleton.FXManager.PlayerTrailPool.Get().GetComponent<PlayerTrailFX>();
+                    Color colorHit = (isLightColor) ? lightColor : darkColor;
+                    colorHit.a = 0.75f;
+                    currentTrailFX.SetColor(colorHit);
+                    currentTrailFX.transform.position = transform.position;
+                    currentTrailFX.gameObject.SetActive(true);
+
+                    previousTrailFX = currentTrailFX.gameObject;
+                }
+                yield return new WaitForSeconds(0.05f);
+            }
         }
 
         void Update()
@@ -342,16 +372,24 @@ namespace StudioByStorm.Gravity.Player {
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
-                GameManager.Singleton.CameraController.Shake(0.15f, 0.15f);
+
+                Color colorHit = (isLightColor) ? lightColor : darkColor;
+                WrongObstacleHitFX wrongObstacleHitFX = GameManager.Singleton.FXManager.WrongObstacleHitPool.Get().GetComponent<WrongObstacleHitFX>();
+                wrongObstacleHitFX.SetColor(colorHit);
+                wrongObstacleHitFX.gameObject.transform.position = transform.position;
+                wrongObstacleHitFX.gameObject.SetActive(true);
+
                 isHitObstacle = true;
                 HitObstacleAnimation();
 
                 //check if the player still has hearts left after this
                 if ((playerHeartsCount - 1) > 0) {
+                    GameManager.Singleton.CameraController.Shake(0.15f, 0.15f);
                     playerHeartsCount--;
                     UpdatePlayerHearts();
 
                 } else if (! isLevelLost) {
+                    GameManager.Singleton.CameraController.Shake(0.225f, 0.225f);
                     playerHeartsCount--;
                     UpdatePlayerHearts();
                     StartCoroutine(LevelLostAnimation());
@@ -459,7 +497,12 @@ namespace StudioByStorm.Gravity.Player {
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
                 if ((isLightColor && obstacleColorType == ColorType.Light) 
                      || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
-                        
+                        Color colorHit = (isLightColor) ? lightColor : darkColor;
+                        colorHit.a = 0.5f;
+                        CorrectObstacleHitFX correctObstacleHitFX = GameManager.Singleton.FXManager.CorrectObstacleHitPool.Get().GetComponent<CorrectObstacleHitFX>();
+                        correctObstacleHitFX.SetColor(colorHit);
+                        correctObstacleHitFX.gameObject.transform.position = transform.position;
+                        correctObstacleHitFX.gameObject.SetActive(true);
                     if (! lerping) {
                         GameEventPublisher.PublishPlayerHitCorrectObstacle();
                         AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
@@ -598,7 +641,7 @@ namespace StudioByStorm.Gravity.Player {
                 previousMovementDirection = joystickDir;
             }
 
-            SetRelativeForwardDirection();
+            //SetRelativeForwardDirection();
         }
 
         protected void ApplyGravityFailSafe()
@@ -620,7 +663,7 @@ namespace StudioByStorm.Gravity.Player {
              */
             gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
 
-            transform.up = - gravityDirection;
+            //transform.up = - gravityDirection;
             rigidbody.AddForce(gravityDirection * (gravityForce * Time.fixedDeltaTime));
         }
 
@@ -665,6 +708,8 @@ namespace StudioByStorm.Gravity.Player {
             didJump = true;
             isJumping = false;
             isPowerJumping = false;
+            SquashAndStretchAnimation();
+            PlayerMoveCloudFX();
         }
 
         protected void Jump()
@@ -703,7 +748,9 @@ namespace StudioByStorm.Gravity.Player {
                 }
 
                 rigidbody.AddForce(dashDirection * dashForce, ForceMode2D.Impulse);
-                transform.up = dashDirection;
+                //transform.up = dashDirection;
+                SquashAndStretchAnimation();
+                PlayerMoveCloudFX();
 
                 //set boost indication
                 if (boostIndicator.activeSelf) {
@@ -721,6 +768,36 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             dashDirection = Vector2.zero;
+        }
+
+        private void SquashAndStretchAnimation()
+        {
+            // Create a sequence for the stretch and squash animations
+            Sequence stretchSquashSequence = DOTween.Sequence();
+
+            // Squash
+            stretchSquashSequence.Append(sprite.transform.DOScale(new Vector3(originalSpriteScale.x * 2.5f, originalSpriteScale.y * 0.25f, originalSpriteScale.z), 0.25f))
+                                 .Append(sprite.transform.DOScale(new Vector3(originalSpriteScale.x * 0.5f, originalSpriteScale.y * 2.0f, originalSpriteScale.z), 0.1f))
+                                 .Append(sprite.transform.DOScale(originalSpriteScale, 0.0f));                
+        }
+
+        private void PlayerMoveCloudFX()
+        {
+            PlayerJumpFX playerJumpFX = GameManager.Singleton.FXManager.PlayerJumpPool.Get().GetComponent<PlayerJumpFX>();
+            Color currentModified = currentColor;
+            currentModified.a = 0.75f;
+            playerJumpFX.SetColor(currentModified);
+            playerJumpFX.gameObject.transform.position = transform.position;
+            playerJumpFX.gameObject.SetActive(true);
+        }
+
+        public void BounceAnimation()
+        {
+            //rotate node
+            Vector3 StartRotation = gameObject.transform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(0, 0, StartRotation.z + 90.0f);
+
+            SquashAndStretchAnimation();       
         }
 
         protected Vector2 getNearestGravityPoint()

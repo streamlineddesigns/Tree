@@ -117,18 +117,18 @@ namespace StudioByStorm {
             }
         }
 
-        public IEnumerator DoPlayerPathAnimation(SpriteRenderer[] linksToAnimate)
+        public IEnumerator DoPlayerPathAnimation(SpriteRenderer[] linksToAnimate, float duration = 0.1f)
         {
             for (int i = 0; i < linksToAnimate.Length; i++) {
-                if (this.gameObject.activeSelf) StartCoroutine(linkAnimation(linksToAnimate[i]));
-                yield return new WaitForSeconds(0.1f);
+                if (this.gameObject.activeSelf) StartCoroutine(linkAnimation(linksToAnimate[i], duration * 2.0f));
+                yield return new WaitForSeconds(duration);
             }
         }
 
-        IEnumerator linkAnimation(SpriteRenderer sr)
+        IEnumerator linkAnimation(SpriteRenderer sr, float duration)
         {
             sr.material = GameManager.Singleton.ColorModel.unlitMaterial;
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(duration);
             sr.material = GameManager.Singleton.ColorModel.litMaterial;
         }
 

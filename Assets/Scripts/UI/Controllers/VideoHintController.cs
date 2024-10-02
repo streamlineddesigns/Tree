@@ -95,7 +95,7 @@ namespace StudioByStorm.UI.Controllers {
                         //show the view
                         GameManager.Singleton.UIController.ShowView(ViewName);
                         //wait a second before activating the resume button
-                        yield return new WaitForSeconds(1.0f);
+                        yield return new WaitForSeconds(2.5f);
                         resumeButton.SetActive(true);
                     }
                 }

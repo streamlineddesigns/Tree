@@ -366,7 +366,7 @@ namespace StudioByStorm {
         protected void AutoConnectionHelperListener()
         {
             //edge case
-            if (ActionModel.CurrentNode != null && (GameManager.Singleton.PlayerController.isPlayerGrounded() || GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) && ActionModel.CurrentNode.NodeType == NodeType.Parent && !ActionModel.CurrentNode.currentEdge.gameObject.activeSelf) {
+            if (ActionModel.CurrentNode != null && (GameManager.Singleton.PlayerController.isPlayerGrounded() || GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) && ActionModel.CurrentNode.NumOfConnections == 0 && ActionModel.CurrentNode.NodeType == NodeType.Parent && !ActionModel.CurrentNode.currentEdge.gameObject.activeSelf) {
                 ManualOnTriggerEnter2D(ActionModel.CurrentNode);
             }
 

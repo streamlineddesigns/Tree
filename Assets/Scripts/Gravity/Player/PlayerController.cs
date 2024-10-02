@@ -497,15 +497,17 @@ namespace StudioByStorm.Gravity.Player {
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
                 if ((isLightColor && obstacleColorType == ColorType.Light) 
                      || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
+                        
+                    if (! lerping) {
+                        GameEventPublisher.PublishPlayerHitCorrectObstacle();
+                        AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
+
                         Color colorHit = (isLightColor) ? lightColor : darkColor;
                         colorHit.a = 0.5f;
                         CorrectObstacleHitFX correctObstacleHitFX = GameManager.Singleton.FXManager.CorrectObstacleHitPool.Get().GetComponent<CorrectObstacleHitFX>();
                         correctObstacleHitFX.SetColor(colorHit);
                         correctObstacleHitFX.gameObject.transform.position = transform.position;
                         correctObstacleHitFX.gameObject.SetActive(true);
-                    if (! lerping) {
-                        GameEventPublisher.PublishPlayerHitCorrectObstacle();
-                        AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
                     }
 
                 //otherwise

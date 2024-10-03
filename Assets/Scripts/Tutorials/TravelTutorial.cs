@@ -18,6 +18,7 @@ namespace StudioByStorm.Tutorials {
         private GameObject safeNodeToTeleportTo;
         private bool didTeleportToSafeNode = false;
         
+        private int travelCount;
         private bool didPlayerTravel = false;
         private bool isLevelComplete = false;
         private GameController gameController;
@@ -41,6 +42,7 @@ namespace StudioByStorm.Tutorials {
         protected void OnPlayerTravel()
         {
             didPlayerTravel = true;
+            travelCount++;
         }
 
         protected void OnStateChange(GameState state)
@@ -90,6 +92,11 @@ namespace StudioByStorm.Tutorials {
 
             yield return new WaitForSeconds(0.25f);
 
+            //prevent "floaty issue"
+            if (didTeleportToSafeNode) {
+                GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
+            }
+
             Node currentNode = actionController.ActionModel.CurrentNode;
             int currentNodeID = currentNode.ID;
 
@@ -97,9 +104,9 @@ namespace StudioByStorm.Tutorials {
             List<GameObject> nearbyNodes = new List<GameObject>();
 
             nearbyNodeIDs.ForEach(x => {
-                Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(x);
-                if (currentNode.NodeColor == NodeColor.GrayScale) {
-                    nearbyNodes.Add(currentNode.gameObject);
+                Node innerCurrentNode = GameManager.Singleton.NodeRegistry.TryGetValue(x);
+                if (innerCurrentNode.NodeColor == NodeColor.GrayScale || innerCurrentNode.NodeColor == currentNode.NodeColor) {
+                    nearbyNodes.Add(innerCurrentNode.gameObject);
                 } 
             });
 
@@ -163,13 +170,22 @@ namespace StudioByStorm.Tutorials {
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
                     }
                 }
+
+                if (didPlayerTravel && isJumpLocked) {
+                    isJumpLocked = false;
+                    actionController.LockJump(isJumpLocked);
+                    actionController.isJumpIndicatorOn = false;
+                    secondaryEdge.gameObject.SetActive(true);
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
+                }
                 yield return new WaitForSeconds(0.0333f);
             }
         }
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => didPlayerTravel);
+            yield return new WaitUntil(() => isLevelComplete || travelCount >= 2);
             isJumpLocked = false;
             actionController.LockJump(isJumpLocked);
             actionController.isJumpIndicatorOn = false;

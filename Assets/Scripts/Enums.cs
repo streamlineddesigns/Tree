@@ -65,6 +65,10 @@ namespace StudioByStorm {
         AccountView,
         CellsUsedView,
         VideoHintView,
+        PrivacyPolicyView,
+        AgeVerificationView,
+        LanguageSelectView,
+        LevelPackSelectView,
     }
 
     public enum ViewType
@@ -110,6 +114,18 @@ namespace StudioByStorm {
     public enum VideoHintName {
         LightObstacle,
         DarkObstacle,
+    }
+
+    public enum LevelPackName {
+        Original,
+        Square,
+        Line,
+        ZigZag,
+        Shape,
+        Polygon,
+        Loop,
+        Group,
+        Asymetrical,
     }
     
 }

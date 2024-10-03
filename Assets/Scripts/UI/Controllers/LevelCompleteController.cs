@@ -75,7 +75,7 @@ namespace StudioByStorm.UI.Controllers {
             int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
             int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
             //handles progress
-            string key = (currentChapterID + "-" + currentLevelID);
+            string key = (LevelPackSelectController.currentLevelPackName + "-" + currentChapterID + "-" + currentLevelID);
 
             int currentLevelEdgeCount = GameManager.Singleton.LevelManager.currentLevelEdgeCount;
             int totalEdgeCount = (GameManager.Singleton.LevelManager.currentLevelNodeCount - (GameManager.Singleton.LevelManager.currentLevelParentCount / 2));
@@ -204,10 +204,11 @@ namespace StudioByStorm.UI.Controllers {
             }
 
             //handle unlock progress
-            int highestLevelCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedLevelProgress(currentChapterID);
+            string unlockedLevelProgressKey = LevelPackSelectController.currentLevelPackName + "-" + currentChapterID;
+            int highestLevelCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedLevelProgress(unlockedLevelProgressKey);
 
             if (currentLevelID > highestLevelCompletedForCurrentChapter) {
-                GameManager.Singleton.ProgressManager.UpdateUnlockedLevel(currentChapterID, currentLevelID);
+                GameManager.Singleton.ProgressManager.UpdateUnlockedLevel(unlockedLevelProgressKey, currentLevelID);
                 needsToSave = true;
             }
 

@@ -24,7 +24,11 @@ namespace StudioByStorm {
 
     public class LevelManager: MonoBehaviour
     {
-        public Chapters levelChapters;
+        public Chapters levelChapters {
+            get {
+                return LevelPackSelectController.currentLevelPack.chapters;
+            }
+        }
         public List<string> romanNumerals;
         public Color levelCompletionColor;
         public int currentLevelNodeCount;
@@ -39,6 +43,7 @@ namespace StudioByStorm {
         public GameObject ObstacleContainer;
         public List<Node> CurrentLevel = new List<Node>();
         public LevelData CurrentLevelData;
+        public LevelPackName currentLevelPackName;
         public int currentLevelID;
         public int displayLevelID {
             get {

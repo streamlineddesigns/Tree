@@ -13,7 +13,7 @@ namespace StudioByStorm.UI.Controllers {
         public void StartLevelSelectButtonClick()
         {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
-            GameManager.Singleton.UIController.ShowView(ViewName.LevelSelectView);
+            GameManager.Singleton.UIController.ShowView(ViewName.LevelPackSelectView);
         }
 
         public void LevelCreatorButtonClick()

@@ -104,7 +104,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             bool needsToSave = false;
 
-            string key = (currentChapterID + "-" + currentCutSceneID);
+            string key = (LevelPackSelectController.currentLevelPackName + "-" + currentChapterID + "-" + currentCutSceneID);
 
             bool cutSceneCompletionValue = GameManager.Singleton.ProgressManager.GetCutSceneProgress(key);
 
@@ -113,10 +113,11 @@ namespace StudioByStorm.UI.Controllers {
                 needsToSave = true;
             }
 
-            int highestCutSceneCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedCutSceneProgress(currentChapterID);
+            string unlockedCutSceneProgressKey = LevelPackSelectController.currentLevelPackName + "-" + currentChapterID;
+            int highestCutSceneCompletedForCurrentChapter = GameManager.Singleton.ProgressManager.GetUnlockedCutSceneProgress(unlockedCutSceneProgressKey);
 
             if (currentCutSceneID > highestCutSceneCompletedForCurrentChapter) {
-                GameManager.Singleton.ProgressManager.UpdateUnlockedCutScene(currentChapterID, currentCutSceneID);
+                GameManager.Singleton.ProgressManager.UpdateUnlockedCutScene(unlockedCutSceneProgressKey, currentCutSceneID);
                 needsToSave = true;
             }
 

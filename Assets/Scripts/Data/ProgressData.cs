@@ -8,34 +8,34 @@ namespace StudioByStorm.Data {
     public class ProgressData
     {
         /*
-         * Key is string(ChapterID + "-" + LevelID)
+         * Key is string(LevelPackName + "-" + ChapterID + "-" + LevelID)
          * Value is how many stars were received
          */
         public Dictionary<string, int> levelProgress = new Dictionary<string, int>();
 
         /*
-         * Key is string(ChapterID + "-" + LevelID)
+         * Key is string(LevelPackName + "-" + ChapterID + "-" + LevelID)
          * Value is how much xp was received
          */
         public Dictionary<string, int> levelXPProgress = new Dictionary<string, int>();
 
         /*
-         * Key is string(ChapterID + "-" + CutSceneID)
+         * Key is string(LevelPackName + "-" + ChapterID + "-" + CutSceneID)
          * Value is just a boolean for if the cut scene was watched or not
          */
         public Dictionary<string, bool> cutSceneProgress = new Dictionary<string, bool>();
 
         /*
-         * Key is int(ChapterID)
+         * Key is int(LevelPackName + "-" + ChapterID)
          * Value is highest level unlocked for that chapter
          */
-        public Dictionary<int, int> unlockedLevelProgress = new Dictionary<int, int>();
+        public Dictionary<string, int> unlockedLevelProgress = new Dictionary<string, int>();
 
         /*
-         * Key is int(ChapterID)
+         * Key is int(LevelPackName + "-" + ChapterID)
          * Value is highest cut scene unlocked for that chapter
          */
-        public Dictionary<int, int> unlockedCutSceneProgress = new Dictionary<int, int>();
+        public Dictionary<string, int> unlockedCutSceneProgress = new Dictionary<string, int>();
 
         //returns the highest tutorial ID completed
         public int tutorialProgress = -1;

@@ -30,7 +30,7 @@ namespace StudioByStorm {
             Serialize<ProgressData>(ProgressData, LevelSaveFilePath);
         }
 
-        //Key is string(ChapterID + "-" + LevelID)
+        //Key is string(LevelPackName + "-" + ChapterID + "-" + LevelID)
         public int GetLevelProgress(string k)
         {
             if (! ProgressData.levelProgress.ContainsKey(k)) {
@@ -40,7 +40,7 @@ namespace StudioByStorm {
             return ProgressData.levelProgress[k];
         }
 
-        //Key is string(ChapterID + "-" + LevelID)
+        //Key is string(LevelPackName + "-" + ChapterID + "-" + LevelID)
         public int GetLevelXPProgress(string k)
         {
             if (! ProgressData.levelXPProgress.ContainsKey(k)) {
@@ -50,7 +50,7 @@ namespace StudioByStorm {
             return ProgressData.levelXPProgress[k];
         }
 
-        //Key is string(ChapterID + "-" + CutSceneID)
+        //Key is string(LevelPackName + "-" + ChapterID + "-" + CutSceneID)
         public bool GetCutSceneProgress(string k)
         {
             if (! ProgressData.cutSceneProgress.ContainsKey(k)) {
@@ -60,8 +60,8 @@ namespace StudioByStorm {
             return true;
         }
 
-        //Key is int(ChapterID)
-        public int GetUnlockedLevelProgress(int k)
+        //Key is int(LevelPackName + "-" + ChapterID)
+        public int GetUnlockedLevelProgress(string k)
         {
             if (! ProgressData.unlockedLevelProgress.ContainsKey(k)) {
                 return -1;
@@ -70,8 +70,8 @@ namespace StudioByStorm {
             return ProgressData.unlockedLevelProgress[k];
         }
 
-        //Key is int(ChapterID)
-        public int GetUnlockedCutSceneProgress(int k)
+        //Key is int(LevelPackName + "-" + ChapterID)
+        public int GetUnlockedCutSceneProgress(string k)
         {
             if (! ProgressData.unlockedCutSceneProgress.ContainsKey(k)) {
                 return -1;
@@ -117,7 +117,7 @@ namespace StudioByStorm {
             }
         }
 
-        public void UpdateUnlockedLevel(int k, int v)
+        public void UpdateUnlockedLevel(string k, int v)
         {
             if (ProgressData.unlockedLevelProgress.ContainsKey(k)) {
                 ProgressData.unlockedLevelProgress[k] = v;
@@ -126,7 +126,7 @@ namespace StudioByStorm {
             }
         }
 
-        public void UpdateUnlockedCutScene(int k, int v)
+        public void UpdateUnlockedCutScene(string k, int v)
         {
             if (ProgressData.unlockedCutSceneProgress.ContainsKey(k)) {
                 ProgressData.unlockedCutSceneProgress[k] = v;

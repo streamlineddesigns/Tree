@@ -74,6 +74,7 @@ namespace StudioByStorm.Tutorials {
         public override void CleanUp()
         {
             Destroy(gameObject);
+            GameManager.Singleton.PlayerController.SetRigidBodyType(RigidbodyType2D.Dynamic);
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
         }

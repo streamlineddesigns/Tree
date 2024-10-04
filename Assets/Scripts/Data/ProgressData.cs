@@ -42,6 +42,9 @@ namespace StudioByStorm.Data {
 
         //returns the most recently played chapter
         public int mostRecentlyPlayedChapterIDProgress = -1;
+
+        //returns player age
+        public int playerAge = -1;
     }
 
 }

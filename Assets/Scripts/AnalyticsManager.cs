@@ -9,26 +9,35 @@ namespace StudioByStorm {
     public class AnalyticsManager : MonoBehaviour
     {
         public static bool isDebugging = false;
+        private static int playerAge = 0;
+        private static int minAge = 13;
 
-        void Start()
+        public static void InitSDK()
         {
-            GameAnalytics.Initialize();
+            playerAge = GameManager.Singleton.ProgressManager.GetPlayerAge();
+            if (playerAge >= minAge) {
+                GameAnalytics.Initialize();
+            }
         }
 
         public static void NewProgressionEvent(GAProgressionStatus status, int chapter, int level)
         {
-            if (isDebugging) {
-                Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString());
+            if (playerAge >= minAge) {
+                if (isDebugging) {
+                    Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString());
+                }
+                GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString());
             }
-            GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString());
         }
 
         public static void NewProgressionEvent(GAProgressionStatus status, int chapter, int level, int score)
         {
-            if (isDebugging) {
-                Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString()  + " Score: " + score.ToString());
+            if (playerAge >= minAge) {
+                if (isDebugging) {
+                    Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString()  + " Score: " + score.ToString());
+                }
+                GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString(), score.ToString());
             }
-            GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString(), score.ToString());
         }
     }
 

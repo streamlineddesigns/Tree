@@ -12,6 +12,7 @@ namespace StudioByStorm {
         public static AudioManager Singleton;
         public List<SoundFXData> soundFXData = new List<SoundFXData>();
         public List<AudioSource> audioSources = new List<AudioSource>();
+        public List<AudioClip> music = new List<AudioClip>();
         public AudioSource musicAudioSource;
         public AudioSource narrationAudioSource;
 
@@ -46,7 +47,7 @@ namespace StudioByStorm {
 
             int mostRecentlyPlayedChapterID = GameManager.Singleton.ProgressManager.GetMostRecentlyPlayedChapterIDProgress();
             musicChapterID = (mostRecentlyPlayedChapterID == -1) ? 0 : mostRecentlyPlayedChapterID;
-            AudioClip chapterMusic = GameManager.Singleton.LevelManager.levelChapters.chapters[musicChapterID].music;
+            AudioClip chapterMusic = music[musicChapterID];
             StartCoroutine(UpdateCurrentPlayingMusic(chapterMusic));
             StartCoroutine(LoopMusic());
         }
@@ -72,7 +73,7 @@ namespace StudioByStorm {
 
         protected void PlayChapterMusic()
         {
-            AudioClip chapterMusic = GameManager.Singleton.LevelManager.levelChapters.chapters[musicChapterID].music;
+            AudioClip chapterMusic = music[musicChapterID];
             StartCoroutine(UpdateCurrentPlayingMusic(chapterMusic));
         }
 

@@ -66,6 +66,7 @@ namespace StudioByStorm.PCG {
 
             GraphConstructionManager.CreateLevelData();
             SetPlayerPositionToColorNode();
+            CreateSafePath();
         }
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
@@ -151,7 +152,7 @@ namespace StudioByStorm.PCG {
                 }
             }
 
-            Debug.Log("PlaceRandomColors COMPLETED");
+            //Debug.Log("PlaceRandomColors COMPLETED");//$
             return true;
         }
 
@@ -182,7 +183,7 @@ namespace StudioByStorm.PCG {
             //this is all the colors in the NodeColorToNodeIDs dictionary
             allColors = NodeColorToNodeIDs.Keys.ToList();
 
-            Debug.Log("All Colors Count: " + allColors.Count);
+            //Debug.Log("All Colors Count: " + allColors.Count);//$
         }
 
         private bool FindAllColorPaths () {
@@ -219,7 +220,7 @@ namespace StudioByStorm.PCG {
                 //search
                 List<List<int>> paths = DFSPaths.Search(NodeIDs[0], NodeIDs[1], excludedNodeIds);
                 NodeColorToAllPaths.Add(colorKey, paths);
-                Debug.Log(colorKey.ToString() + " Count : " + paths.Count);
+                //Debug.Log(colorKey.ToString() + " Count : " + paths.Count);//$
                 pathCount += paths.Count;
 
                 if (paths.Count == 0) {
@@ -236,7 +237,7 @@ namespace StudioByStorm.PCG {
                 }
             }
 
-            Debug.Log("FindAllColorPaths - pathCount: " + pathCount);
+            //Debug.Log("FindAllColorPaths - pathCount: " + pathCount);//$
             return (isThereAPathForEachColor && !isCTooLarge);
         }
 
@@ -266,8 +267,8 @@ namespace StudioByStorm.PCG {
             Cartesian Cartesian = new Cartesian(isDebugging);
             cartesianPathIndexCombinations = Cartesian.GetCartesianProduct(listOfColorToAllPathsIndexs).Select(x => x.ToList()).ToList();
 
-            Debug.Log("listOfColorToAllPathsIndexs count: " + listOfColorToAllPathsIndexs.Count);
-            Debug.Log("cartesianPathIndexCombinations count: " + cartesianPathIndexCombinations.Count);
+            //Debug.Log("listOfColorToAllPathsIndexs count: " + listOfColorToAllPathsIndexs.Count);//$
+            //Debug.Log("cartesianPathIndexCombinations count: " + cartesianPathIndexCombinations.Count);//$
         }
 
         private void CreateAllPotentialSolutionsFromPathIndexCombinations()
@@ -296,7 +297,7 @@ namespace StudioByStorm.PCG {
                 //}
             });
 
-            Debug.Log("allPotentialSolutions count: " + allPotentialSolutions.Count);
+            //Debug.Log("allPotentialSolutions count: " + allPotentialSolutions.Count);//$
         }
 
         private void FindSolutions()
@@ -379,13 +380,29 @@ namespace StudioByStorm.PCG {
             //get a random index from the shuffled list
             int randomIndex = UnityEngine.Random.Range(0, shuffledColoredNodeIndexs.Count);
             int randomNodeIndex = shuffledColoredNodeIndexs[randomIndex];
-
             //use it to get the position of the node at said index
             Vector3 nodePosition = GraphConstructionManager.nodePositions[randomNodeIndex];
             //scale it to in game size
             Vector3 playerTargetPosition = nodePosition * 7.0f;
             //update it in the level data
             GraphConstructionManager.GlobalLevelData.PlayerStartPosition = playerTargetPosition;
+        }
+
+        private void CreateSafePath()
+        {
+            int nodeIndex = GraphConstructionManager.nodePositions.IndexOf(GraphConstructionManager.GlobalLevelData.PlayerStartPosition / 7.0f);
+            
+            for (int i = 0; i < workingSolutions[0].Count; i++) {
+                if (workingSolutions[0][i].Contains(nodeIndex)) {
+                    //if nodeIndex isn't the first index in the list
+                    if (nodeIndex != workingSolutions[0][i][0]) {
+                        workingSolutions[0][i].Reverse();
+                    }
+
+                    GraphConstructionManager.GlobalLevelData.safePath = workingSolutions[0][i];
+                    Debug.Log("Safe Path: " + string.Join(" -> ", workingSolutions[0][i]));
+                }
+            }
         }
     }
 

@@ -15,6 +15,7 @@ namespace StudioByStorm.Data {
         public List<List<int>> obstacleNodeIDs;
         public List<VectorData> obstaclePositions;
         public List<VectorData> obstacleRotations;
+        public List<int> safePath;
     }
 
 }

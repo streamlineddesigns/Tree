@@ -44,14 +44,20 @@ namespace StudioByStorm.UI.Controllers {
 
         public void OnAgeSliderValueChange()
         {
-            if (! hasAgeValueChanged) {
-                hasAgeValueChanged = true;
-                ageSliderOutline.color = inActiveColor;
-                acceptButtonOutline.color = activeColor;    
-            }
-
             playerAge = (int) ageSlider.value;
             ageText.text = playerAge.ToString();
+            
+            if (! hasAgeValueChanged) {
+                hasAgeValueChanged = true;
+            }
+
+            if (playerAge <= 0) {
+                ageSliderOutline.color = activeColor;
+                acceptButtonOutline.color = inActiveColor;
+            } else {
+                ageSliderOutline.color = inActiveColor;
+                acceptButtonOutline.color = activeColor;
+            }
         }
 
         public void termsOfServiceButtonClick()
@@ -66,7 +72,7 @@ namespace StudioByStorm.UI.Controllers {
 
         public void acceptButtonClick()
         {
-            if (! hasAgeValueChanged) {
+            if (! hasAgeValueChanged || playerAge <= 0) {
                 AgeSliderAlertAnimation();
             } else {
                 GameManager.Singleton.UIController.Back();

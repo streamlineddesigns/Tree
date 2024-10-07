@@ -15,7 +15,8 @@ namespace StudioByStorm.Tutorials {
         [SerializeField] private int[] startNodeIDToEndNodeIDForTutorials;
         [SerializeField] private bool[] isTutorialForNodeIDStarted;
         [SerializeField] private bool[] isTutorialForNodeIDAvailable;
-        private GameObject safeNodeToTeleportTo;
+        private GameObject startNode;
+        private GameObject endNode;
         private bool didTeleportToSafeNode = false;
         
         private int travelCount;
@@ -58,17 +59,25 @@ namespace StudioByStorm.Tutorials {
         {
             actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             gameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
+
+            int nodeCount = GameManager.Singleton.LevelManager.currentLevelNodeCount;
+
+            startNodeIDToEndNodeIDForTutorials = new int[nodeCount];
+            isTutorialForNodeIDStarted = new bool[nodeCount];
+            isTutorialForNodeIDAvailable = new bool[nodeCount];
+
+            int startIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
+            int endIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[1];
+
+            startNodeIDToEndNodeIDForTutorials[startIndex] = endIndex;
+            isTutorialForNodeIDAvailable[startIndex] = true;
+
             isJumpLocked = true;
             actionController.LockJump(isJumpLocked);
-            //place player in a "safe place" for tutorial to occur
-            List<GameObject> safeNodes = new List<GameObject>();
-            for (int i = 0; i < isTutorialForNodeIDAvailable.Length; i++) {
-                int nodeID = i;
-                if (isTutorialForNodeIDAvailable[nodeID]) safeNodes.Add(GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject);
-            }
-            List<GameObject> nearbySafeNodes = KNN.GetKNearestNeighbors(GameManager.Singleton.player, safeNodes, 1);
-            GameObject nearestNode = nearbySafeNodes[0];
-            safeNodeToTeleportTo = nearestNode;
+            //"start position" for tutorial to occur
+            startNode = GameManager.Singleton.NodeRegistry.TryGetValue(startIndex).gameObject;
+            //"end position" where player travels to
+            endNode = GameManager.Singleton.NodeRegistry.TryGetValue(endIndex).gameObject;
 
             StartCoroutine(CreateEdgeAnimation());
         }
@@ -76,10 +85,10 @@ namespace StudioByStorm.Tutorials {
         protected IEnumerator CreateEdgeAnimation()
         {
             //go to the safe node
-            if (! didTeleportToSafeNode && safeNodeToTeleportTo != null) {
+            if (! didTeleportToSafeNode && startNode != null) {
                 didTeleportToSafeNode = true;
-                GameManager.Singleton.player.transform.DOMove(safeNodeToTeleportTo.transform.position, 0.1f).OnComplete(() => {
-                    GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
+                GameManager.Singleton.player.transform.DOMove(startNode.transform.position, 0.1f).OnComplete(() => {
+                    GameManager.Singleton.player.transform.position = startNode.transform.position;
                     //reset every color
                     gameController.ResetBlueButtonClick();
                     gameController.ResetGreenButtonClick();
@@ -94,30 +103,15 @@ namespace StudioByStorm.Tutorials {
 
             //prevent "floaty issue"
             if (didTeleportToSafeNode) {
-                GameManager.Singleton.player.transform.position = safeNodeToTeleportTo.transform.position;
+                GameManager.Singleton.player.transform.position = startNode.transform.position;
             }
 
             Node currentNode = actionController.ActionModel.CurrentNode;
             int currentNodeID = currentNode.ID;
-
-            List<int> nearbyNodeIDs = GameManager.Singleton.FullAdjacencyList.Get(currentNodeID);
-            List<GameObject> nearbyNodes = new List<GameObject>();
-
-            nearbyNodeIDs.ForEach(x => {
-                Node innerCurrentNode = GameManager.Singleton.NodeRegistry.TryGetValue(x);
-                if (innerCurrentNode.NodeColor == NodeColor.GrayScale || innerCurrentNode.NodeColor == currentNode.NodeColor) {
-                    nearbyNodes.Add(innerCurrentNode.gameObject);
-                } 
-            });
-
-            List<GameObject> nearestNodes = KNN.GetKNearestNeighbors(currentNode.gameObject, nearbyNodes, 1);
-            GameObject nearestNode;
-            Node nearbyNode;
+            Node targetNode = endNode.GetComponent<Node>();
             
-            if (nearestNodes.Count > 0) {
-                nearestNode = nearestNodes[0];
-                nearbyNode = nearestNode.GetComponent<Node>();
-
+            //the animation steps
+            if (targetNode != null) {
                 actionController.GetEdgeButtonClick();
 
                 Edge currentEdge = actionController.ActionModel.CurrentEdge;
@@ -126,18 +120,18 @@ namespace StudioByStorm.Tutorials {
                 emptyTarget.transform.position = currentNode.gameObject.transform.position;
                 fabrikSolver2D.GetChain(fabrikSolver2D.chainCount).target = emptyTarget;
 
-                Vector2 targetPosition = (Vector2) nearestNode.transform.position;
+                Vector2 targetPosition = (Vector2) targetNode.transform.position;
 
                 //emptyTarget.transform.DOMove(targetPosition, 1.0f).SetEase(Ease.InQuad);
                 emptyTarget.transform.position = targetPosition;
                 yield return null;
 
-                actionController.ActionModel.CurrentNode = nearestNode.GetComponent<Node>();
+                actionController.ActionModel.CurrentNode = targetNode;
                 actionController.SetEdgeButtonClick();
                 
-                nearbyNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) currentNode.NodeColor];
-                nearbyNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) currentNode.NodeColor];
-                nearbyNode.DisplayColor();
+                targetNode.LightColored.color = GameManager.Singleton.ColorModel.lightColor[(int) currentNode.NodeColor];
+                targetNode.DarkColored.color = GameManager.Singleton.ColorModel.darkColor[(int) currentNode.NodeColor];
+                targetNode.DisplayColor();
 
                 actionController.ActionModel.CurrentNode = currentNode;
 
@@ -171,25 +165,13 @@ namespace StudioByStorm.Tutorials {
                     }
                 }
 
-                if (didPlayerTravel && isJumpLocked) {
-                    isJumpLocked = false;
-                    actionController.LockJump(isJumpLocked);
-                    actionController.isJumpIndicatorOn = false;
-                    secondaryEdge.gameObject.SetActive(true);
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
-                }
                 yield return new WaitForSeconds(0.0333f);
             }
         }
 
         public override IEnumerator WaitUntilFinished()
         {
-            yield return new WaitUntil(() => isLevelComplete || travelCount >= 2);
-            isJumpLocked = false;
-            actionController.LockJump(isJumpLocked);
-            actionController.isJumpIndicatorOn = false;
-            secondaryEdge.gameObject.SetActive(true);
+            yield return new WaitUntil(() => didPlayerTravel);
             _isFinished = true;
         }
 
@@ -197,9 +179,14 @@ namespace StudioByStorm.Tutorials {
         {
             isJumpLocked = false;
             actionController.LockJump(isJumpLocked);
-            Destroy(gameObject);
+            actionController.isJumpIndicatorOn = false;
+
+            secondaryEdge.gameObject.SetActive(true);
+
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
+
+            Destroy(gameObject);
         }
     }
 

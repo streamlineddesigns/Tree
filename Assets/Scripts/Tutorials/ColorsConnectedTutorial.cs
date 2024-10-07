@@ -7,11 +7,6 @@ namespace StudioByStorm.Tutorials {
 
     public class ColorsConnectedTutorial : Tutorial
     {
-        [SerializeField] private int[] startNodeIDToEndNodeIDForTutorials;
-        [SerializeField] private bool[] isTutorialForNodeIDStarted;
-        [SerializeField] private bool[] isTutorialForNodeIDAvailable;
-
-        private ActionController actionController;
         private bool isLevelComplete = false;
 
         protected void OnEnable()
@@ -37,26 +32,12 @@ namespace StudioByStorm.Tutorials {
 
         public override void Init()
         {
-            actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            
         }
 
         protected override IEnumerator TutorialUpdate()
         {
             while(isRunning) {
-                //for the swipe tutorial
-                int nodeID = actionController.ActionModel.CurrentNode.ID;
-                if (isTutorialForNodeIDAvailable[nodeID] && !isTutorialForNodeIDStarted[nodeID]) {
-                    isTutorialForNodeIDStarted[nodeID] = true;
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
-                    GameObject startGO = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject;
-                    GameObject endGO = GameManager.Singleton.NodeRegistry.TryGetValue(startNodeIDToEndNodeIDForTutorials[nodeID]).gameObject;
-                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
-                    if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
-                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
-                        GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
-                    }
-                }
                 yield return new WaitForSeconds(0.0333f);
             }
         }
@@ -70,8 +51,6 @@ namespace StudioByStorm.Tutorials {
         public override void CleanUp()
         {
             Destroy(gameObject);
-            GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
-            GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
         }
     }
 

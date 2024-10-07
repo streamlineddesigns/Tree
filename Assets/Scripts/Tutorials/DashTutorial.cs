@@ -33,7 +33,9 @@ namespace StudioByStorm.Tutorials {
 
         public override void Init()
         {
-            
+            int id = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[1];
+            nodeIDsWithSwipeAnimation = new int[1];
+            nodeIDsWithSwipeAnimation[0] = id;
         }
 
         protected override IEnumerator TutorialUpdate()

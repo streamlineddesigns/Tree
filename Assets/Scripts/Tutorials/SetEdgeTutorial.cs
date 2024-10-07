@@ -17,6 +17,7 @@ namespace StudioByStorm.Tutorials {
         private PlayerController playerController;
         private int startEdgeID = -1;
         private bool isLevelComplete = false;
+        private int endTutorialNodeID;
 
         protected void OnEnable()
         {
@@ -42,6 +43,24 @@ namespace StudioByStorm.Tutorials {
         {
             actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             playerController = GameManager.Singleton.PlayerController;
+            
+            int nodeCount = GameManager.Singleton.LevelManager.currentLevelNodeCount;
+
+            startNodeIDToEndNodeIDForTutorials = new int[nodeCount];
+            isTutorialForNodeIDStarted = new bool[nodeCount];
+            isTutorialForNodeIDAvailable = new bool[nodeCount];
+
+            for (int i = 0; i < nodeCount; i++) {
+                int index = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(i);
+                if (index != -1) {
+                    int nextIndex = index + 1;
+                    if (nextIndex <= GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count - 1) {
+                        startNodeIDToEndNodeIDForTutorials[i] = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextIndex];
+                        isTutorialForNodeIDAvailable[i] = true;
+                        endTutorialNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextIndex];
+                    }
+                }
+            }
         }
 
         protected override IEnumerator TutorialUpdate()
@@ -66,6 +85,11 @@ namespace StudioByStorm.Tutorials {
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
                     }
+                }
+
+                if (nodeID == endTutorialNodeID) {
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
+                    GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
                 }
 
                 yield return new WaitForSeconds(0.0333f);

@@ -66,7 +66,6 @@ namespace StudioByStorm.PCG {
 
             GraphConstructionManager.CreateLevelData();
             SetPlayerPositionToColorNode();
-            CreateSafePath();
         }
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
@@ -386,16 +385,16 @@ namespace StudioByStorm.PCG {
             Vector3 playerTargetPosition = nodePosition * 7.0f;
             //update it in the level data
             GraphConstructionManager.GlobalLevelData.PlayerStartPosition = playerTargetPosition;
+
+            CreateSafePath(randomNodeIndex);
         }
 
-        private void CreateSafePath()
-        {
-            int nodeIndex = GraphConstructionManager.nodePositions.IndexOf(GraphConstructionManager.GlobalLevelData.PlayerStartPosition / 7.0f);
-            
+        private void CreateSafePath(int startNodeIndex)
+        {            
             for (int i = 0; i < workingSolutions[0].Count; i++) {
-                if (workingSolutions[0][i].Contains(nodeIndex)) {
+                if (workingSolutions[0][i].Contains(startNodeIndex)) {
                     //if nodeIndex isn't the first index in the list
-                    if (nodeIndex != workingSolutions[0][i][0]) {
+                    if (startNodeIndex != workingSolutions[0][i][0]) {
                         workingSolutions[0][i].Reverse();
                     }
 

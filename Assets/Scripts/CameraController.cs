@@ -85,11 +85,14 @@ namespace StudioByStorm {
                 minPosition.x = leftestObject.transform.position.x;
             }
 
-            Sequence levelDemo = DOTween.Sequence();
+            if (ML.Math.GetDistance(maxPosition, minPosition) > 25.0f) {
+                Sequence levelDemo = DOTween.Sequence();
                     levelDemo.Append(transform.DOMove(maxPosition, 1.5f, false))
                              .Append(transform.DOMove(minPosition, 2.5f, false).SetEase(Ease.InOutCubic));
 
-            yield return new WaitForSeconds(4.0f);
+                yield return new WaitForSeconds(4.0f);
+            }
+
             GameManager.Singleton.player.SetActive(true);
         }
     

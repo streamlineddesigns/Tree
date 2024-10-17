@@ -68,7 +68,10 @@ namespace StudioByStorm.UI.Controllers {
 
         private void SelectLevelPack(LevelPackName levelPackName)
         {
-            
+            if (currentLevelPackGO != null) {
+                Destroy(currentLevelPackGO);
+            }
+
             LevelPackData currentLevelPackData = levelPacks.Where(x => x.name == levelPackName).First();
             currentLevelPackGO = Instantiate(currentLevelPackData.prefab);
             currentLevelPack = currentLevelPackGO.GetComponent<LevelPack>();

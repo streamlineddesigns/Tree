@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -29285,6 +29284,7 @@ MonoBehaviour:
     obstacleNames: []
     obstaclePositions: []
     obstacleRotations: []
+    safePath: 
   currentLevelPackName: 0
   currentLevelID: 0
   currentChapterID: 0
@@ -300530,19 +300530,14 @@ MonoBehaviour:
   ViewName: 24
   videoPlayer: {fileID: 1855717097}
   messageText: {fileID: 1927745438}
-  videoHints:
-  - chapterID: 0
-    levelID: 3
-    nodeID: 0
+  lightVideoHintData:
     clip: {fileID: 32900000, guid: e9f9a701b9a61ac46975eb4849748b8f, type: 3}
     name: 0
-    message: Light + Light
-  - chapterID: 0
-    levelID: 3
-    nodeID: 1
+    message: LIGHT + LIGHT
+  darkVideoHintData:
     clip: {fileID: 32900000, guid: 0b0f3cf08aaf0ef43947bdf30be8d97c, type: 3}
     name: 1
-    message: Dark + Dark
+    message: DARK + DARK
   resumeButton: {fileID: 1228620898}
 --- !u!1 &1967852193
 GameObject:

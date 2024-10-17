@@ -23,6 +23,8 @@ namespace StudioByStorm.UI.Controllers {
         private Tutorial currentTutorial;
         private bool isCurrentTutorialTextPrinted;
         private bool isLevelCompleted;
+        private bool isRestrictingToOneTutorialPerLevel = true;
+        private int tutorialsShownCount = 0;
 
         protected void OnEnable()
         {
@@ -87,13 +89,20 @@ namespace StudioByStorm.UI.Controllers {
                 
                 //show the tutorial only if necessary
                 if (isTutorialNeededForCurrentLevel) {
-                    StartCoroutine(ShowTutorial());
+                    //if we're not restricting tutorials to one per level
+                    //or we are and we've shown less than one tutorial for this level lol
+                    if ((!isRestrictingToOneTutorialPerLevel) || 
+                        (isRestrictingToOneTutorialPerLevel && tutorialsShownCount < 1)) {
+                        StartCoroutine(ShowTutorial());
+                    }
                 }
             }
         }
 
         IEnumerator ShowTutorial()
         {
+            tutorialsShownCount++;
+            
             yield return new WaitForSeconds(1.0f);
 
             TutorialData currentTutorialData = tutorialData[currentTutorialIndex];

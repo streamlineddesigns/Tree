@@ -95,6 +95,16 @@ namespace StudioByStorm {
             return ProgressData.playerAge;
         }
 
+        //Key is VideoHintName
+        public bool GetVideoHintProgress(VideoHintName k)
+        {
+            if (! ProgressData.videoHintProgress.ContainsKey(k)) {
+                return false;
+            }
+
+            return ProgressData.videoHintProgress[k];
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -153,6 +163,15 @@ namespace StudioByStorm {
         public void UpdatePlayerAge(int k)
         {
             ProgressData.playerAge = k;
+        }
+
+        public void UpdateVideoHint(VideoHintName k, bool v)
+        {
+            if (ProgressData.videoHintProgress.ContainsKey(k)) {
+                ProgressData.videoHintProgress[k] = v;
+            } else {
+                ProgressData.videoHintProgress.Add(k, v);
+            }
         }
 
         private void Serialize<T>(T obj, string filePath)

@@ -45,6 +45,9 @@ namespace StudioByStorm.Data {
 
         //returns player age
         public int playerAge = -1;
+
+        //returns if a particular video hint has been shown or not
+        public Dictionary<VideoHintName, bool> videoHintProgress = new Dictionary<VideoHintName, bool>();
     }
 
 }

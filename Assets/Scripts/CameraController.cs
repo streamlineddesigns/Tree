@@ -12,6 +12,7 @@ namespace StudioByStorm {
 
     public class CameraController : MonoBehaviour {
         public static Transform centroid;
+        public static float levelWaitTime = 0.0f;
         protected float smoothing = 1f;
 
         protected Vector3 offset;
@@ -85,12 +86,14 @@ namespace StudioByStorm {
                 minPosition.x = leftestObject.transform.position.x;
             }
 
-            if (ML.Math.GetDistance(maxPosition, minPosition) > 25.0f) {
+            if (ML.Math.GetDistance(maxPosition, minPosition) > 20.0f) {
                 Sequence levelDemo = DOTween.Sequence();
                     levelDemo.Append(transform.DOMove(maxPosition, 1.5f, false))
                              .Append(transform.DOMove(minPosition, 2.5f, false).SetEase(Ease.InOutCubic));
-
+                CameraController.levelWaitTime = 4.0f;
                 yield return new WaitForSeconds(4.0f);
+            } else {
+                CameraController.levelWaitTime = 0.0f;
             }
 
             GameManager.Singleton.player.SetActive(true);

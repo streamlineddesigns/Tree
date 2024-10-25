@@ -62,7 +62,8 @@ namespace StudioByStorm.UI.Controllers {
 
         IEnumerator DelayedCheckIfTutorialIsNeeded()
         {
-            yield return new WaitForSeconds(4.0f);
+            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(CameraController.levelWaitTime - 0.25f);
             CheckIfTutorialIsNeeded();
         }
 

@@ -137,7 +137,7 @@ namespace StudioByStorm.Tutorials {
 
                 //get the updated edge which gets created in "SetEdgeButtonClick"
                 secondaryEdge = actionController.ActionModel.CurrentEdge;
-                secondaryEdge.gameObject.SetActive(false);
+                if (secondaryEdge.gameObject != null) secondaryEdge.gameObject.SetActive(false);
 
                 actionController.isJumpIndicatorOn = true;
             } else {
@@ -181,7 +181,7 @@ namespace StudioByStorm.Tutorials {
             actionController.LockJump(isJumpLocked);
             actionController.isJumpIndicatorOn = false;
 
-            secondaryEdge.gameObject.SetActive(true);
+            if (secondaryEdge.gameObject != null) secondaryEdge.gameObject.SetActive(true);
 
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);

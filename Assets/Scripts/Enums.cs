@@ -117,15 +117,16 @@ namespace StudioByStorm {
     }
 
     public enum LevelPackName {
-        Original,
-        Square,
-        Line,
-        ZigZag,
-        Shape,
-        Polygon,
-        Loop,
-        Group,
+        Original,//intro
+        Square,//intro
+        Line,//intro//tested
+        ZigZag,//intro//tested
+        Shape,//intro//tested
+        Polygon,//intro//
+        Loop,//intro
+        Group,//intro//tested
         Asymetrical,
+        Rectangle,//intro//tested
     }
     
 }

@@ -33,37 +33,42 @@ namespace StudioByStorm.UI.Controllers {
 
         public void SelectLineLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.Line);
         }
 
         public void SelectZigZagLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.ZigZag);
         }
 
         public void SelectShapeLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.Shape);
         }
 
         public void SelectPolygonLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.Polygon);
         }
 
         public void SelectLoopLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.Loop);
         }
 
         public void SelectGroupLevelPack()
         {
-            
+            SelectLevelPack(LevelPackName.Group);
         }
 
         public void SelectAsymetricalLevelPack()
         {
             
+        }
+
+        public void SelectRectangleLevelPack()
+        {
+            SelectLevelPack(LevelPackName.Rectangle);
         }
 
         private void SelectLevelPack(LevelPackName levelPackName)

@@ -8,32 +8,27 @@ namespace StudioByStorm {
 
     public class NotificationManager : MonoBehaviour
     {
-        protected float waitTimer = 0.0f;
+        protected int minutesInADay = 1440;
 
         protected void Start()
         {
             StartCoroutine(SendRoutine());
         }
 
-        protected void Update()
-        {
-            waitTimer += Time.deltaTime;
-        }
-
         IEnumerator SendRoutine()
         {
             //request permissions
             RequestNotificationsPermission();
-            //wait for permissions
-            yield return new WaitUntil(() => waitTimer >= 15.0f || Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"));
+            //wait for age verification to be completed (only required on first open and it will always pass through otherwise)
+            yield return new WaitUntil(() => AnalyticsManager.playerAge != 0);
             //register channel for notifications
             RegisterNotificationChannel();
             //cancel all notificiations
             AndroidNotificationCenter.CancelAllNotifications();
             //send retention notification after 1440 minutes ie 24 hours
-            SendNotification("Level Packs!", "Come try different level packs!", 1 * 1440);
+            SendNotification("Thank you for playing!", "We hope you're enjoying our game!", 1 * minutesInADay);
             //send churn notification after 4320 minutes ie 72 hours
-            SendNotification("Level Packs!", "Come try different level packs!", 3 * 1440);
+            SendNotification("It's been a while!", "Come enjoy your favorite game again!", 3 * minutesInADay);
         }
 
         private void RequestNotificationsPermission()

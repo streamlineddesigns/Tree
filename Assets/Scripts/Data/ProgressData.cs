@@ -48,6 +48,9 @@ namespace StudioByStorm.Data {
 
         //returns if a particular video hint has been shown or not
         public Dictionary<VideoHintName, bool> videoHintProgress = new Dictionary<VideoHintName, bool>();
+
+        //returns their initial level pack
+        public int levelPack = -1;
     }
 
 }

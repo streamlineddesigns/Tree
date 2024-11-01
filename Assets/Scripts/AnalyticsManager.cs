@@ -9,8 +9,8 @@ namespace StudioByStorm {
     public class AnalyticsManager : MonoBehaviour
     {
         public static bool isDebugging = false;
-        private static int playerAge = 0;
-        private static int minAge = 13;
+        public static int playerAge = 0;
+        public static int minAge = 13;
 
         public static void InitSDK()
         {

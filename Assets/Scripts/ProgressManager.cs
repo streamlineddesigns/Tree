@@ -105,6 +105,11 @@ namespace StudioByStorm {
             return ProgressData.videoHintProgress[k];
         }
 
+        public int GetLevelPack()
+        {
+            return ProgressData.levelPack;
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -172,6 +177,11 @@ namespace StudioByStorm {
             } else {
                 ProgressData.videoHintProgress.Add(k, v);
             }
+        }
+
+        public void UpdateLevelPack(int k)
+        {
+            ProgressData.levelPack = k;
         }
 
         private void Serialize<T>(T obj, string filePath)

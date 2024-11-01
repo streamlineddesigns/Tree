@@ -11,6 +11,7 @@ namespace StudioByStorm.Data.LevelPacks {
         public LevelPackName name;
         public string alias;
         public GameObject prefab;
+        public GameObject UICard;
     }
 
 }

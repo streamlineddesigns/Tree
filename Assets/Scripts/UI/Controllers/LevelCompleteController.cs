@@ -104,7 +104,7 @@ namespace StudioByStorm.UI.Controllers {
             
             //save the progress
             SaveProgress(key, currentChapterID, currentLevelID, starsAwarded, previousStarsAwarded, totalCellsUsed, previousCellsAwarded);
-            AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Complete, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID, starsAwarded);
+            AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Complete, LevelManager.currentLevelPackName, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID, starsAwarded);
 
             headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
             levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];

@@ -167,6 +167,8 @@ namespace StudioByStorm.UI.Controllers {
             currentLevelPackName = currentLevelPackData.name;
             currentLevelPackAlias = currentLevelPackData.alias;
 
+            LevelManager.currentLevelPackName = currentLevelPackName;
+
             AudioManager.Singleton.Play(SoundType.ButtonPress);
 
             LevelSelectController levelSelectController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelSelectView) as LevelSelectController;

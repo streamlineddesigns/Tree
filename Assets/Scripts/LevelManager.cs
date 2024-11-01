@@ -43,7 +43,7 @@ namespace StudioByStorm {
         public GameObject ObstacleContainer;
         public List<Node> CurrentLevel = new List<Node>();
         public LevelData CurrentLevelData;
-        public LevelPackName currentLevelPackName;
+        public static LevelPackName currentLevelPackName;
         public int currentLevelID;
         public int displayLevelID {
             get {
@@ -103,7 +103,7 @@ namespace StudioByStorm {
                     LoadLevel();
                     GameStart();
                     AudioManager.Singleton.Play(SoundType.GameStart);
-                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Start, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID);
+                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Start, LevelManager.currentLevelPackName, displayChapterID, displayLevelID);
                     break;
 
                 case GameState.LevelComplete :
@@ -116,7 +116,7 @@ namespace StudioByStorm {
                     StartCoroutine(OnLevelLost());
                     AudioManager.Singleton.Play(SoundType.LevelLost);
                     MMVibrationManager.Haptic(HapticTypes.Failure);
-                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Fail, GameManager.Singleton.LevelManager.displayChapterID, GameManager.Singleton.LevelManager.displayLevelID);
+                    AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Fail, LevelManager.currentLevelPackName, displayChapterID, displayLevelID);
                     break;
             }
         }

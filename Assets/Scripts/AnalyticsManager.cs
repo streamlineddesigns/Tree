@@ -20,23 +20,25 @@ namespace StudioByStorm {
             }
         }
 
-        public static void NewProgressionEvent(GAProgressionStatus status, int chapter, int level)
+        public static void NewProgressionEvent(GAProgressionStatus status, LevelPackName lpn, int chapter, int level)
         {
             if (playerAge >= minAge) {
+                string LevelPackChapter = lpn.ToString() + chapter.ToString();
                 if (isDebugging) {
-                    Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString());
+                    Debug.Log("Status: " + status.ToString() + " Level Pack: " + lpn.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString());
                 }
-                GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString());
+                GameAnalytics.NewProgressionEvent(status, LevelPackChapter, level.ToString());
             }
         }
 
-        public static void NewProgressionEvent(GAProgressionStatus status, int chapter, int level, int score)
+        public static void NewProgressionEvent(GAProgressionStatus status, LevelPackName lpn, int chapter, int level, int score)
         {
             if (playerAge >= minAge) {
+                string LevelPackChapter = lpn.ToString() + chapter.ToString();
                 if (isDebugging) {
-                    Debug.Log("Status: " + status.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString()  + " Score: " + score.ToString());
+                    Debug.Log("Status: " + status.ToString() + " Level Pack: " + lpn.ToString() + " Chapter: " + chapter.ToString()  + " Level: " + level.ToString()  + " Score: " + score.ToString());
                 }
-                GameAnalytics.NewProgressionEvent(status, chapter.ToString(), level.ToString(), score.ToString());
+                GameAnalytics.NewProgressionEvent(status, LevelPackChapter, level.ToString(), score.ToString());
             }
         }
     }

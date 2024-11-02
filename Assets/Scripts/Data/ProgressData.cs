@@ -51,6 +51,9 @@ namespace StudioByStorm.Data {
 
         //returns their initial level pack
         public int levelPack = -1;
+
+        //returns the order a level pack should be shown on the level pack select screen
+        public Dictionary<LevelPackName, int> levelPackOrder = new Dictionary<LevelPackName, int>();
     }
 
 }

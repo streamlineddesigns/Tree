@@ -110,6 +110,16 @@ namespace StudioByStorm {
             return ProgressData.levelPack;
         }
 
+        //Key is LevelPackName
+        public int GetLevelPackOrder(LevelPackName k)
+        {
+            if (! ProgressData.levelPackOrder.ContainsKey(k)) {
+                return -1;
+            }
+
+            return ProgressData.levelPackOrder[k];
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -182,6 +192,15 @@ namespace StudioByStorm {
         public void UpdateLevelPack(int k)
         {
             ProgressData.levelPack = k;
+        }
+
+        public void UpdateLevelPackOrder(LevelPackName k, int v)
+        {
+            if (ProgressData.levelPackOrder.ContainsKey(k)) {
+                ProgressData.levelPackOrder[k] = v;
+            } else {
+                ProgressData.levelPackOrder.Add(k, v);
+            }
         }
 
         private void Serialize<T>(T obj, string filePath)

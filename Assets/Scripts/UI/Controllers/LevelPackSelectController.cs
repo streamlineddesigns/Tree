@@ -5,6 +5,7 @@ using UnityEngine;
 using StudioByStorm.Data.LevelPacks;
 using StudioByStorm.Data.LevelChapters;
 using GameAnalyticsSDK;
+using StudioByStorm.PCG;
 
 namespace StudioByStorm.UI.Controllers {
 
@@ -144,14 +145,52 @@ namespace StudioByStorm.UI.Controllers {
             
             levelPackID = usedLevelPackID;
             GameManager.Singleton.ProgressManager.UpdateLevelPack(levelPackID);
+            InitLevelPackOrder();
             GameManager.Singleton.ProgressManager.Save();
             UpdateLevelPackSelectScreen();
         }
 
+        private void InitLevelPackOrder()
+        {
+            Shuffle shuffle = new Shuffle();
+            List<LevelPackData> toShuffleLevelPacks = new List<LevelPackData>(levelPacks);
+            List<LevelPackData> shuffledLevelPacks = shuffle.FisherYates(toShuffleLevelPacks);
+            List<LevelPackData> filteredLevelPacks = new List<LevelPackData>();
+
+            //add the primary level pack first
+            filteredLevelPacks.Add(levelPacks[levelPackID]);
+
+            for (int i = 0; i < shuffledLevelPacks.Count; i++) {
+                //ensure the primmary level pack doesn't get added twice
+                if (shuffledLevelPacks[i].name != (LevelPackName) levelPackID) {
+                    filteredLevelPacks.Add(shuffledLevelPacks[i]);
+                }
+            }
+
+            //add the level pack order to the users save data
+            for (int i = 0; i < filteredLevelPacks.Count; i++) {
+                GameManager.Singleton.ProgressManager.UpdateLevelPackOrder(filteredLevelPacks[i].name, i);
+                //log to verify proper order
+                //Debug.Log("Name: " + filteredLevelPacks[i].name + " Order: " + i);
+            }
+        }
+
         private void UpdateLevelPackSelectScreen()
         {
+            LevelPackData[] reOrderedLevelPacks = new LevelPackData[levelPacks.Count];
+
+            for (int i = 0; i < levelPacks.Count; i++) {
+                int currentIndex = GameManager.Singleton.ProgressManager.GetLevelPackOrder(levelPacks[i].name);
+                reOrderedLevelPacks[currentIndex] = levelPacks[i];
+            }
+            
+            //resort the level pack cards ie the ui on the level pack select screen
+            for (int i = 0; i < reOrderedLevelPacks.Length; i++) {
+                reOrderedLevelPacks[i].UICard.transform.SetSiblingIndex(i + 1);
+            }
+
             //move to sibling index 1 ie right after heading text
-            levelPacks[levelPackID].UICard.transform.SetSiblingIndex(1);
+            //levelPacks[levelPackID].UICard.transform.SetSiblingIndex(1);
         }
 
         private void SelectLevelPack(LevelPackName levelPackName)

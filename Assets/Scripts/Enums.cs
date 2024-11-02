@@ -69,6 +69,8 @@ namespace StudioByStorm {
         AgeVerificationView,
         LanguageSelectView,
         LevelPackSelectView,
+
+        LevelPackRowView,
     }
 
     public enum ViewType

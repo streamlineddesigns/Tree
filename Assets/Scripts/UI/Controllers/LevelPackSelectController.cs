@@ -150,7 +150,8 @@ namespace StudioByStorm.UI.Controllers {
 
         private void UpdateLevelPackSelectScreen()
         {
-            levelPacks[levelPackID].UICard.transform.SetSiblingIndex(0);
+            //move to sibling index 1 ie right after heading text
+            levelPacks[levelPackID].UICard.transform.SetSiblingIndex(1);
         }
 
         private void SelectLevelPack(LevelPackName levelPackName)

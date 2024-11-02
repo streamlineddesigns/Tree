@@ -14,6 +14,7 @@ namespace StudioByStorm.UI.Controllers {
         public Text headingText;
         public GameObject LevelSelectButtonGO;
         public GameObject CutSceneSelectButtonGO;
+        public GameObject LevelPackRowGO;
         public GameObject LevelRowGO;
         public GameObject ChapterRowGO;
         public GameObject ViewportContentSpawnLocation;
@@ -38,13 +39,21 @@ namespace StudioByStorm.UI.Controllers {
             }
 
             levelPackName = LevelPackSelectController.currentLevelPackAlias;
-            headingText.text = levelPackName;
+            //headingText.text = levelPackName;
+
+            //level pack header stuff
+            GameObject levelpackrowgo = Instantiate(LevelPackRowGO, ViewportContentSpawnLocation.transform);
+            LevelPackRowView levelPackRowView = levelpackrowgo.GetComponent<LevelPackRowView>();
+            levelPackRowView.headingText.text = levelPackName;
         }
         
         IEnumerator DelayedShow()
         {
+            yield return null;
+            
             for (int i = 0; i < GameManager.Singleton.LevelManager.levelChapters.chapters.Count; i++) {
                 Chapter currentChapter = GameManager.Singleton.LevelManager.levelChapters.chapters[i];
+                
 
                 //place chapter heading and subheading ie chapterrowview
                 GameObject chapterrowgo = Instantiate(ChapterRowGO, ViewportContentSpawnLocation.transform);

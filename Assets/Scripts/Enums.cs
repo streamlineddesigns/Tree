@@ -129,5 +129,10 @@ namespace StudioByStorm {
         Group,//intro
         Rectangle,//intro
     }
+
+    public enum LanguagePackName {
+        English,
+        Filipino,
+    }
     
 }

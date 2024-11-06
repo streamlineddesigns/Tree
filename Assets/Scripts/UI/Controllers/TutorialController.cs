@@ -122,7 +122,7 @@ namespace StudioByStorm.UI.Controllers {
             messageText.text = "";
             messageShadowText.text = "";
             isCurrentTutorialTextPrinted = false;
-            string textToPrint = currentTutorialData.message;
+            string textToPrint = currentTutorialData.messageTranslations[GameManager.Language];
             StartCoroutine(PrintText(textToPrint));
 
             if (currentTutorial != null) {

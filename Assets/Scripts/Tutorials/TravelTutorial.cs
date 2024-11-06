@@ -137,7 +137,7 @@ namespace StudioByStorm.Tutorials {
 
                 //get the updated edge which gets created in "SetEdgeButtonClick"
                 secondaryEdge = actionController.ActionModel.CurrentEdge;
-                if (secondaryEdge.gameObject != null) secondaryEdge.gameObject.SetActive(false);
+                if (secondaryEdge != null) secondaryEdge.gameObject.SetActive(false);
 
                 actionController.isJumpIndicatorOn = true;
             } else {
@@ -172,21 +172,27 @@ namespace StudioByStorm.Tutorials {
         public override IEnumerator WaitUntilFinished()
         {
             yield return new WaitUntil(() => didPlayerTravel);
+            TravelCleanUp();
             _isFinished = true;
         }
 
         public override void CleanUp()
         {
-            isJumpLocked = false;
-            actionController.LockJump(isJumpLocked);
-            actionController.isJumpIndicatorOn = false;
-
-            if (secondaryEdge.gameObject != null) secondaryEdge.gameObject.SetActive(true);
+            TravelCleanUp();
 
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
 
             Destroy(gameObject);
+        }
+
+        private void TravelCleanUp()
+        {
+            isJumpLocked = false;
+            actionController.LockJump(isJumpLocked);
+            actionController.isJumpIndicatorOn = false;
+
+            if (secondaryEdge != null) secondaryEdge.gameObject.SetActive(true);
         }
     }
 

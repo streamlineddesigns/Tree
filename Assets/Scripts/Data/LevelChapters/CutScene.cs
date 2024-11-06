@@ -7,7 +7,7 @@ namespace StudioByStorm.Data.LevelChapters {
     [System.Serializable]
     public struct CutScene
     {
-        public string message;
+        public string[] messageTranslations;
     }
 
 }

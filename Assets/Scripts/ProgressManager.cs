@@ -120,6 +120,11 @@ namespace StudioByStorm {
             return ProgressData.levelPackOrder[k];
         }
 
+        public int GetPlayerLanguage()
+        {
+            return ProgressData.playerLanguage;
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -201,6 +206,11 @@ namespace StudioByStorm {
             } else {
                 ProgressData.levelPackOrder.Add(k, v);
             }
+        }
+
+        public void UpdatePlayerLanguage(int k)
+        {
+            ProgressData.playerLanguage = k;
         }
 
         private void Serialize<T>(T obj, string filePath)

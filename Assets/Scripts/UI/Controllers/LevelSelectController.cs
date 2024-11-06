@@ -58,8 +58,8 @@ namespace StudioByStorm.UI.Controllers {
                 //place chapter heading and subheading ie chapterrowview
                 GameObject chapterrowgo = Instantiate(ChapterRowGO, ViewportContentSpawnLocation.transform);
                 ChapterRowView ChapterRowView = chapterrowgo.GetComponent<ChapterRowView>();
-                ChapterRowView.headingText.text = currentChapter.heading;
-                ChapterRowView.subHeadingText.text = currentChapter.subHeading;
+                ChapterRowView.headingText.text = currentChapter.headingTranslations[GameManager.Language];
+                ChapterRowView.subHeadingText.text = currentChapter.subHeadingTranslations[GameManager.Language];
 
                 int levelID = 0;
                 int ChapterID = i;

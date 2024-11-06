@@ -9,7 +9,7 @@ namespace StudioByStorm.Data.LevelPacks {
     public struct LevelPackData
     {
         public LevelPackName name;
-        public string alias;
+        public string[] aliasTranslations;
         public GameObject prefab;
         public GameObject UICard;
     }

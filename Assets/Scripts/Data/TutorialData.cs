@@ -8,7 +8,7 @@ namespace StudioByStorm.Data {
     public struct TutorialData
     {
         //tutorial message
-        public string message;
+        public string[] messageTranslations;
         //first level the tutorial can be shown
         public int levelID;
         public int chapterID;

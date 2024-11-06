@@ -54,6 +54,9 @@ namespace StudioByStorm.Data {
 
         //returns the order a level pack should be shown on the level pack select screen
         public Dictionary<LevelPackName, int> levelPackOrder = new Dictionary<LevelPackName, int>();
+    
+        //returns player language
+        public int playerLanguage = -1;
     }
 
 }

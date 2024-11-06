@@ -7,8 +7,8 @@ namespace StudioByStorm.Data.LevelChapters {
     [System.Serializable]
     public struct Chapter
     {
-        public string heading;
-        public string subHeading;
+        public string[] headingTranslations;
+        public string[] subHeadingTranslations;
         public List<CutScene> cutScenes;
         public List<Level> levels;
         public List<AudioClip> narration;

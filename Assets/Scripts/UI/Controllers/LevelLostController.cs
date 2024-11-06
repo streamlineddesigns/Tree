@@ -29,7 +29,7 @@ namespace StudioByStorm.UI.Controllers {
             if (state == GameState.GameStart) {
                 int currentLevelID = GameManager.Singleton.LevelManager.currentLevelID;
                 int currentChapterID = GameManager.Singleton.LevelManager.currentChapterID;
-                headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].heading;
+                headingText.text = GameManager.Singleton.LevelManager.levelChapters.chapters[currentChapterID].headingTranslations[GameManager.Language];
                 levelText.text = GameManager.Singleton.LevelManager.romanNumerals[currentLevelID + 1];
             }
         }

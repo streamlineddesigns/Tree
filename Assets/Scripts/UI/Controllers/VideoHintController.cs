@@ -75,7 +75,7 @@ namespace StudioByStorm.UI.Controllers {
                 bool isJumpLocked = true;
                 actionController.LockJump(isJumpLocked);
                 //set the values
-                messageText.text = vhd.message;
+                messageText.text = vhd.messageTranslations[GameManager.Language];
                 videoPlayer.clip = vhd.clip;
                 //show the view
                 GameManager.Singleton.UIController.ShowView(ViewName);

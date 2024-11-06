@@ -44,7 +44,7 @@ namespace StudioByStorm.UI.Controllers {
             //only run this for the first cut scene of each chapter
             if (currentCutSceneID == 0) {
                 headingText.gameObject.SetActive(true);
-                yield return StartCoroutine(PrintText(headingText, currentChapter.heading));
+                yield return StartCoroutine(PrintText(headingText, currentChapter.headingTranslations[GameManager.Language]));
                 SetTextToFullyOpaque(headingText);
                 AudioManager.Singleton.Play(SoundType.ChapterIntro);
             }
@@ -56,7 +56,7 @@ namespace StudioByStorm.UI.Controllers {
                 //AudioManager.Singleton.PlayNarration(narrationAudioClip);
             }
 
-            yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].message));
+            yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].messageTranslations[GameManager.Language]));
             SetTextToFullyOpaque(messageText);
 
             continueButton.SetActive(true);

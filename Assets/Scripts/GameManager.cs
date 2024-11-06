@@ -40,6 +40,7 @@ namespace StudioByStorm {
         public PlayerController PlayerController;
         public HashData nearbyNode;
         public CameraController CameraController;
+        public static int Language;
         
         protected void Awake()
         {
@@ -50,9 +51,16 @@ namespace StudioByStorm {
                 PlayerController = player.GetComponent<PlayerController>();
                 AdjacencyList = new AdjacencyList();
                 ProgressManager = new ProgressManager();
+                StartCoroutine(SetLanguage());
             } else {
                 Destroy(this);
             }
+        }
+
+        protected IEnumerator SetLanguage()
+        {
+            yield return new WaitUntil(() => ProgressManager.GetPlayerLanguage() != -1);
+            Language = ProgressManager.GetPlayerLanguage();
         }
                         
         protected void Update()

@@ -205,7 +205,7 @@ namespace StudioByStorm.UI.Controllers {
             DontDestroyOnLoad(currentLevelPackGO);
 
             currentLevelPackName = currentLevelPackData.name;
-            currentLevelPackAlias = currentLevelPackData.alias;
+            currentLevelPackAlias = currentLevelPackData.aliasTranslations[GameManager.Language];
 
             LevelManager.currentLevelPackName = currentLevelPackName;
 

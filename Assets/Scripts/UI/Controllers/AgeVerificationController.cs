@@ -30,11 +30,15 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator DelayedStart()
         {
             yield return null;
+            int playerLanguage = GameManager.Singleton.ProgressManager.GetPlayerLanguage();
             playerAge = GameManager.Singleton.ProgressManager.GetPlayerAge();
 
             //players never seen this screen before
             if (playerAge == -1) {
-                GameManager.Singleton.UIController.ShowView(ViewName);
+                //if language isn't set we'll show it ourselves otherwise language controller will handle that
+                if (playerLanguage != -1) {
+                    GameManager.Singleton.UIController.ShowView(ViewName);
+                }
             
             //players seen this screen before and accepted
             } else {
@@ -75,7 +79,7 @@ namespace StudioByStorm.UI.Controllers {
             if (! hasAgeValueChanged || playerAge <= 0) {
                 AgeSliderAlertAnimation();
             } else {
-                GameManager.Singleton.UIController.Back();
+                GameManager.Singleton.UIController.Close(ViewName);
                 GameManager.Singleton.ProgressManager.UpdatePlayerAge(playerAge);
                 GameManager.Singleton.ProgressManager.Save();
                 AnalyticsManager.InitSDK();

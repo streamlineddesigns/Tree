@@ -9,7 +9,7 @@ namespace StudioByStorm.Data {
     public struct VideoHintData {
         public VideoClip clip;
         public VideoHintName name;
-        public string message;
+        public string[] messageTranslations;
     }
 
 }

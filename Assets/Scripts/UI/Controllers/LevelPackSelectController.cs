@@ -13,11 +13,14 @@ namespace StudioByStorm.UI.Controllers {
     {
         public List<LevelPackData> levelPacks = new List<LevelPackData>();
         public int levelPackID = -1;
+        public bool isRunning;
         
         public static LevelPackName currentLevelPackName;
         public static string currentLevelPackAlias;
         public static GameObject currentLevelPackGO;
         public static LevelPack currentLevelPack;
+
+        private bool isABTesting = true;
 
         private float waitTimer = 0.0f;
 
@@ -25,7 +28,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             if (GameManager.Singleton.ProgressManager.GetLevelPack() != -1) {
                 levelPackID = GameManager.Singleton.ProgressManager.GetLevelPack();
-                UpdateLevelPackSelectScreen();
+                if (isABTesting) UpdateLevelPackSelectScreen();
             } else {
                 StartCoroutine(InitLevelPackID());
             }
@@ -41,11 +44,17 @@ namespace StudioByStorm.UI.Controllers {
         public IEnumerator Show()
         {
             yield return new WaitUntil(() => levelPackID != -1);
+            _Show();
+        }
+
+        protected void _Show()
+        {
+            //Debug.Log("here");
 
             LevelPackName levelPackNameEnum = (LevelPackName) levelPackID;
             string levelPackNameString = levelPackNameEnum.ToString();
             int currentChapterID = 0;
-            int currentLevelID = 14;//0 starting index so it's 15
+            int currentLevelID = 0;//0 starting index so it's 15
             string key = (levelPackNameString + "-" + currentChapterID + "-" + currentLevelID);
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
 
@@ -118,6 +127,8 @@ namespace StudioByStorm.UI.Controllers {
 
         private IEnumerator InitLevelPackID()
         {
+            isRunning = true;
+
             int usedLevelPackID = 0;
 
             //wait until player age has been set
@@ -138,16 +149,20 @@ namespace StudioByStorm.UI.Controllers {
                     //Debug.Log("Remote Level Pack ID: " + remoteLevelPackID);
                 } else {
                     //remote level pack id wasn't usable so we'll set it to a random one
-                    usedLevelPackID = UnityEngine.Random.Range(0, levelPacks.Count);
+                    usedLevelPackID = (isABTesting) ? UnityEngine.Random.Range(0, levelPacks.Count) : 8;
                     //Debug.Log("Local Level Pack ID: " + usedLevelPackID);
                 }
             }
             
             levelPackID = usedLevelPackID;
             GameManager.Singleton.ProgressManager.UpdateLevelPack(levelPackID);
-            InitLevelPackOrder();
+            if (isABTesting) InitLevelPackOrder();
             GameManager.Singleton.ProgressManager.Save();
-            UpdateLevelPackSelectScreen();
+            if (isABTesting) UpdateLevelPackSelectScreen();
+
+            isRunning = false;
+
+            _Show();
         }
 
         private void InitLevelPackOrder()

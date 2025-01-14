@@ -14,7 +14,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             LevelPackSelectController levelPackSelectController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelPackSelectView) as LevelPackSelectController;
-            StartCoroutine(levelPackSelectController.Show());
+            if (! levelPackSelectController.isRunning) StartCoroutine(levelPackSelectController.Show());
         }
 
         public void LevelCreatorButtonClick()

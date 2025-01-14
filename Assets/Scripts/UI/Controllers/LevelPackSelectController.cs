@@ -54,7 +54,7 @@ namespace StudioByStorm.UI.Controllers {
             LevelPackName levelPackNameEnum = (LevelPackName) levelPackID;
             string levelPackNameString = levelPackNameEnum.ToString();
             int currentChapterID = 0;
-            int currentLevelID = 0;//0 starting index so it's 15
+            int currentLevelID = 14;//0 starting index so it's 15
             string key = (levelPackNameString + "-" + currentChapterID + "-" + currentLevelID);
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
 

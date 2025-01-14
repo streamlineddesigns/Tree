@@ -133,6 +133,7 @@ namespace StudioByStorm {
     public enum LanguagePackName {
         English,
         Filipino,
+        Spanish,
     }
     
 }

@@ -28,7 +28,7 @@ namespace StudioByStorm {
             //send retention notification after 1440 minutes ie 24 hours
             SendNotification("Thank you for playing!", "We hope you're enjoying our game!", 1 * minutesInADay);
             //send churn notification after 4320 minutes ie 72 hours
-            SendNotification("It's been a while!", "Come enjoy your favorite game again!", 3 * minutesInADay);
+            SendNotification("It's been a while!", "Come try a new level pack!", 3 * minutesInADay);
         }
 
         private void RequestNotificationsPermission()

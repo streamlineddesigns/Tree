@@ -108,6 +108,8 @@ namespace StudioByStorm {
 
         public void ResetToFactorySettings()
         {
+            InnerGraphic.gameObject.SetActive(false);
+
             //Either show gray scale or color depending on the NodeColor value
             if (OriginalNodeColor == NodeColor.GrayScale) {
                 DisplayGrayScale();
@@ -124,7 +126,7 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (OriginalNodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                AddColorRing();
+                //AddColorRing();
                 //ActivateHairs();
             } else if (coloredRing != null && OriginalNodeType == NodeType.Parent) {
                 coloredRing.SetActive(true);
@@ -165,6 +167,8 @@ namespace StudioByStorm {
         }
 
         public void DisplayColor() {
+            //InnerGraphic.gameObject.SetActive(false);
+
             InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
             //ColorSurface.SetActive(true);
             //DarkSurface.SetActive(false);
@@ -178,6 +182,8 @@ namespace StudioByStorm {
         }
 
         public void DisplayGrayScale() {
+            //InnerGraphic.gameObject.SetActive(true);
+
             //ColorSurface.SetActive(false);
             //DarkSurface.SetActive(true);
             //DarkSurface.SetActive(true);

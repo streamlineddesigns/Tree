@@ -20,15 +20,16 @@ namespace StudioByStorm.UI.Controllers {
         public static GameObject currentLevelPackGO;
         public static LevelPack currentLevelPack;
 
-        private bool isABTesting = true;
+        private bool isABTesting = false;
 
+        private float waitTime = 5.0f;
         private float waitTimer = 0.0f;
 
         protected void Start()
         {
             if (GameManager.Singleton.ProgressManager.GetLevelPack() != -1) {
                 levelPackID = GameManager.Singleton.ProgressManager.GetLevelPack();
-                if (isABTesting) UpdateLevelPackSelectScreen();
+                UpdateLevelPackSelectScreen();
             } else {
                 StartCoroutine(InitLevelPackID());
             }
@@ -36,15 +37,19 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void Update()
         {
-            if (AnalyticsManager.playerAge != 0 && waitTimer <= 2.0f) {
+            if (AnalyticsManager.playerAge != 0 && waitTimer < waitTime) {
                 waitTimer += Time.deltaTime;
             }
         }
 
         public IEnumerator Show()
         {
+            isRunning = true;
+
             yield return new WaitUntil(() => levelPackID != -1);
             _Show();
+
+            isRunning = false;
         }
 
         protected void _Show()
@@ -59,7 +64,7 @@ namespace StudioByStorm.UI.Controllers {
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
 
             //if the first 15 levels haven't been beaten for the level pack
-            if (previousStarsAwarded == 0) {
+            if (previousStarsAwarded == 0 && false) {
                 SelectLevelPack(levelPackNameEnum);
                 //Debug.Log("ZERO STARS FOR LEVEL 15");
             //if the first 15 levels have been beaten
@@ -127,8 +132,6 @@ namespace StudioByStorm.UI.Controllers {
 
         private IEnumerator InitLevelPackID()
         {
-            isRunning = true;
-
             int usedLevelPackID = 0;
 
             //wait until player age has been set
@@ -139,30 +142,32 @@ namespace StudioByStorm.UI.Controllers {
                 usedLevelPackID = UnityEngine.Random.Range(0, levelPacks.Count);
                 //Debug.Log("Analytics Off. Local Level Pack ID: " + usedLevelPackID);
             } else {
-                yield return new WaitUntil(() => GameAnalytics.IsRemoteConfigsReady() || waitTimer >= 2.0f);
+                while (waitTimer < waitTime) {
+                    if (GameAnalytics.IsRemoteConfigsReady()) {
+                        waitTimer = waitTime;
+                    }
+
+                    yield return new WaitForSeconds(0.25f);
+                }
                 //retrieve level pack from remote config
                 string levelPackString = GameAnalytics.GetRemoteConfigsValueAsString("LevelPack");
                 
                 //parse level pack string as an int so its usable
                 if (levelPackString != null && int.TryParse(levelPackString, out int remoteLevelPackID)) {
                     usedLevelPackID = remoteLevelPackID;
-                    //Debug.Log("Remote Level Pack ID: " + remoteLevelPackID);
+                    Debug.Log("Remote Level Pack ID: " + remoteLevelPackID);
                 } else {
-                    //remote level pack id wasn't usable so we'll set it to a random one
-                    usedLevelPackID = (isABTesting) ? UnityEngine.Random.Range(0, levelPacks.Count) : 8;
-                    //Debug.Log("Local Level Pack ID: " + usedLevelPackID);
+                    //remote level pack id wasn't usable so we'll set it to square!
+                    usedLevelPackID = 1;
+                    Debug.Log("Local Level Pack ID: " + usedLevelPackID);
                 }
             }
             
             levelPackID = usedLevelPackID;
             GameManager.Singleton.ProgressManager.UpdateLevelPack(levelPackID);
-            if (isABTesting) InitLevelPackOrder();
+            InitLevelPackOrder();
             GameManager.Singleton.ProgressManager.Save();
-            if (isABTesting) UpdateLevelPackSelectScreen();
-
-            isRunning = false;
-
-            _Show();
+            UpdateLevelPackSelectScreen();
         }
 
         private void InitLevelPackOrder()
@@ -201,7 +206,8 @@ namespace StudioByStorm.UI.Controllers {
             
             //resort the level pack cards ie the ui on the level pack select screen
             for (int i = 0; i < reOrderedLevelPacks.Length; i++) {
-                reOrderedLevelPacks[i].UICard.transform.SetSiblingIndex(i + 1);
+                //$$test now we'll only resort the first level pack
+                /*if (i == 0)*/ reOrderedLevelPacks[i].UICard.transform.SetSiblingIndex(i + 1);
             }
 
             //move to sibling index 1 ie right after heading text

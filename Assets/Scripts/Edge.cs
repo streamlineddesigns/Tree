@@ -37,9 +37,14 @@ namespace StudioByStorm {
 
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
                 LinkSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
-                LinkSpriteRenderers[i].sprite = GameManager.Singleton.ColorModel.ColoredGetters[colorIndex];
+                //LinkSpriteRenderers[i].sprite = GameManager.Singleton.ColorModel.ColoredGetters[colorIndex];
                 LinkSpriteRenderers[i].gameObject.SetActive(true);
-                if (i < LinkConnectorSpriteRenderers.Length) LinkConnectorSpriteRenderers[i].gameObject.SetActive(true);
+                LinkSpriteRenderers[i].color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                
+                if (i < LinkConnectorSpriteRenderers.Length) {
+                    LinkConnectorSpriteRenderers[i].gameObject.SetActive(true);
+                    LinkConnectorSpriteRenderers[i].color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                }
             }
 
             activeLinkIndex = LinkSpriteRenderers.Length - 1;

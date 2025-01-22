@@ -13,6 +13,9 @@ namespace StudioByStorm {
     public class CameraController : MonoBehaviour {
         public static Transform centroid;
         public static float levelWaitTime = 0.0f;
+        public int[] maxNodeDistance;
+        public float[] maxNodeDistanceIndexToProjectionSize;
+        public Camera Camera;
         protected float smoothing = 1f;
 
         protected Vector3 offset;
@@ -78,15 +81,23 @@ namespace StudioByStorm {
             Vector3 maxPosition = targetPosition;
             Vector3 minPosition = targetPosition;
 
-            if (ML.Math.GetDistance(highestObject.transform.position.y, lowestObject.transform.position.y) > ML.Math.GetDistance(rightestObject.transform.position.x, leftestObject.transform.position.x)) {
+            float verticalDistance = ML.Math.GetDistance(highestObject.transform.position.y, lowestObject.transform.position.y);
+            float horizontalDistance = ML.Math.GetDistance(rightestObject.transform.position.x, leftestObject.transform.position.x);
+            float usedDistance = 0; 
+
+            if (verticalDistance > horizontalDistance) {
                 maxPosition.y = highestObject.transform.position.y;
                 minPosition.y = lowestObject.transform.position.y;
+                //Debug.Log("Vertical Distance: " + verticalDistance);
+                usedDistance = verticalDistance;
             } else {
                 maxPosition.x = rightestObject.transform.position.x;
                 minPosition.x = leftestObject.transform.position.x;
+                //Debug.Log("Horizontal Distance: " + horizontalDistance);
+                usedDistance = horizontalDistance;
             }
 
-            if (ML.Math.GetDistance(maxPosition, minPosition) > 20.0f) {
+            if (false /*ML.Math.GetDistance(maxPosition, minPosition) > 20.0f*/) {
                 Sequence levelDemo = DOTween.Sequence();
                     levelDemo.Append(transform.DOMove(maxPosition, 1.5f, false))
                              .Append(transform.DOMove(minPosition, 2.5f, false).SetEase(Ease.InOutCubic));
@@ -95,6 +106,23 @@ namespace StudioByStorm {
             } else {
                 CameraController.levelWaitTime = 0.0f;
             }
+
+
+            Vector3 targetCamPos = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+            transform.position = targetCamPos;
+
+            int maxNodeDistanceIndex = 0;
+            float minDistance = 1000.0f;
+
+            for (int i = 0; i < maxNodeDistance.Length; i++) {
+                if (Mathf.Abs(maxNodeDistance[i] - usedDistance) < minDistance) {
+                    minDistance = Mathf.Abs(maxNodeDistance[i] - usedDistance);
+                    maxNodeDistanceIndex = i;
+                }
+            }
+
+
+            Camera.orthographicSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
 
             GameManager.Singleton.player.SetActive(true);
         }
@@ -118,7 +146,7 @@ namespace StudioByStorm {
                 SwipeDetection();
             } else {
                 Vector3 targetCamPos = (Vector3) GameManager.Singleton.nearbyNode.GetPosition() - offset;
-                transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
+                //transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
             }
         }
 

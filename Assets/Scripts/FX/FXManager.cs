@@ -211,7 +211,7 @@ namespace StudioByStorm.FX {
 
         void Start()
         {
-            GenerateBoids();
+            //GenerateBoids();
         }
 
         public IEnumerator nodesLookAtPlayerAnimation(List<Node> nodes)
@@ -281,7 +281,7 @@ namespace StudioByStorm.FX {
         public IEnumerator LevelCompleteRewardAnimation()
         {
             //slow-mo
-            StartCoroutine(SlowMoEffect());
+            //StartCoroutine(SlowMoEffect());
             //link loop
             StartCoroutine(LinkLoopAnimation());
             //zoom out

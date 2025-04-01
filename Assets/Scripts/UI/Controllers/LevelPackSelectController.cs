@@ -29,7 +29,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             if (GameManager.Singleton.ProgressManager.GetLevelPack() != -1) {
                 levelPackID = GameManager.Singleton.ProgressManager.GetLevelPack();
-                UpdateLevelPackSelectScreen();
+                if (isABTesting) UpdateLevelPackSelectScreen();
             } else {
                 StartCoroutine(InitLevelPackID());
             }
@@ -132,42 +132,45 @@ namespace StudioByStorm.UI.Controllers {
 
         private IEnumerator InitLevelPackID()
         {
-            int usedLevelPackID = 0;
+            //default to square ie id = level pack enum cast to int
+            int usedLevelPackID = 1;
 
-            //wait until player age has been set
-            yield return new WaitUntil(() => AnalyticsManager.playerAge != 0);
-            
-            //if they're not old enough for analytics to be on just use random level pack
-            if (AnalyticsManager.playerAge < AnalyticsManager.minAge) {
-                usedLevelPackID = UnityEngine.Random.Range(0, levelPacks.Count);
-                //Debug.Log("Analytics Off. Local Level Pack ID: " + usedLevelPackID);
-            } else {
-                while (waitTimer < waitTime) {
-                    if (GameAnalytics.IsRemoteConfigsReady()) {
-                        waitTimer = waitTime;
-                    }
-
-                    yield return new WaitForSeconds(0.25f);
-                }
-                //retrieve level pack from remote config
-                string levelPackString = GameAnalytics.GetRemoteConfigsValueAsString("LevelPack");
+            if (isABTesting) {
+                //wait until player age has been set
+                yield return new WaitUntil(() => AnalyticsManager.playerAge != 0);
                 
-                //parse level pack string as an int so its usable
-                if (levelPackString != null && int.TryParse(levelPackString, out int remoteLevelPackID)) {
-                    usedLevelPackID = remoteLevelPackID;
-                    Debug.Log("Remote Level Pack ID: " + remoteLevelPackID);
+                //if they're not old enough for analytics to be on just use random level pack
+                if (AnalyticsManager.playerAge < AnalyticsManager.minAge) {
+                    usedLevelPackID = UnityEngine.Random.Range(0, levelPacks.Count);
+                    //Debug.Log("Analytics Off. Local Level Pack ID: " + usedLevelPackID);
                 } else {
-                    //remote level pack id wasn't usable so we'll set it to square!
-                    usedLevelPackID = 1;
-                    Debug.Log("Local Level Pack ID: " + usedLevelPackID);
+                    while (waitTimer < waitTime) {
+                        if (GameAnalytics.IsRemoteConfigsReady()) {
+                            waitTimer = waitTime;
+                        }
+
+                        yield return new WaitForSeconds(0.25f);
+                    }
+                    //retrieve level pack from remote config
+                    string levelPackString = GameAnalytics.GetRemoteConfigsValueAsString("LevelPack");
+                    
+                    //parse level pack string as an int so its usable
+                    if (levelPackString != null && int.TryParse(levelPackString, out int remoteLevelPackID)) {
+                        usedLevelPackID = remoteLevelPackID;
+                        Debug.Log("Remote Level Pack ID: " + remoteLevelPackID);
+                    } else {
+                        //remote level pack id wasn't usable so we'll set it to square!
+                        usedLevelPackID = 1;
+                        Debug.Log("Local Level Pack ID: " + usedLevelPackID);
+                    }
                 }
             }
-            
+
             levelPackID = usedLevelPackID;
             GameManager.Singleton.ProgressManager.UpdateLevelPack(levelPackID);
-            InitLevelPackOrder();
+            if (isABTesting) InitLevelPackOrder();
             GameManager.Singleton.ProgressManager.Save();
-            UpdateLevelPackSelectScreen();
+            if (isABTesting) UpdateLevelPackSelectScreen();
         }
 
         private void InitLevelPackOrder()

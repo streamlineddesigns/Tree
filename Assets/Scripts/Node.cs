@@ -23,7 +23,7 @@ namespace StudioByStorm {
         public Sprite[] randomSprites;
         public GameObject coloredRing;
         public Edge currentEdge;
-
+        public bool isNodeCellular = false;
         protected NodeType OriginalNodeType;
         protected NodeColor OriginalNodeColor;
 
@@ -126,7 +126,7 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (OriginalNodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                //AddColorRing();
+                if (isNodeCellular) AddColorRing();
                 //ActivateHairs();
             } else if (coloredRing != null && OriginalNodeType == NodeType.Parent) {
                 coloredRing.SetActive(true);
@@ -167,7 +167,7 @@ namespace StudioByStorm {
         }
 
         public void DisplayColor() {
-            //InnerGraphic.gameObject.SetActive(false);
+            if (isNodeCellular) InnerGraphic.gameObject.SetActive(true);
 
             InnerGraphic.sprite = GameManager.Singleton.ColorModel.ColoredInners[(int)NodeColor];
             //ColorSurface.SetActive(true);
@@ -182,7 +182,7 @@ namespace StudioByStorm {
         }
 
         public void DisplayGrayScale() {
-            //InnerGraphic.gameObject.SetActive(true);
+            if (isNodeCellular) InnerGraphic.gameObject.SetActive(true);
 
             //ColorSurface.SetActive(false);
             //DarkSurface.SetActive(true);

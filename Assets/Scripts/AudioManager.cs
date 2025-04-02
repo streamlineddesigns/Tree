@@ -27,6 +27,7 @@ namespace StudioByStorm {
         private int musicChapterID;
         private float musicTargetVolume = 0.25f;
         private float soundFXMultiplier = 1.25f;
+        private LevelPackName currentLevelPackName;
 
         protected void Awake()
         {
@@ -55,8 +56,12 @@ namespace StudioByStorm {
 
         public void SetChapterMusic(int chapterID)
         {
-            musicChapterID = chapterID;
-            PlayChapterMusic();
+            if (currentLevelPackName != LevelPackSelectController.currentLevelPackName || (currentLevelPackName == LevelPackSelectController.currentLevelPackName && musicChapterID != chapterID)) {
+                currentLevelPackName = LevelPackSelectController.currentLevelPackName;
+                musicChapterID = chapterID;
+                PlayChapterMusic();
+            }
+            
         }
 
         public void PlayNarration(AudioClip narrationToPlay)

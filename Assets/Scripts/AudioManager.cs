@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using StudioByStorm.Data;
+using StudioByStorm.UI.Controllers;
 
 namespace StudioByStorm {
 
@@ -54,10 +55,8 @@ namespace StudioByStorm {
 
         public void SetChapterMusic(int chapterID)
         {
-            if (musicChapterID != chapterID) {
-                musicChapterID = chapterID;
-                PlayChapterMusic();
-            }
+            musicChapterID = chapterID;
+            PlayChapterMusic();
         }
 
         public void PlayNarration(AudioClip narrationToPlay)
@@ -73,7 +72,7 @@ namespace StudioByStorm {
 
         protected void PlayChapterMusic()
         {
-            AudioClip chapterMusic = music[musicChapterID];
+            AudioClip chapterMusic = LevelPackSelectController.currentLevelPack.chapters.chapters[musicChapterID].music;
             StartCoroutine(UpdateCurrentPlayingMusic(chapterMusic));
         }
 

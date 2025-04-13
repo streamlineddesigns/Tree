@@ -10,12 +10,17 @@ namespace StudioByStorm {
     {
         public static bool isDebugging = false;
         public static int playerAge = 0;
-        public static int minAge = 13;
+        public static int minAge = 16;
 
         public static void InitSDK()
         {
             playerAge = GameManager.Singleton.ProgressManager.GetPlayerAge();
+            //initialize analytics normally
             if (playerAge >= minAge) {
+                GameAnalytics.Initialize();
+            //initialize analytics without Personally Identifiable Information ie COPPA compliancy
+            } else {
+                GameAnalytics.EnableAdvertisingIdTracking(false);
                 GameAnalytics.Initialize();
             }
         }

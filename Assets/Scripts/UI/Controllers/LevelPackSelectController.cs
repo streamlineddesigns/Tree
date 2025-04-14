@@ -64,7 +64,7 @@ namespace StudioByStorm.UI.Controllers {
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
 
             //if the first 15 levels haven't been beaten for the level pack
-            if (previousStarsAwarded == 0 && false) {
+            if ((previousStarsAwarded == 0 && false) || FTUEManager.singleton.isFirstOpen) {
                 SelectLevelPack(levelPackNameEnum);
                 //Debug.Log("ZERO STARS FOR LEVEL 15");
             //if the first 15 levels have been beaten

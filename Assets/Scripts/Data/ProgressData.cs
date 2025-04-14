@@ -57,6 +57,9 @@ namespace StudioByStorm.Data {
     
         //returns player language
         public int playerLanguage = -1;
+
+        //returns ftue date time stamp
+        public string FTUEDateTimeString = "";
     }
 
 }

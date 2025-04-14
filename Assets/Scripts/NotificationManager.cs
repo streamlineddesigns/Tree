@@ -12,7 +12,10 @@ namespace StudioByStorm {
 
         protected void Start()
         {
-            StartCoroutine(SendRoutine());
+            //if its not the FTUE ask user about notifications
+            if (!FTUEManager.singleton.isFTUE) {
+                StartCoroutine(SendRoutine());
+            }
         }
 
         IEnumerator SendRoutine()

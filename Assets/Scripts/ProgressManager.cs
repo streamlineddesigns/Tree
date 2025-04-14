@@ -125,6 +125,11 @@ namespace StudioByStorm {
             return ProgressData.playerLanguage;
         }
 
+        public string GetFTUEDateTimeString()
+        {
+            return ProgressData.FTUEDateTimeString;
+        }
+
         public void UpdateLevel(string k, int v)
         {
             if (ProgressData.levelProgress.ContainsKey(k)) {
@@ -211,6 +216,11 @@ namespace StudioByStorm {
         public void UpdatePlayerLanguage(int k)
         {
             ProgressData.playerLanguage = k;
+        }
+
+        public void UpdateFTUEDateTimeString(string k)
+        {
+            ProgressData.FTUEDateTimeString = k;
         }
 
         private void Serialize<T>(T obj, string filePath)

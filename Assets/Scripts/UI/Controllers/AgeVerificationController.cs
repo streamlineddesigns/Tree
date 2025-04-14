@@ -35,12 +35,20 @@ namespace StudioByStorm.UI.Controllers {
 
             //players never seen this screen before
             if (playerAge == -1) {
-                //if language isn't set we'll show it ourselves otherwise language controller will handle that
-                if (playerLanguage != -1) {
-                    GameManager.Singleton.UIController.ShowView(ViewName);
+
+                //if its not the FTUE
+                if (!FTUEManager.singleton.isFTUE) {
+                    //if language isn't set we'll show it ourselves otherwise language controller will handle that
+                    if (playerLanguage != -1) {
+                        GameManager.Singleton.UIController.ShowView(ViewName);
+                    }
+                //if it is the FTUE, init sdk without PII, and wait to confirm age
+                } else {
+                    AnalyticsManager.InitSDK();
                 }
+                
             
-            //players seen this screen before and accepted
+            //players seen this screen before and accepted, so init sdk and it will handle age logic
             } else {
                 AnalyticsManager.InitSDK();
             }

@@ -22,7 +22,7 @@ namespace StudioByStorm {
             int savedLanguageInt = GameManager.Singleton.ProgressManager.GetPlayerLanguage();
             LanguagePackName savedLanguageEnum = (LanguagePackName) savedLanguageInt;
 
-            if (savedLanguageInt != -1 && savedLanguageEnum != currentLanguage) {
+            if (savedLanguageInt != -1) {
                 currentLanguage = savedLanguageEnum;
                 SetLanguage(currentLanguage);
                 //Debug.Log("setting text");

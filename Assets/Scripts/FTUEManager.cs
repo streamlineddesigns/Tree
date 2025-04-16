@@ -28,7 +28,7 @@ namespace StudioByStorm {
             //try to get ftue date time string
             string FTUEDateTimeString = GameManager.Singleton.ProgressManager.GetFTUEDateTimeString();
             //if theres no ftue date time string, set current date time
-            if (FTUEDateTimeString == "") {
+            if (FTUEDateTimeString == "" || FTUEDateTimeString == null) {
                 FTUEDateTimeString = GetCurrentDateTimeString();
                 GameManager.Singleton.ProgressManager.UpdateFTUEDateTimeString(FTUEDateTimeString);
                 GameManager.Singleton.ProgressManager.Save();

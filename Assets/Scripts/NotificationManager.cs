@@ -8,6 +8,10 @@ namespace StudioByStorm {
 
     public class NotificationManager : MonoBehaviour
     {
+        public string[] churnNotificationHeaderTranslations;
+        public string[] churnNotificationBodyTranslations;
+        public string[] churnNotificationChannelNameTranslations;
+        public string[] churnNotificationChannelDescriptions;
         protected int minutesInADay = 1440;
 
         protected void Start()
@@ -28,10 +32,8 @@ namespace StudioByStorm {
             RegisterNotificationChannel();
             //cancel all notificiations
             AndroidNotificationCenter.CancelAllNotifications();
-            //send retention notification after 1440 minutes ie 24 hours
-            SendNotification("Thank you for playing!", "We hope you're enjoying our game!", 1 * minutesInADay);
             //send churn notification after 4320 minutes ie 72 hours
-            SendNotification("It's been a while!", "Come try a new level pack!", 3 * minutesInADay);
+            SendNotification(churnNotificationHeaderTranslations[GameManager.Language], churnNotificationBodyTranslations[GameManager.Language], 3 * minutesInADay);
         }
 
         private void RequestNotificationsPermission()
@@ -46,9 +48,9 @@ namespace StudioByStorm {
             var channel = new AndroidNotificationChannel()
             {
                 Id = "default_channel",
-                Name = "Default Channel",
+                Name = churnNotificationChannelNameTranslations[GameManager.Language],
                 Importance = Importance.Default,
-                Description = "Reminder to Play",
+                Description = churnNotificationChannelDescriptions[GameManager.Language],
             };
             AndroidNotificationCenter.RegisterNotificationChannel(channel);
         }

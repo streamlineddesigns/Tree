@@ -581,9 +581,9 @@ namespace StudioByStorm {
                 GetEdgeButtonClick();
             } else {
                 GameManager.Singleton.LevelManager.parentColorsConnected[ActionModel.CurrentNode.NodeColor] = true;
-                Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent).ToArray();
+                Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent && x.isNodeCellular).ToArray();
                 for (int i = 0; i < nodes.Length; i++) {
-                    //nodes[i].AddColorRing(true);
+                    nodes[i].AddColorRing(true);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
             }

@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -75,3 +77,5 @@ public class AnimationSkinDuplicator : MonoBehaviour
         Debug.Log("Swapped animation skin!");
     }
 }
+
+#endif

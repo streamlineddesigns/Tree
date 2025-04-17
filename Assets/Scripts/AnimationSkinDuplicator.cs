@@ -31,7 +31,7 @@ public class AnimationSkinDuplicator : MonoBehaviour
                 if (asset is Sprite sprite)
                 {
                     spriteLookup[sprite.name] = sprite;
-                    Debug.Log(sprite.name);
+                    //Debug.Log(sprite.name);
                 }
             }
         }
@@ -57,7 +57,7 @@ public class AnimationSkinDuplicator : MonoBehaviour
                     if (oldSprite == null) continue;
 
                     string newName = oldSprite.name.Replace(oldSkinPrefix, newSkinPrefix[a]);
-                    ///Debug.Log(newName);
+                    //Debug.Log(newName);
                     if (spriteLookup.ContainsKey(newName))
                     {
                         keyframes[i].value = spriteLookup[newName];

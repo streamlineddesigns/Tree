@@ -126,7 +126,7 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (OriginalNodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                if (isNodeCellular) AddColorRing();
+                /*if (isNodeCellular)*/ AddColorRing();
                 //ActivateHairs();
             } else if (coloredRing != null && OriginalNodeType == NodeType.Parent) {
                 coloredRing.SetActive(true);

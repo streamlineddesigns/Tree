@@ -576,7 +576,7 @@ namespace StudioByStorm {
             ActionModel.ColorConnectionsCount[colorIndex]++;
 
             //if (ActionModel.ColorConnectionsCount[colorIndex] < ActionModel.colorMaxConnections[colorIndex]) {
-            if (GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType == NodeType.Parent).ToArray().Length < 2) {
+            if (ActionModel.CurrentNode != null && GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType == NodeType.Parent).ToArray().Length < 2) {
                 //get new edge
                 GetEdgeButtonClick();
             } else {

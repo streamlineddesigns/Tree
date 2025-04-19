@@ -143,7 +143,10 @@ namespace StudioByStorm {
 
         public void turnFabrikOff()
         {
-            StartCoroutine(DelayedFabrikShutDown());
+            Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(childID);
+            if (childNode != null) {
+                StartCoroutine(DelayedFabrikShutDown());
+            }
         }
 
         protected IEnumerator DelayedFabrikShutDown()

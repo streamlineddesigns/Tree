@@ -16,9 +16,9 @@ namespace StudioByStorm {
         Blue,
         Green,
         Purple,
-        White,
-        GrayScale,
         Orange,
+        GrayScale,
+        White,
         Yellow,
     }
 

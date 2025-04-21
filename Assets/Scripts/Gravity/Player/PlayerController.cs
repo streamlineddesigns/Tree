@@ -321,7 +321,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (! isInAtmosphere && ! isOnSurface) {
+            if (! isInAtmosphere && !isOnSurface && !canDash && dashCount == 0) {
                 ApplyGravityFailSafe();
             }
 
@@ -455,8 +455,9 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnTriggerEnter2D(Collider2D collider)
         {
+            ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+
             if (collider.TryGetComponent<Node>(out Node Node)) {
-                ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
                 if (ActionController != null) ActionController.ManualOnTriggerEnter2D(Node);
 
                 //publish that the players node ID changed
@@ -467,16 +468,24 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (collider.CompareTag("Surface")) {
-
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
-                if (isToggleColorOn) StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
+                if (isToggleColorOn) {
+                    if (ActionController.ActionModel.CurrentNode != null && ActionController.ActionModel.CurrentNode.NodeColor == NodeColor.White) {
+                        if (isLightColor) {
+                            //do nothing
+                        } else {
+                            StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
+                        }
+                    } else {
+                        StartCoroutine(ToggleColor(collider.gameObject.GetInstanceID()));
+                    }
+                }
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;
                 Move(true);    
                 
-                ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
                 if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.isOutOfBounds) {
                     StartCoroutine(ActionController.ActionModel.CurrentEdge.StretchTowardsPlayerAnimation());
                 }            

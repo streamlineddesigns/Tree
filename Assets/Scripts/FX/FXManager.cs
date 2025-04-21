@@ -74,15 +74,16 @@ namespace StudioByStorm.FX {
         public GameObject GreenNodeConnectPrefab;
         public GameObject PurpleNodeConnectPrefab;
         public GameObject OrangeNodeConnectPrefab;
+        public GameObject WhitNodeConnectPrefab;
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
         protected int nodeRippleInPoolSize = 3;
         protected int nodeWindInPoolSize = 3;
         protected int fireworkPoolSize = 5;
-        protected int boidPoolSize = 20;
+        protected int boidPoolSize = 12;
         protected int colorCount = 4;
-        protected int boidPerColor = 5;
+        protected int boidPerColor = 3;
         protected int nodeConnectPoolSizes = 2;
         protected int wrongObstacleHitPoolSize = 3;
         protected int correctObstacleHitPoolSize = 3;
@@ -192,9 +193,13 @@ namespace StudioByStorm.FX {
             PurpleNodeConnectPool.DependencyInjection(PurpleNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.Purple, PurpleNodeConnectPool);
 
-            Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            /*Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             OrangeNodeConnectPool.DependencyInjection(OrangeNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
-            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);
+            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);*/
+
+            Pool WhiteNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            WhiteNodeConnectPool.DependencyInjection(WhitNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.White, WhiteNodeConnectPool);
 
             WrongObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
             WrongObstacleHitPool.DependencyInjection(WrongObstacleHitFX, FXParent, wrongObstacleHitPoolSize);

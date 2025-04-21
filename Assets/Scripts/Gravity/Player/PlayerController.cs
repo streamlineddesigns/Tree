@@ -471,7 +471,8 @@ namespace StudioByStorm.Gravity.Player {
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
                 if (isToggleColorOn) {
-                    if (ActionController.ActionModel.CurrentNode != null && ActionController.ActionModel.CurrentNode.NodeColor == NodeColor.White) {
+                    if ((ActionController.ActionModel.CurrentNode != null && ActionController.ActionModel.CurrentNode.NodeColor == NodeColor.White) ||
+                        (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.EdgeColor == NodeColor.White)) {
                         if (isLightColor) {
                             //do nothing
                         } else {

@@ -23,6 +23,11 @@ namespace StudioByStorm.Gravity.Player {
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
         public GameObject boostIndicator;
+        public bool isLanding {
+            get {
+                return _isLanding;
+            }
+        }
         public bool isLight {
             get {
                 return isLightColor;
@@ -65,7 +70,7 @@ namespace StudioByStorm.Gravity.Player {
         private float offSurfaceTimer = 0.0f;
         private float currentOffSurfaceTimer;
 
-        private Rigidbody2D rigidbody;
+        [SerializeField] private Rigidbody2D rigidbody;
         private ContactPoint2D[] rigidbodyContacts;
         private Vector2 lastContactPoint;    
 
@@ -117,6 +122,8 @@ namespace StudioByStorm.Gravity.Player {
         private Vector3 originalSpriteScale;
 
         private GameObject previousTrailFX;
+        private ActionController AC;
+        private bool _isLanding = true;
         
         void Awake()
         {
@@ -137,6 +144,7 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
+            AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
             FTUECheck();
@@ -152,7 +160,8 @@ namespace StudioByStorm.Gravity.Player {
         public void OnStateChange(GameState state)
         {
             switch(state) {
-                case GameState.GameStart :                    
+                case GameState.GameStart :    
+                    _isLanding = true;
                     break;
 
                 case GameState.LevelComplete :
@@ -459,7 +468,6 @@ namespace StudioByStorm.Gravity.Player {
 
             if (collider.TryGetComponent<Node>(out Node Node)) {
                 if (ActionController != null) ActionController.ManualOnTriggerEnter2D(Node);
-
                 //publish that the players node ID changed
                 if (playerNodeID != Node.ID) {
                     playerNodeID = Node.ID;
@@ -467,7 +475,7 @@ namespace StudioByStorm.Gravity.Player {
                 }
             }
 
-            if (collider.CompareTag("Surface")) {
+            if (collider.CompareTag("Surface")) {                
                 currentOffSurfaceTimer = offSurfaceTimer;
                 surface = collider.gameObject.GetComponent<Surface>();
                 if (isToggleColorOn) {
@@ -523,7 +531,7 @@ namespace StudioByStorm.Gravity.Player {
                 //otherwise
                 } else {
                     //make sure we didn't hit an obstacle while traveling because that doesn't count
-                    if (! lerping && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale) {
+                    if (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
                         if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {
@@ -543,7 +551,6 @@ namespace StudioByStorm.Gravity.Player {
         void OnTriggerStay2D(Collider2D collider)
         {
             if (collider.CompareTag("Surface") && surface == null) {
-
                 isOnSurface = true;
                 rigidbody.GetContacts(rigidbodyContacts);
                 lastContactPoint = rigidbodyContacts[0].point;
@@ -656,6 +663,19 @@ namespace StudioByStorm.Gravity.Player {
             //SetRelativeForwardDirection();
         }
 
+        //the start animation where the player super hero lands on the start node
+        public void SuperHeroLandingStartAnimation(Vector3 startPosition)
+        {
+            Debug.Log(startPosition);
+            Vector3 newPosition = startPosition + (startPosition.normalized * 7.0f * 3.0f);
+            gameObject.transform.position = newPosition;
+            
+            gravityDirection = (startPosition - newPosition).normalized;
+            rigidbody.AddForce(gravityDirection * (gravityForce * 2.0f * Time.fixedDeltaTime), ForceMode2D.Impulse);
+
+            SetRigidBodyType(RigidbodyType2D.Kinematic);
+        }
+
         protected void ApplyGravityFailSafe()
         {
             if (GameManager.Singleton == null || GameManager.Singleton.nearbyNode == null) {
@@ -682,6 +702,9 @@ namespace StudioByStorm.Gravity.Player {
         protected void Move(bool ignoreDuringLerp = false)
         {
             if (ignoreDuringLerp && lerping) {
+                return;
+            }
+            if (_isLanding) {
                 return;
             }
             //Vector2 nearbyNodePosition = (Vector2)GameManager.Singleton.player.transform.position;//$$Testing could make it like this if we wanted player to be able to just move on flat ground
@@ -864,6 +887,18 @@ namespace StudioByStorm.Gravity.Player {
             } else if (! isInAtmosphere && ! isOnSurface) {
                 canDash = true;
                 didJump = false;
+            }
+
+            //clean up isLanding state
+            if (_isLanding && 
+                Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, gameObject.transform.position) < 2.0f && 
+                rigidbody.bodyType == RigidbodyType2D.Kinematic) 
+            {
+
+                _isLanding = false;
+                SetRigidBodyType(RigidbodyType2D.Dynamic);
+                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].transform.position = gameObject.transform.position;
+                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].SetActive(true);
             }
         }
     }

@@ -75,6 +75,12 @@ namespace StudioByStorm.FX {
         public GameObject PurpleNodeConnectPrefab;
         public GameObject OrangeNodeConnectPrefab;
         public GameObject WhitNodeConnectPrefab;
+
+        public Dictionary<NodeColor, GameObject> SuperHeroLandingImpacts = new Dictionary<NodeColor, GameObject>();
+        public GameObject BlueImpactPrefab;
+        public GameObject GreenImpactPrefab;
+        public GameObject WhiteImpactPrefab;
+        public GameObject PurpleImpactPrefab;
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
@@ -212,6 +218,11 @@ namespace StudioByStorm.FX {
 
             PlayerJumpPool = ScriptableObject.CreateInstance<Pool>();
             PlayerJumpPool.DependencyInjection(PlayerJumpFX, FXParent, playerJumpPoolSize);
+
+            SuperHeroLandingImpacts.Add(NodeColor.Blue, Instantiate(BlueImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Purple, Instantiate(PurpleImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Green, Instantiate(GreenImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
         }
 
         void Start()

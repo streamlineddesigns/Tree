@@ -94,7 +94,7 @@ namespace StudioByStorm {
 
             //EdgeButtonClickListener();
 
-            AutoConnectionHelperListener();
+            if (!GameManager.Singleton.PlayerController.isLanding) AutoConnectionHelperListener();
         }
 
         protected void edgeSelectionCheck()

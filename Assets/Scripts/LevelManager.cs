@@ -291,9 +291,9 @@ namespace StudioByStorm {
 
             SetEdgeRenderers();
 
-            //$$TODO we all ready have a centroid in our LevelData.. plus we can't just randomly throw the player there because there could be obstacles
-            float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
-            GameManager.Singleton.player.transform.position = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
+            
+            //run the start animation where the player gets pulled to the start node 
+            StartCoroutine(PlayerSuperHeroLandingHelper());
             GameManager.Singleton.FXManager.SeaDust.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
 
             //save our node ids with animations
@@ -302,6 +302,15 @@ namespace StudioByStorm {
             CreateFullAdjacencyList();
             //create our horizontal/vertical adjacency list
             StartCoroutine(createHorizontalVerticalAdjacencyList());
+        }
+
+        IEnumerator PlayerSuperHeroLandingHelper()
+        {
+            yield return new WaitUntil(() => GameManager.Singleton.player.activeSelf);
+            //$$TODO we all ready have a centroid in our LevelData.. plus we can't just randomly throw the player there because there could be obstacles
+            float[] coords = ML.Math.GetCentroid(nodePositions.ToArray());
+            Vector3 startPosition = (CurrentLevelData.PlayerStartPosition != null) ? CurrentLevelData.PlayerStartPosition : new Vector3(coords[0], coords[1], 0);
+            GameManager.Singleton.PlayerController.SuperHeroLandingStartAnimation(startPosition);
         }
 
         IEnumerator createHorizontalVerticalAdjacencyList()

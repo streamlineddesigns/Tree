@@ -352944,6 +352944,10 @@ MonoBehaviour:
   PurpleNodeConnectPrefab: {fileID: 3913314710773551414, guid: 4a86dd3ff5b6acf45ae664fed46ff5d7, type: 3}
   OrangeNodeConnectPrefab: {fileID: 3913314710773551414, guid: e6b9477efa091a94a8f3083dcfd11aaa, type: 3}
   WhitNodeConnectPrefab: {fileID: 3913314710773551414, guid: bbc0ddc1f5c83a04aa8f6d0e470ceb20, type: 3}
+  BlueImpactPrefab: {fileID: 3405405521148865040, guid: e157f4e93f6bcae4ea8408d40e10e27e, type: 3}
+  GreenImpactPrefab: {fileID: 3405405521148865040, guid: 44edf3d84356fce4eb6ce22c0a281e5f, type: 3}
+  WhiteImpactPrefab: {fileID: 3405405521148865040, guid: 496688b6247214649af0131ed8b9de74, type: 3}
+  PurpleImpactPrefab: {fileID: 3405405521148865040, guid: ea60deb366f378140b1d9efa48c41fdb, type: 3}
 --- !u!1 &1465466731
 GameObject:
   m_ObjectHideFlags: 0
@@ -588968,6 +588972,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e85e80673c86cf84b9a8a1f96009ca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!70 &197071776336523298 stripped
+CapsuleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8320743398400624245, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+  m_PrefabInstance: {fileID: 8197989163703973486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &197071776336523299 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 8320743398400624244, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+  m_PrefabInstance: {fileID: 8197989163703973486}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8197989163703973486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -589041,6 +589055,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8320743398400624241, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: isLanding
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8320743398400624241, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: rigidbody
+      value: 
+      objectReference: {fileID: 197071776336523299}
+    - target: {fileID: 8320743398400624241, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
       propertyPath: glowMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 2e7000709d71efd4e886fd8a8e0592e1, type: 2}
@@ -589052,6 +589074,18 @@ PrefabInstance:
       propertyPath: lightMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 2e7000709d71efd4e886fd8a8e0592e1, type: 2}
+    - target: {fileID: 8320743398400624241, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: capsuleCollider2D
+      value: 
+      objectReference: {fileID: 197071776336523298}
+    - target: {fileID: 8320743398400624241, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: isLandingCleanedUp
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8320743398400624245, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8320743398400624247, guid: 97c39063b0bf4b949b6cd808e4d8a7a0, type: 3}
       propertyPath: m_RootOrder
       value: 7

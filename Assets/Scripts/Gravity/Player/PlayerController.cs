@@ -44,7 +44,10 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
         [SerializeField] private GameObject trail;
-
+        [SerializeField] public GameObject moltenAnimationGameObject;
+        [SerializeField] public Animator moltenAnimatorController;
+        [SerializeField] public SpriteRenderer moltenSpriteRenderer;
+        [SerializeField] public Sprite moltenSprite;
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
 
         [SerializeField] public Material glowMaterial;
@@ -666,7 +669,6 @@ namespace StudioByStorm.Gravity.Player {
         //the start animation where the player super hero lands on the start node
         public void SuperHeroLandingStartAnimation(Vector3 startPosition)
         {
-            Debug.Log(startPosition);
             Vector3 newPosition = startPosition + (startPosition.normalized * 7.0f * 3.0f);
             gameObject.transform.position = newPosition;
             

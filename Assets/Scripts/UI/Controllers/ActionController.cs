@@ -42,6 +42,7 @@ namespace StudioByStorm {
         private const float JUMPTHRESHOLD = 0.1f;
         private bool isJumpLocked;
         private bool isEdgeOutOfBounds = false;
+        private float spoolUpTimer;
 
         void Update()
         {
@@ -68,6 +69,14 @@ namespace StudioByStorm {
             }
 
             if (isJumpIndicatorOn) {
+                spoolUpTimer += Time.deltaTime;
+                if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && spoolUpTimer >= 1.0f) {
+                    Color c = Color.white;
+                    c.a = 1.0f;
+                    GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
+                    GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", true);
+                }
+                
                 // Calculate the angle between the direction and the X axis
                 float angle = Mathf.Atan2(JumpJoyStick.ScaledValue.y, JumpJoyStick.ScaledValue.x) * Mathf.Rad2Deg;
 
@@ -89,6 +98,15 @@ namespace StudioByStorm {
                     float easedValue = DOVirtual.EasedValue(0.1f, 0.2f, clampedPercent, Ease.Linear);
                     Vector3 playerScale = new Vector3(0.1f, easedValue, 0.1f);
                     //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
+                }
+            } else {
+                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && spoolUpTimer >= 1.0f) {
+                    Color c = Color.white;
+                    c.a = 0.0f;
+                    GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
+                    GameManager.Singleton.PlayerController.moltenSpriteRenderer.sprite = GameManager.Singleton.PlayerController.moltenSprite;
+                    spoolUpTimer = 0;
+                    GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", false);
                 }
             }
 

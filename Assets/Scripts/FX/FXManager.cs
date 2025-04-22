@@ -81,6 +81,8 @@ namespace StudioByStorm.FX {
         public GameObject GreenImpactPrefab;
         public GameObject WhiteImpactPrefab;
         public GameObject PurpleImpactPrefab;
+
+        
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;

@@ -42,7 +42,6 @@ namespace StudioByStorm {
         private const float JUMPTHRESHOLD = 0.1f;
         private bool isJumpLocked;
         private bool isEdgeOutOfBounds = false;
-        private float spoolUpTimer;
 
         void Update()
         {
@@ -69,8 +68,10 @@ namespace StudioByStorm {
             }
 
             if (isJumpIndicatorOn) {
-                spoolUpTimer += Time.deltaTime;
-                if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && spoolUpTimer >= 1.0f) {
+
+                GameManager.Singleton.PlayerController.spoolUpTimer += Time.deltaTime;
+
+                if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 0.25f) {
                     Color c = Color.white;
                     c.a = 1.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
@@ -100,12 +101,12 @@ namespace StudioByStorm {
                     //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
                 }
             } else {
-                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && spoolUpTimer >= 1.0f) {
+                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 0.25f) {
                     Color c = Color.white;
                     c.a = 0.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.sprite = GameManager.Singleton.PlayerController.moltenSprite;
-                    spoolUpTimer = 0;
+                    GameManager.Singleton.PlayerController.spoolUpTimer = 0;
                     GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", false);
                 }
             }

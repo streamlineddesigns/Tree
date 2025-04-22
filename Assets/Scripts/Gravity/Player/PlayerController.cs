@@ -48,6 +48,7 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] public Animator moltenAnimatorController;
         [SerializeField] public SpriteRenderer moltenSpriteRenderer;
         [SerializeField] public Sprite moltenSprite;
+        [SerializeField] public float spoolUpTimer;
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
 
         [SerializeField] public Material glowMaterial;

@@ -76,6 +76,7 @@ namespace StudioByStorm {
                     c.a = 1.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
                     GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", true);
+                    AudioManager.Singleton.Play(SoundType.Anger);
                 }
                 
                 // Calculate the angle between the direction and the X axis
@@ -101,14 +102,15 @@ namespace StudioByStorm {
                     //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
                 }
             } else {
-                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 1.0f) {
+                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp")) {
                     Color c = Color.white;
                     c.a = 0.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.sprite = GameManager.Singleton.PlayerController.moltenSprite;
-                    GameManager.Singleton.PlayerController.spoolUpTimer = 0;
                     GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", false);
                 }
+
+                GameManager.Singleton.PlayerController.spoolUpTimer = 0;
             }
 
             //EdgeButtonClickListener();

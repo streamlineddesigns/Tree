@@ -196,5 +196,6 @@ namespace StudioByStorm {
         CantSetEdge,
         StarAwarded,
         Applause,
+        Anger,
     }
 }

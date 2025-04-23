@@ -71,7 +71,7 @@ namespace StudioByStorm {
 
                 GameManager.Singleton.PlayerController.spoolUpTimer += (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) ? Time.deltaTime : 0.0f;
 
-                if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 0.25f) {
+                if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 1.0f) {
                     Color c = Color.white;
                     c.a = 1.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
@@ -101,7 +101,7 @@ namespace StudioByStorm {
                     //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
                 }
             } else {
-                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 0.25f) {
+                if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 1.0f) {
                     Color c = Color.white;
                     c.a = 0.0f;
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;

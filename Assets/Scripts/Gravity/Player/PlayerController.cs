@@ -681,7 +681,7 @@ namespace StudioByStorm.Gravity.Player {
             gameObject.transform.position = newPosition;
             
             gravityDirection = (startPosition - newPosition).normalized;
-            rigidbody.AddForce(gravityDirection * (gravityForce * 2.0f * Time.fixedDeltaTime), ForceMode2D.Impulse);
+            rigidbody.AddForce(gravityDirection * (gravityForce * Time.fixedDeltaTime), ForceMode2D.Impulse);
 
             SetRigidBodyType(RigidbodyType2D.Kinematic);
         }

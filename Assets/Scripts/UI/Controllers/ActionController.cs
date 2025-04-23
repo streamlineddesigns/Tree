@@ -39,7 +39,7 @@ namespace StudioByStorm {
         public LeanJoystick TravelJoyStick;
         public float jumpScaling = 0.75f;
         private bool canParentNodesConnect = true;
-        private const float JUMPTHRESHOLD = 0.1f;
+        private const float JUMPTHRESHOLD = 0.2f;
         private bool isJumpLocked;
         private bool isEdgeOutOfBounds = false;
 

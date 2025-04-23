@@ -69,7 +69,7 @@ namespace StudioByStorm {
 
             if (isJumpIndicatorOn) {
 
-                GameManager.Singleton.PlayerController.spoolUpTimer += Time.deltaTime;
+                GameManager.Singleton.PlayerController.spoolUpTimer += (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) ? Time.deltaTime : 0.0f;
 
                 if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 0.25f) {
                     Color c = Color.white;

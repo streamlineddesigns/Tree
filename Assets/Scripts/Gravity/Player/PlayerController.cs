@@ -60,7 +60,7 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;
-        private bool isEnforcingLightColor = false;
+        private bool isEnforcingLightColor = true;
         private int currentNodeGameID;
         private bool isPositionHelperPlayingBack;
         private Material currentMaterial;
@@ -119,7 +119,7 @@ namespace StudioByStorm.Gravity.Player {
         private int playerNodeID = -1;
         private bool isMoving;
 
-        private bool isToggleColorOn = true;
+        private bool isToggleColorOn = false;
         private Tween PlayerScaleUpTween;
         private Tween PlayerScaleDownTween;
 
@@ -224,6 +224,13 @@ namespace StudioByStorm.Gravity.Player {
             } else {
                 isToggleColorOn = true;
             }*/
+
+            isLightColor = true;
+            light2D.SetActive(true);
+            spriteRenderer.color = lightColor;
+            spriteRenderer.material = lightMaterial;
+            currentColor = lightColor;
+            currentMaterial = lightMaterial;
         }
 
         public bool isPlayerGrounded() 

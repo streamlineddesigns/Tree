@@ -21,7 +21,7 @@ namespace StudioByStorm {
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.tag == "Player" && isRotateOn) {
+            if ((other.tag == "Player" || other.tag == "Impact") && isRotateOn) {
                 //turn rotate off
                 isRotateOn = false;
                 //get direction

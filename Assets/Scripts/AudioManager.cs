@@ -197,5 +197,6 @@ namespace StudioByStorm {
         StarAwarded,
         Applause,
         Anger,
+        ProjectileBasic,
     }
 }

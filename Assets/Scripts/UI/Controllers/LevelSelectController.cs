@@ -128,6 +128,9 @@ namespace StudioByStorm.UI.Controllers {
                             LevelSelectButtonView.levelNumberText[l].text = GameManager.Singleton.LevelManager.romanNumerals[levelID + 1];
                         }
 
+                        //boss check
+                        LevelSelectButtonView.BossCheck(ChapterID, levelID + 1);
+
                         //set level lock status
                         if (! isLevelLocked) {
                             //set completion progress indicators
@@ -138,6 +141,8 @@ namespace StudioByStorm.UI.Controllers {
                         } else {
                             LevelSelectButtonView.SetLockStatus(true);
                         }
+
+                        
 
                         levelID++;
                     }

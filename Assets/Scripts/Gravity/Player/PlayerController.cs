@@ -128,6 +128,13 @@ namespace StudioByStorm.Gravity.Player {
         private GameObject previousTrailFX;
         private ActionController AC;
         private bool _isLanding = true;
+
+        public float projectileFireRate {
+            get {
+                return _projectileFireRate;
+            }
+        }
+        private float _projectileFireRate = 0.5f;
         
         void Awake()
         {
@@ -383,6 +390,22 @@ namespace StudioByStorm.Gravity.Player {
                     currentMaterial = darkMaterial;
                 }
             }  
+        }
+
+        public void SpawnProjectile()
+        {
+            GameObject projectile = GameManager.Singleton.FXManager.ProjectilePool[ProjectileType.Basic].Get();
+            projectile.transform.position = gameObject.transform.position;
+            projectile.transform.up = JumpIndicator.transform.up;
+            projectile.SetActive(true);
+            AudioManager.Singleton.Play(SoundType.ProjectileBasic);
+
+            ActionView actionView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.ActionView) as ActionView;
+            Vector2 joystickDir = actionView.LeanJoyStick.ScaledValue;
+            float projectileKickBack = 0.05f;
+            
+            gameObject.transform.DOPunchPosition(joystickDir, projectileKickBack, 10, 0.0f, false);
+            GameManager.Singleton.CameraController.Shake(0.01f, 0.01f, joystickDir.x, joystickDir.y);
         }
 
         private void HitObstacle()

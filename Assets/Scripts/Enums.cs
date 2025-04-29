@@ -69,8 +69,8 @@ namespace StudioByStorm {
         AgeVerificationView,
         LanguageSelectView,
         LevelPackSelectView,
-
         LevelPackRowView,
+        LevelDotsView,
     }
 
     public enum ViewType
@@ -134,6 +134,10 @@ namespace StudioByStorm {
         English,
         Filipino,
         Spanish,
+    }
+
+    public enum ProjectileType {
+        Basic,
     }
     
 }

@@ -10,12 +10,13 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using MoreMountains.NiceVibrations;
 using GameAnalyticsSDK;
+using StudioByStorm;
 using StudioByStorm.Data;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
 using StudioByStorm.Graph;
-using StudioByStorm;
 using StudioByStorm.Data.LevelChapters;
+using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.Obstacles.Animations;
 using StudioByStorm.Repositories;
@@ -261,6 +262,8 @@ namespace StudioByStorm {
 
         protected void GameStart()
         {
+            BossLevelCheck();
+
             CleanUpOnGameStart();
 
             nodePositions = new List<float[]>();
@@ -302,6 +305,14 @@ namespace StudioByStorm {
             CreateFullAdjacencyList();
             //create our horizontal/vertical adjacency list
             StartCoroutine(createHorizontalVerticalAdjacencyList());
+        }
+
+        private void BossLevelCheck()
+        {
+            LevelDotsView levelDotsView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelDotsView) as LevelDotsView;
+            int pos = (currentChapterID * 3) + displayLevelID % 6;
+            pos = (pos == 0) ? 6 : pos;
+            levelDotsView.SetLevelDots(pos);
         }
 
         IEnumerator PlayerSuperHeroLandingHelper()

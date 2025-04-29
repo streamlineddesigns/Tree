@@ -65,6 +65,8 @@ namespace StudioByStorm.Tutorials {
 
         protected override IEnumerator TutorialUpdate()
         {
+            yield return new WaitUntil(() => actionController.ActionModel.CurrentNode != null);
+
             while(isRunning) {
                 if (startEdgeID == -1) {
                     if (actionController.ActionModel.CurrentEdge != null) {

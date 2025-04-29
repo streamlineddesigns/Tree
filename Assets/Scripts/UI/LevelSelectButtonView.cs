@@ -11,9 +11,13 @@ namespace StudioByStorm.UI {
         public int ChapterID;
         public GameObject starsContainer;
         public GameObject lockContainer;
+        public Image outline;
+        [SerializeField] private Color bossColor;
         public Text[] levelNumberText;
+        public Image lockImage;
         public Image[] progressImages;
         public bool IsLocked;
+        private bool isBoss;
 
         public void SetLockStatus(bool isLocked)
         {
@@ -22,6 +26,9 @@ namespace StudioByStorm.UI {
             if (IsLocked) {
                 starsContainer.SetActive(false);
                 lockContainer.SetActive(true);
+                if (isBoss) {
+                    lockImage.color = bossColor;
+                }
             } else {
                 starsContainer.SetActive(true);
                 lockContainer.SetActive(false);
@@ -37,8 +44,22 @@ namespace StudioByStorm.UI {
         {
             for (int i = 0; i < progressImages.Length; i++) {
                 if (completionValue > i) {
-                    progressImages[i].color = completionColor;
+                    progressImages[i].color = (isBoss) ? bossColor : completionColor;
                 }
+            }
+        }
+
+        public void BossCheck(int chapterID, int displayLevelID)
+        {
+            int pos = (chapterID * 3) + displayLevelID % 6;
+            pos = (pos == 0) ? 6 : pos;
+
+            if (pos == 6) {
+                isBoss = true;
+                levelNumberText[1].color = bossColor;
+                outline.color = bossColor;
+            } else {
+                isBoss = false;
             }
         }
     }

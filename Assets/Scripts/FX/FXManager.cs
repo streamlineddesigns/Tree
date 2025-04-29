@@ -82,7 +82,8 @@ namespace StudioByStorm.FX {
         public GameObject WhiteImpactPrefab;
         public GameObject PurpleImpactPrefab;
 
-        
+        public Dictionary<ProjectileType, Pool> ProjectilePool = new Dictionary<ProjectileType, Pool>();
+        public GameObject ProjectileBasicPrefab;
         
         protected int connectionIndicatorPoolSize = 5;
         protected int edgeLightPoolSize = 3;
@@ -93,6 +94,7 @@ namespace StudioByStorm.FX {
         protected int colorCount = 4;
         protected int boidPerColor = 3;
         protected int nodeConnectPoolSizes = 2;
+        protected int projectilePoolSizes = 1;
         protected int wrongObstacleHitPoolSize = 3;
         protected int correctObstacleHitPoolSize = 3;
         protected int playerTrailPoolSize = 3;
@@ -225,6 +227,10 @@ namespace StudioByStorm.FX {
             SuperHeroLandingImpacts.Add(NodeColor.Purple, Instantiate(PurpleImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Green, Instantiate(GreenImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
+
+            Pool BasicProjectilePool = ScriptableObject.CreateInstance<Pool>();
+            BasicProjectilePool.DependencyInjection(ProjectileBasicPrefab, FXParent, projectilePoolSizes);
+            ProjectilePool.Add(ProjectileType.Basic, BasicProjectilePool);
         }
 
         void Start()

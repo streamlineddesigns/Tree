@@ -42,6 +42,7 @@ namespace StudioByStorm {
         private const float JUMPTHRESHOLD = 0.2f;
         private bool isJumpLocked;
         private bool isEdgeOutOfBounds = false;
+        private int projectilesFired;
 
         void Update()
         {
@@ -77,6 +78,9 @@ namespace StudioByStorm {
                     GameManager.Singleton.PlayerController.moltenSpriteRenderer.color = c;
                     GameManager.Singleton.PlayerController.moltenAnimatorController.SetBool("bSpoolUp", true);
                     AudioManager.Singleton.Play(SoundType.Anger);
+                } else if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= (2.0f + (1.0f * projectilesFired * GameManager.Singleton.PlayerController.projectileFireRate))) {
+                    projectilesFired++;
+                    GameManager.Singleton.PlayerController.SpawnProjectile();
                 }
                 
                 // Calculate the angle between the direction and the X axis
@@ -111,6 +115,7 @@ namespace StudioByStorm {
                 }
 
                 GameManager.Singleton.PlayerController.spoolUpTimer = 0;
+                projectilesFired = 0;
             }
 
             //EdgeButtonClickListener();

@@ -183,23 +183,23 @@ namespace StudioByStorm {
             gameObject.transform.DOMove(originalPosition, 1.0f, false);
         }
 
-        public void Shake(float intensity, float duration)
+        public void Shake(float intensity, float duration, float x = 0.0f, float y = 0.0f)
         {
             if (! isShaking) {
                 isShaking = true;
-                StartCoroutine(ShakeCoroutine(intensity, duration));
+                StartCoroutine(ShakeCoroutine(intensity, duration, x, y));
             }
         }
 
-        private IEnumerator ShakeCoroutine(float intensity, float duration)
+        private IEnumerator ShakeCoroutine(float intensity, float duration, float x = 0.0f, float y = 0.0f)
         {
             Vector3 originalPosition = gameObject.transform.localPosition;
             float elapsed = 0.0f;
 
             while (elapsed < duration)
             {
-                float xOffset = Random.Range(-1f, 1f) * intensity;
-                float yOffset = Random.Range(-1f, 1f) * intensity;
+                float xOffset = (x != 0.0f) ? x * intensity : Random.Range(-1f, 1f) * intensity;
+                float yOffset = (y != 0.0f) ? y * intensity : Random.Range(-1f, 1f) * intensity;
 
                 gameObject.transform.localPosition = originalPosition + new Vector3(xOffset, yOffset, 0);
 

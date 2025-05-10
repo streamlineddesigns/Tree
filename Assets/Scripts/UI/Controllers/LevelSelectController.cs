@@ -81,7 +81,7 @@ namespace StudioByStorm.UI.Controllers {
                     int previousRowsLastLevelID = cutSceneID * 3 - 1;
                     string previousRowsLastLevelIDKEY = (LevelPackSelectController.currentLevelPackName + "-" + ChapterID +"-"+ previousRowsLastLevelID);
                     bool isPreviousRowsLastLevelCompleted = (GameManager.Singleton.ProgressManager.GetLevelProgress(previousRowsLastLevelIDKEY) > 0);
-                    bool isCutSceneLocked = ((cutSceneID == 0 || isPreviousRowsLastLevelCompleted) && /*maybe unecessary after here*/ highestCutSceneAllowedToBePlayed >= cutSceneID) ? false : true;
+                    bool isCutSceneLocked = false;//$$testing DEFAULT TO NO CUT SCENESE LOCKED ((cutSceneID == 0 || isPreviousRowsLastLevelCompleted) && /*maybe unecessary after here*/ highestCutSceneAllowedToBePlayed >= cutSceneID) ? false : true;
 
                     //place a cut scene button 
                     GameObject cutsceneselectbuttongo = Instantiate(CutSceneSelectButtonGO, levelrowgo.transform);
@@ -112,7 +112,7 @@ namespace StudioByStorm.UI.Controllers {
                         int highestLevelAllowedToBePlayed = highestLevelCompletedForCurrentChapter + 1;
 
                         bool isRowCutSceneCompleted = GameManager.Singleton.ProgressManager.GetCutSceneProgress(cutSceneKey);
-                        bool isLevelLocked = (isRowCutSceneCompleted && highestLevelAllowedToBePlayed >= levelID) ? false : true;
+                        bool isLevelLocked = false;//$$testing DEFAULTING TO NO LEVELS LOCKED (isRowCutSceneCompleted && highestLevelAllowedToBePlayed >= levelID) ? false : true;
 
                         GameObject levelselectbuttongo = Instantiate(LevelSelectButtonGO, levelrowgo.transform);
                         LevelSelectButtonView LevelSelectButtonView = levelselectbuttongo.GetComponent<LevelSelectButtonView>();

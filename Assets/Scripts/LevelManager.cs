@@ -310,7 +310,8 @@ namespace StudioByStorm {
         private void BossLevelCheck()
         {
             LevelDotsView levelDotsView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelDotsView) as LevelDotsView;
-            int pos = (currentChapterID * 3) + displayLevelID % 6;
+            int previousLevels = currentChapterID * 15;
+            int pos = ((previousLevels) + displayLevelID) % 6;
             pos = (pos == 0) ? 6 : pos;
             levelDotsView.SetLevelDots(pos);
         }

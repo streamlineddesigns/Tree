@@ -51,7 +51,8 @@ namespace StudioByStorm.UI {
 
         public void BossCheck(int chapterID, int displayLevelID)
         {
-            int pos = (chapterID * 3) + displayLevelID % 6;
+            int previousLevels = chapterID * 15;
+            int pos = ((previousLevels) + displayLevelID) % 6;
             pos = (pos == 0) ? 6 : pos;
 
             if (pos == 6) {

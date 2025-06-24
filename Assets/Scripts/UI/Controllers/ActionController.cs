@@ -69,8 +69,9 @@ namespace StudioByStorm {
             }
 
             if (isJumpIndicatorOn) {
-
-                GameManager.Singleton.PlayerController.spoolUpTimer += (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) ? Time.deltaTime : 0.0f;
+                
+                //SPOOL UP FEATURE $$$$
+                /*GameManager.Singleton.PlayerController.spoolUpTimer += (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) ? Time.deltaTime : 0.0f;
 
                 if (! GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= 1.0f) {
                     Color c = Color.white;
@@ -81,7 +82,7 @@ namespace StudioByStorm {
                 } else if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp") && GameManager.Singleton.PlayerController.spoolUpTimer >= (2.0f + (1.0f * projectilesFired * GameManager.Singleton.PlayerController.projectileFireRate))) {
                     projectilesFired++;
                     GameManager.Singleton.PlayerController.SpawnProjectile();
-                }
+                }*/
                 
                 // Calculate the angle between the direction and the X axis
                 float angle = Mathf.Atan2(JumpJoyStick.ScaledValue.y, JumpJoyStick.ScaledValue.x) * Mathf.Rad2Deg;

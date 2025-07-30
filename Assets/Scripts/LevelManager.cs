@@ -218,16 +218,19 @@ namespace StudioByStorm {
                 //now we can update our playing animations list based on connectedNodesWithAnimations
                 playingAnimations = connectedNodesWithAnimations.Select(x => x).ToList();
 
-
-                //updated color swapping mechanic ie swap out nearby obstacle part colors only
-                connectedNodesWithAnimations.ForEach(x => {
-                    if (!RedundantNodesWithAnimations.Contains(x)) {
-                        List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
-                        for (int i = 0; i < parts.Count; i++) {
-                            parts[i].SwapColor();
+                //if the player isn't doing the super hero landing lol
+                if (! GameManager.Singleton.PlayerController.isLanding) {
+                    //updated color swapping mechanic ie swap out nearby obstacle part colors only
+                    connectedNodesWithAnimations.ForEach(x => {
+                        if (!RedundantNodesWithAnimations.Contains(x)) {
+                            List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                            for (int i = 0; i < parts.Count; i++) {
+                                parts[i].SwapColor();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                
             }
         }
 

@@ -22,6 +22,10 @@ namespace StudioByStorm.Obstacles.Animations {
             
             for (int i = 0; i < nodeIDs.Count; i++) {
                 GameManager.Singleton.CompositeAnimationRegistry.Add(nodeIDs[i], this);
+
+                for (int j = 0; j < animations.Length; j++) {
+                    animations[j].RegisterObstaclePartsViaNodeID(nodeIDs[i]);
+                }
             }
         }
 

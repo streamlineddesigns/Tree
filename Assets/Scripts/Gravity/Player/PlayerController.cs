@@ -53,9 +53,9 @@ namespace StudioByStorm.Gravity.Player {
 
         [SerializeField] public Material glowMaterial;
         [SerializeField] private Material lightMaterial;
-        [SerializeField] private Material darkMaterial;
-        [SerializeField] private Color lightColor;
-        [SerializeField] private Color darkColor;
+        [SerializeField] public Material darkMaterial;
+        [SerializeField] public Color lightColor;
+        [SerializeField] public Color darkColor;
         [SerializeField] private Color hitObstacleColor;
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;

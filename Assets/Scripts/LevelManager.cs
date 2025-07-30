@@ -20,6 +20,7 @@ using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.Obstacles.Animations;
 using StudioByStorm.Repositories;
+using StudioByStorm.Obstacles;
 
 namespace StudioByStorm {
 
@@ -175,6 +176,25 @@ namespace StudioByStorm {
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);
                 }
+                //keep list of redundant nodes with animations ie animations that use multiple nodes
+                List<int> RedundantNodesWithAnimations = new List<int>();
+
+                connectedNodesWithAnimations.ForEach(x => {
+                    CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                    int count = 0;
+                    for (int j = 0; j < currentAnim.nodeIDs.Count; j++) {
+                        //if the node ID isn't a "connected node" then its redundant
+                        if (!connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                        } else if (connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                            count++;
+                        }
+                        //if another one was all ready counted, then this one is redundant
+                        if (count > 1) {
+                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                        }
+                    }
+                });
 
                 //Debug.Log("Connected nodes with animations: " + connectedNodesWithAnimations.Count);
 
@@ -197,6 +217,17 @@ namespace StudioByStorm {
 
                 //now we can update our playing animations list based on connectedNodesWithAnimations
                 playingAnimations = connectedNodesWithAnimations.Select(x => x).ToList();
+
+
+                //updated color swapping mechanic ie swap out nearby obstacle part colors only
+                connectedNodesWithAnimations.ForEach(x => {
+                    if (!RedundantNodesWithAnimations.Contains(x)) {
+                        List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                        for (int i = 0; i < parts.Count; i++) {
+                            parts[i].SwapColor();
+                        }
+                    }
+                });
             }
         }
 

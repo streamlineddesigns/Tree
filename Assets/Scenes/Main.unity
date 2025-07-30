@@ -287694,6 +287694,7 @@ Transform:
   - {fileID: 798866196}
   - {fileID: 1445011370}
   - {fileID: 67729801}
+  - {fileID: 1494065179}
   - {fileID: 260663850}
   - {fileID: 1674240910}
   - {fileID: 1038175837}
@@ -367898,6 +367899,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1494065178
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1494065179}
+  - component: {fileID: 1494065180}
+  m_Layer: 0
+  m_Name: ObstaclePartRegistry
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1494065179
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494065178}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1143133383}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1494065180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494065178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40502f2e9380c134dbc2a5e717ba676a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1494743463
 GameObject:
   m_ObjectHideFlags: 0
@@ -394015,6 +394060,7 @@ MonoBehaviour:
   ColorNodeRegistry: {fileID: 260663851}
   ViewRegistry: {fileID: 882131201}
   NodeRegistry: {fileID: 67729802}
+  ObstaclePartRegistry: {fileID: 1494065180}
   EdgeRegistry: {fileID: 798866197}
   CompositeAnimationRegistry: {fileID: 1674240911}
   PlayerHashData:

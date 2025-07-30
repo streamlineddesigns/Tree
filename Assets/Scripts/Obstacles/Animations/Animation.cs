@@ -21,6 +21,8 @@ namespace StudioByStorm.Obstacles.Animations {
         protected int[] buildingBlockPositionIndexs;
         protected int[] buildingBlockRotationIndexs;
 
+        private ObstaclePart[] obstacleParts;
+
         protected void Awake()
         {
             int size = (buildingBlocks != null) ? buildingBlocks.Length : 0;
@@ -33,11 +35,16 @@ namespace StudioByStorm.Obstacles.Animations {
         protected void Start()
         {
             if (buildingBlocks != null) {
+
+                obstacleParts = new ObstaclePart[buildingBlocks.Length];
+
                 for (int i = 0; i < buildingBlocks.Length; i++) {
                     buildingBlockPositions[i] = buildingBlocks[i].transform.localPosition;
                     buildingBlockRotations[i] = buildingBlocks[i].transform.localRotation;
                     buildingBlockPositionIndexs[i] = i;
                     buildingBlockRotationIndexs[i] = i;
+
+                    obstacleParts[i] = buildingBlocks[i].GetComponent<ObstaclePart>();
                 }
             }
             
@@ -55,6 +62,13 @@ namespace StudioByStorm.Obstacles.Animations {
         protected void OnDisable()
         {
             StopAllCoroutines();
+        }
+
+        public void RegisterObstaclePartsViaNodeID(int nodeID)
+        {
+            for (int i = 0; i < obstacleParts.Length; i++) {
+                obstacleParts[i].RegisterViaNodeID(nodeID);
+            }
         }
 
         public void Animate() 

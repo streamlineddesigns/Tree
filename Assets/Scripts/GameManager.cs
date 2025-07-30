@@ -33,6 +33,7 @@ namespace StudioByStorm {
         public ColorNodeRegistry ColorNodeRegistry;
         public ViewRegistry ViewRegistry;
         public NodeRegistry NodeRegistry;
+        public ObstaclePartRegistry ObstaclePartRegistry;
         public EdgeRegistry EdgeRegistry;
         public CompositeAnimationRegistry CompositeAnimationRegistry;
         public HashData PlayerHashData;

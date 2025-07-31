@@ -36,6 +36,7 @@ namespace StudioByStorm.Tutorials {
             int id = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[1];
             nodeIDsWithSwipeAnimation = new int[1];
             nodeIDsWithSwipeAnimation[0] = id;
+            GameManager.Singleton.PlayerController.isGravityAvailable = false;
         }
 
         protected override IEnumerator TutorialUpdate()
@@ -79,6 +80,7 @@ namespace StudioByStorm.Tutorials {
             GameManager.Singleton.PlayerController.SetRigidBodyType(RigidbodyType2D.Dynamic);
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.Stop();
             GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(false);
+            GameManager.Singleton.PlayerController.isGravityAvailable = true;
         }
     }
 

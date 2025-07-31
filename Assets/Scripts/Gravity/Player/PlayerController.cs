@@ -43,6 +43,7 @@ namespace StudioByStorm.Gravity.Player {
                 return spriteRenderer;
             }
         }
+        public bool isGravityAvailable = true;
         [SerializeField] private GameObject trail;
         [SerializeField] public GameObject moltenAnimationGameObject;
         [SerializeField] public Animator moltenAnimatorController;
@@ -352,7 +353,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface && !isLevelComplete) {
+            if (! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete) {
                 ApplyGravityFailSafe();
             }
 

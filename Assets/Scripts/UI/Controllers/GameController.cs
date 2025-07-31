@@ -8,19 +8,46 @@ namespace StudioByStorm.UI.Controllers {
 
     public class GameController : Controller
     {
+        [SerializeField] private GameObject[] ResetButtons;
+        private GameObject ActiveResetButton;
         public GameObject Centroid;
         protected bool isZooming = false;
 
         void OnEnable()
         {
             base.OnEnable();
-            GameEventPublisher.OnStateChange += OnStateChange;
+            GameEventPublisher.OnStateChange      += OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
         }
 
         void OnDisable()
         {
             base.OnDisable();
-            GameEventPublisher.OnStateChange -= OnStateChange;
+            GameEventPublisher.OnStateChange      -= OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
+        }
+
+        protected void OnPlayerNodeChange(int nodeID)
+        {
+            //need the current node
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+            //need to check if that color has a completed path
+            bool isNodePathCompleted = (GameManager.Singleton.LevelManager.parentColorsConnected.ContainsKey(currentNode.NodeColor) && GameManager.Singleton.LevelManager.parentColorsConnected[currentNode.NodeColor]);
+
+            //fetch the action controller
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            //need to check if a current edge exists & the node path is completed & if its color is different than the current nodes color
+            if (actionController.ActionModel.CurrentEdge != null && 
+                isNodePathCompleted && 
+                actionController.ActionModel.CurrentEdge.EdgeColor != currentNode.NodeColor) {
+            //show the reset button for the color that is the current node color
+                if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+                int nodeColorIndex = (int) currentNode.NodeColor;
+                ActiveResetButton = ResetButtons[nodeColorIndex];
+                ActiveResetButton.SetActive(true);
+            } else {
+                if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+            }
         }
 
         public void PauseButtonClick()
@@ -87,6 +114,8 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void ResetButtonClick(NodeColor inputColor)
         {
+            if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+            
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             Edge activeEdgeDuringReset = ActionController.ActionModel.CurrentEdge;
 

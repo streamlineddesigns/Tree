@@ -331,7 +331,8 @@ namespace StudioByStorm {
             
             //run the start animation where the player gets pulled to the start node 
             StartCoroutine(PlayerSuperHeroLandingHelper());
-            GameManager.Singleton.FXManager.SeaDust.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+            GameManager.Singleton.FXManager.SeaDustBossLevel.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+            GameManager.Singleton.FXManager.SeaDustRegularLevel.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
 
             //save our node ids with animations
             nodeIDsWithAnimations = CurrentLevelData.obstacleNodeIDs.SelectMany<List<int>, int>(x => x).ToList();
@@ -348,6 +349,16 @@ namespace StudioByStorm {
             int pos = ((previousLevels) + displayLevelID) % 6;
             pos = (pos == 0) ? 6 : pos;
             levelDotsView.SetLevelDots(pos);
+            bool isBossLevel = (pos == 6);
+            //boss level
+            if (isBossLevel) {
+                GameManager.Singleton.FXManager.SeaDustBossLevel.SetActive(true);
+                GameManager.Singleton.FXManager.SeaDustRegularLevel.SetActive(false);
+            //regular level
+            } else {
+                GameManager.Singleton.FXManager.SeaDustRegularLevel.SetActive(true);
+                GameManager.Singleton.FXManager.SeaDustBossLevel.SetActive(false);
+            }
         }
 
         IEnumerator PlayerSuperHeroLandingHelper()

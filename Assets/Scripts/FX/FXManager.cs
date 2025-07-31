@@ -18,7 +18,8 @@ namespace StudioByStorm.FX {
         public Transform FXParent;
         public SpatialHash<HashData> SpatialHash;
         //Sea Dust FX
-        public GameObject SeaDust;
+        public GameObject SeaDustBossLevel;
+        public GameObject SeaDustRegularLevel;
         //Boids FX
         public GameObject BoidPrefab;
         public BoidConfig BoidConfig;

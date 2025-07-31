@@ -417,7 +417,7 @@ namespace StudioByStorm {
 
             //activate node ripple FX
             GameObject NodeRippleInStart = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
-            GameObject NodeRippleInEnd = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
+            //GameObject NodeRippleInEnd = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
             
             Node StartNode = (edge.parentID == ActionModel.CurrentNode.ID) ? GameManager.Singleton.NodeRegistry.TryGetValue(edge.parentID) : GameManager.Singleton.NodeRegistry.TryGetValue(edge.childID);
             Vector3 StartNodeTargetRotation = StartNode.InnerGraphic.gameObject.transform.localEulerAngles;
@@ -445,6 +445,7 @@ namespace StudioByStorm {
             Vector3 EndNodeTargetRotation = EndNode.InnerGraphic.gameObject.transform.localEulerAngles;
             EndNodeTargetRotation.z += 720.0f;
             EndNode.InnerGraphic.gameObject.transform.DORotate(EndNodeTargetRotation, 1.0f, RotateMode.LocalAxisAdd);
+            GameObject NodeRippleInEnd = GameManager.Singleton.FXManager.NodeRippleInPool.Get();
             NodeRippleInEnd.transform.position = EndNode.gameObject.transform.position;
             NodeRippleInEnd.SetActive(true);
             lerping = false;

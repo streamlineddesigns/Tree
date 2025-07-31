@@ -62,7 +62,8 @@ namespace StudioByStorm.UI.Controllers {
 
         IEnumerator HandleUIOnFTUE()
         {
-            StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;
+            //put user straight into the 1st cut scene
+            /*StartController StartController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.StartView) as StartController;
             StartController.StartLevelSelectButtonClick();
 
             View LevelSelectView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.LevelSelectView) as View;
@@ -70,8 +71,10 @@ namespace StudioByStorm.UI.Controllers {
             GameManager.Singleton.UIController.Close(ViewName.LevelSelectView);
 
             LevelSelectController LevelSelectController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.LevelSelectView) as LevelSelectController;
-            LevelSelectController.CutSceneSelectButtonClick(0,0);
+            LevelSelectController.CutSceneSelectButtonClick(0,0);*/
 
+
+            yield return null;
             FTUEManager.singleton.SetFTUEFirstOpenComplete();
         }
     }

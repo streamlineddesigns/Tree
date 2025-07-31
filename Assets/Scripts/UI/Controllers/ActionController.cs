@@ -160,6 +160,7 @@ namespace StudioByStorm {
                         OnTravelJoyStickDown(true);
                     }  else {
                         OnJumpJoyStickDown(false, clickPos);
+                        OnTravelJoyStickDown(false);
                     }
                 } else {
                     //if there was all ready a selected edge
@@ -170,6 +171,7 @@ namespace StudioByStorm {
                         }
                     }
                     OnJumpJoyStickDown(false, clickPos);
+                    OnTravelJoyStickDown(false);
                 }
                 
             }
@@ -297,6 +299,8 @@ namespace StudioByStorm {
         public void OnTravelJoyStickDown(bool isUsable)
         {
             if (! isUsable) {
+                travelsearching = false;
+                travelIsUp = false;
                 return;
             }
             travelsearching = true;

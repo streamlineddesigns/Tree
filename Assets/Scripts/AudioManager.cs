@@ -198,5 +198,6 @@ namespace StudioByStorm {
         Applause,
         Anger,
         ProjectileBasic,
+        Scissors,
     }
 }

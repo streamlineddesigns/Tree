@@ -160,7 +160,7 @@ namespace StudioByStorm.UI.Controllers {
                 return;
             }
 
-            AudioManager.Singleton.Play(SoundType.ButtonPress);
+            AudioManager.Singleton.Play(SoundType.Scissors);
             //Get all the blue nodes
             List<Node> blueNodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(inputColor);
             //Get all the blue edges

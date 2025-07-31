@@ -453,8 +453,8 @@ namespace StudioByStorm {
         public void ManualOnTriggerEnter2D(Node node)
         {
             if (ActionView.JumpJoyStick.ScaledValue != Vector2.zero) {
-                isJumpIndicatorOn = true;
-                GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
+                //isJumpIndicatorOn = true;
+                //GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
             }
             ActionModel.CurrentNode = node;
             EnableActionButtons();

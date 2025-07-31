@@ -7,6 +7,7 @@ using DG.Tweening;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.ML.Clustering;
+using StudioByStorm.Optimizations;
 
 namespace StudioByStorm.Tutorials {
 
@@ -26,6 +27,7 @@ namespace StudioByStorm.Tutorials {
         private ActionController actionController;
         private bool isJumpLocked;
         private Edge secondaryEdge;
+        private int targetNodeID;
 
         protected void OnEnable()
         {
@@ -112,6 +114,8 @@ namespace StudioByStorm.Tutorials {
             
             //the animation steps
             if (targetNode != null) {
+                targetNodeID = targetNode.ID;
+
                 actionController.GetEdgeButtonClick();
 
                 Edge currentEdge = actionController.ActionModel.CurrentEdge;
@@ -159,6 +163,7 @@ namespace StudioByStorm.Tutorials {
                     GameObject startGO = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID).gameObject;
                     GameObject endGO = GameManager.Singleton.NodeRegistry.TryGetValue(startNodeIDToEndNodeIDForTutorials[nodeID]).gameObject;
                     GameManager.Singleton.FXManager.fingerSlingShotAnimation.SetPositions(startGO, endGO);
+
                     if (!GameManager.Singleton.FXManager.fingerSlingShotAnimation.isAnimating) {
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.gameObject.SetActive(true);
                         GameManager.Singleton.FXManager.fingerSlingShotAnimation.Animate();
@@ -166,6 +171,27 @@ namespace StudioByStorm.Tutorials {
                 }
 
                 yield return new WaitForSeconds(0.0333f);
+            }
+        }
+
+        protected void Update()
+        {
+            if (Input.GetMouseButton(0)) {
+                Vector2 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 cellID = GameManager.Singleton.SpatialHashManager.SpatialHash.GetCellIDForPos(clickPos);
+                List<HashData> nearbyNodes = GameManager.Singleton.SpatialHashManager.SpatialHash.GetNearby(cellID);
+                List<HashData> nearestNeighbor = KNN.GetKNearestNeighbors(clickPos, nearbyNodes, 1);
+                HashData nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : null;
+                Node selectedNode = nearbyNode.GetData<Node>();
+                bool isNearbyNodeWithinClickDistance = (nearbyNode != null && selectedNode != null && selectedNode.ID == targetNodeID && ML.Math.GetDistance(nearbyNode.gameObject.transform.position, clickPos) <= 3.0f);
+
+                if (isNearbyNodeWithinClickDistance) {
+                    isJumpLocked = false;
+                    actionController.LockJump(isJumpLocked);
+                } else {
+                    isJumpLocked = true;
+                    actionController.LockJump(isJumpLocked);
+                }
             }
         }
 

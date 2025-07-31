@@ -45,6 +45,8 @@ namespace StudioByStorm {
         private bool isJumpLocked;
         private bool isEdgeOutOfBounds = false;
         private int projectilesFired;
+        private Node clickedNode;
+        private int autoConnectionHelperCounter;
 
         void Update()
         {
@@ -128,7 +130,15 @@ namespace StudioByStorm {
 
             //EdgeButtonClickListener();
 
-            if (!GameManager.Singleton.PlayerController.isLanding) AutoConnectionHelperListener();
+            if (!GameManager.Singleton.PlayerController.isLanding) {
+                //edge case
+                if (ActionModel.CurrentNode != null && (GameManager.Singleton.PlayerController.isPlayerGrounded() || GameManager.Singleton.PlayerController.isPlayerInAtmosphere())) {
+                    ManualOnTriggerEnter2D(ActionModel.CurrentNode);
+                }
+
+                if (autoConnectionHelperCounter % 10 == 0) AutoConnectionHelperListener();
+                autoConnectionHelperCounter++;
+            }
         }
 
         private void ClickListener()
@@ -150,7 +160,7 @@ namespace StudioByStorm {
                 //the player clicked a node on screen
                 if (isNearbyNodeWithinClickDistance) {
                     //cache the clicked node
-                    Node clickedNode = nearbyNode.GetData<Node>();
+                    clickedNode = nearbyNode.GetData<Node>();
                     //get the list of nodes connected to the current node in the adjacency list
                     List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
                     //then check if the clicked node is inside that list & not the current node
@@ -158,9 +168,11 @@ namespace StudioByStorm {
                         //then we can send its position to OnJumpJoyStickDown & refuse all other inputs to it
                         OnJumpJoyStickDown(true, nearbyNode.gameObject.transform.position);
                         OnTravelJoyStickDown(true);
+
                     }  else {
                         OnJumpJoyStickDown(false, clickPos);
                         OnTravelJoyStickDown(false);
+                        clickedNode = null;
                     }
                 } else {
                     //if there was all ready a selected edge
@@ -172,17 +184,17 @@ namespace StudioByStorm {
                     }
                     OnJumpJoyStickDown(false, clickPos);
                     OnTravelJoyStickDown(false);
+                    clickedNode = null;
                 }
                 
             }
 
             //click up
-            if (isNearbyNodeWithinClickDistance && Input.GetMouseButtonUp(0)) {
-                Node clickedNode = nearbyNode.GetData<Node>();
-                if (clickedNode != null && ActionModel.CurrentNode.ID != clickedNode.ID) {
-                    OnJumpJoyStickUp(true);
-                    OnTravelJoyStickUp(true);
-                }
+            if (clickedNode != null && ActionModel.CurrentNode.ID != clickedNode.ID && Input.GetMouseButtonUp(0)) {
+                //jump up
+                OnJumpJoyStickUp(true);
+                OnTravelJoyStickUp(true);
+                clickedNode = null;
             }
 
         }
@@ -469,11 +481,6 @@ namespace StudioByStorm {
 
         protected void AutoConnectionHelperListener()
         {
-            //edge case
-            if (ActionModel.CurrentNode != null && (GameManager.Singleton.PlayerController.isPlayerGrounded() || GameManager.Singleton.PlayerController.isPlayerInAtmosphere()) && ActionModel.CurrentNode.NumOfConnections == 0 && ActionModel.CurrentNode.NodeType == NodeType.Parent && !ActionModel.CurrentNode.currentEdge.gameObject.activeSelf) {
-                ManualOnTriggerEnter2D(ActionModel.CurrentNode);
-            }
-
             if (ActionModel.CurrentNode != null && ActionView.GetEdgeButton.interactable) {
                 GetEdgeButtonClick();
             } else if (ActionModel.CurrentEdge != null && ActionView.SetEdgeButton.interactable) {
@@ -590,10 +597,12 @@ namespace StudioByStorm {
 
         public void GetEdgeButtonClick()
         {
-            ActionModel.CurrentNode.NumOfConnections++;
-            ActionView.DisableGetEdgeButton();
-            ActionView.GetEdgeButtonClick();
-            AudioManager.Singleton.Play(SoundType.GetEdge);
+            if (ActionModel.CurrentNode != null && ActionView.GetEdgeButton.interactable) {
+                ActionModel.CurrentNode.NumOfConnections++;
+                ActionView.DisableGetEdgeButton();
+                ActionView.GetEdgeButtonClick();
+                AudioManager.Singleton.Play(SoundType.GetEdge);
+            }
         }
 
         protected IEnumerator EdgeLightFXTravel(Edge currentEdge)

@@ -128,6 +128,7 @@ namespace StudioByStorm.Gravity.Player {
         private GameObject previousTrailFX;
         private ActionController AC;
         private bool _isLanding = true;
+        private bool isLevelComplete;
 
         public float projectileFireRate {
             get {
@@ -191,6 +192,8 @@ namespace StudioByStorm.Gravity.Player {
 
         protected void OnLevelComplete()
         {
+            isLevelComplete = true;
+
             JumpIndicator.SetActive(false);
 
             SetRigidBodyType(RigidbodyType2D.Static);
@@ -349,7 +352,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface) {
+            if (! isInAtmosphere && !isOnSurface && !isLevelComplete) {
                 ApplyGravityFailSafe();
             }
 

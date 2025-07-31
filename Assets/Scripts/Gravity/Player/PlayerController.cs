@@ -349,7 +349,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface && !canDash && dashCount == 0) {
+            if (! isInAtmosphere && !isOnSurface) {
                 ApplyGravityFailSafe();
             }
 
@@ -717,8 +717,9 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (Mathf.Abs(rigidbody.velocity.x) <= minimumSpaceVelocity.x && Mathf.Abs(rigidbody.velocity.y) <= minimumSpaceVelocity.y) {
-                gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
-                rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
+                //gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
+                //rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
+                Move();
             }
         }
 

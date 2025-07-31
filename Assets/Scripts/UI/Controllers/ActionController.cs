@@ -8,6 +8,8 @@ using StudioByStorm.UI;
 using StudioByStorm.ML;
 using StudioByStorm.FX;
 using StudioByStorm.EventPublishers;
+using StudioByStorm.Optimizations;
+using StudioByStorm.ML.Clustering;
 using Lean.Gui;
 
 namespace StudioByStorm {
@@ -46,6 +48,8 @@ namespace StudioByStorm {
 
         void Update()
         {
+            ClickListener();
+            
             if (GameManager.Singleton.UIController.CurrentViewScreen.ViewName != ViewName.GameView) {
                 return;
             }
@@ -85,27 +89,30 @@ namespace StudioByStorm {
                 }*/
                 
                 // Calculate the angle between the direction and the X axis
-                float angle = Mathf.Atan2(JumpJoyStick.ScaledValue.y, JumpJoyStick.ScaledValue.x) * Mathf.Rad2Deg;
+                Vector2 dir = - (jumpJoystickDownPoint - (Vector2)GameManager.Singleton.player.transform.position).normalized;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
                 // Rotate the object around the Z axis to match the direction
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
 
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.position = GameManager.Singleton.PlayerController.gameObject.transform.position;
                 
-                Vector3 magnitude = new Vector3 (JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling);
+                Vector3 magnitude = new Vector3 (jumpScaling, jumpScaling, jumpScaling);
+                //Vector3 magnitude = new Vector3 (JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling, JumpJoyStick.ScaledValue.magnitude * jumpScaling);
                 GameManager.Singleton.PlayerController.JumpIndicator.transform.localScale = magnitude;
 
                 //do the same stuff for the player too
-                if (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) {
+                //if (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) {
                     //rotate the player sprite too
                     GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                     //scale the player sprite too
-                    float percent = JumpJoyStick.ScaledValue.magnitude / 1.0f;
+                    float percent = 1.0f;
+                    //float percent = JumpJoyStick.ScaledValue.magnitude / 1.0f;
                     float clampedPercent = Mathf.Min(percent, 1.0f);
                     float easedValue = DOVirtual.EasedValue(0.1f, 0.2f, clampedPercent, Ease.Linear);
                     Vector3 playerScale = new Vector3(0.1f, easedValue, 0.1f);
                     //GameManager.Singleton.PlayerController.sprite.transform.localScale = playerScale;
-                }
+                //}
             } else {
                 if (GameManager.Singleton.PlayerController.moltenAnimatorController.GetBool("bSpoolUp")) {
                     Color c = Color.white;
@@ -124,12 +131,68 @@ namespace StudioByStorm {
             if (!GameManager.Singleton.PlayerController.isLanding) AutoConnectionHelperListener();
         }
 
+        private void ClickListener()
+        {
+            if (GameManager.Singleton.PlayerController.isLanding) {
+                return;
+            }
+
+            Vector2 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 cellID = GameManager.Singleton.SpatialHashManager.SpatialHash.GetCellIDForPos(clickPos);
+            List<HashData> nearbyNodes = GameManager.Singleton.SpatialHashManager.SpatialHash.GetNearby(cellID);
+            List<HashData> nearestNeighbor = KNN.GetKNearestNeighbors(clickPos, nearbyNodes, 1);
+            HashData nearbyNode = (nearestNeighbor.Count > 0 && nearestNeighbor[0] != null) ? nearestNeighbor[0] : null;
+            bool isNearbyNodeWithinClickDistance = (nearbyNode != null && ML.Math.GetDistance(nearbyNode.gameObject.transform.position, clickPos) <= 3.0f);
+        
+            //click held down
+            if (Input.GetMouseButton(0))
+            {
+                //the player clicked a node on screen
+                if (isNearbyNodeWithinClickDistance) {
+                    //cache the clicked node
+                    Node clickedNode = nearbyNode.GetData<Node>();
+                    //get the list of nodes connected to the current node in the adjacency list
+                    List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
+                    //then check if the clicked node is inside that list & not the current node
+                    if (clickedNode != null && ActionModel.CurrentNode.ID != clickedNode.ID) {
+                        //then we can send its position to OnJumpJoyStickDown & refuse all other inputs to it
+                        OnJumpJoyStickDown(true, nearbyNode.gameObject.transform.position);
+                        OnTravelJoyStickDown(true);
+                    }  else {
+                        OnJumpJoyStickDown(false, clickPos);
+                    }
+                } else {
+                    //if there was all ready a selected edge
+                    if (currentSelectedEdge != null) {
+                        //set the current selected back to original material
+                        for (int i = 0; i < currentSelectedEdge.LinkSpriteRenderers.Length; i++) {
+                            currentSelectedEdge.LinkSpriteRenderers[i].material = originalMaterial;
+                        }
+                    }
+                    OnJumpJoyStickDown(false, clickPos);
+                }
+                
+            }
+
+            //click up
+            if (isNearbyNodeWithinClickDistance && Input.GetMouseButtonUp(0)) {
+                Node clickedNode = nearbyNode.GetData<Node>();
+                if (clickedNode != null && ActionModel.CurrentNode.ID != clickedNode.ID) {
+                    OnJumpJoyStickUp(true);
+                    OnTravelJoyStickUp(true);
+                }
+            }
+
+        }
+
         protected void edgeSelectionCheck()
         {
+            Vector2 dir = (jumpJoystickDownPoint - (Vector2)GameManager.Singleton.player.transform.position).normalized;
             Vector2 tempUpPoint = Input.mousePosition;
             //check the direction of the joystick
             //Vector2 joystickDir = tempUpPoint - DownPoint;
-            Vector2 joystickDir = -TravelJoyStick.ScaledValue;
+            Vector2 joystickDir = dir;
+            //Vector2 joystickDir = -TravelJoyStick.ScaledValue;
             //get the full adjacency list
             List<int> levelAdjacentNodeIDS = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
             //get a list of the ids the current node is connected to from the adjacency list
@@ -186,8 +249,9 @@ namespace StudioByStorm {
                 }
 
                 //update jump indicator
-                isJumpIndicatorOn = true;
-                GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
+                //isJumpIndicatorOn = true;
+                //GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
+                
                 /*if (currentJumpIndicatorColor != originalJumpIndicatorColor) {
                     currentJumpIndicatorColor = originalJumpIndicatorColor;
                     GameManager.Singleton.PlayerController.JumpIndicator.transform.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => {x.color = currentJumpIndicatorColor;});
@@ -230,15 +294,21 @@ namespace StudioByStorm {
             }
         }
         
-        public void OnTravelJoyStickDown()
+        public void OnTravelJoyStickDown(bool isUsable)
         {
+            if (! isUsable) {
+                return;
+            }
             travelsearching = true;
             travelIsUp = false;
             DownPoint = Input.mousePosition;
         }
 
-        public void OnTravelJoyStickUp()
+        public void OnTravelJoyStickUp(bool isUsable)
         {
+            if (! isUsable) {
+                return;
+            }
             travelsearching = false;
             travelIsUp = true;
             UpPoint = Input.mousePosition;
@@ -248,8 +318,10 @@ namespace StudioByStorm {
         
         void OnTravelJoystickDirectionChange(Vector2 Direction, bool calledByCoyote = false)
         {
+            Vector2 dir = (jumpJoystickDownPoint - (Vector2)GameManager.Singleton.player.transform.position).normalized;
+
             if (lerping && !calledByCoyote) {
-                StartCoroutine(CoyoteLerp(-TravelJoyStick.ScaledValue));
+                StartCoroutine(CoyoteLerp(dir));
                 return;
             }
 
@@ -258,7 +330,7 @@ namespace StudioByStorm {
             }
             //check the direction of the joystick
             //Vector2 joystickDir = UpPoint - DownPoint;
-            Vector2 joystickDir = (calledByCoyote) ? Direction : -TravelJoyStick.ScaledValue;
+            Vector2 joystickDir = (calledByCoyote) ? Direction : dir;
             //get a list of the ids the current node is connected to from the adjacency list
             List<int> levelAdjacentNodeIDS = GameManager.Singleton.FullAdjacencyList.Get(ActionModel.CurrentNode.ID);
 
@@ -453,8 +525,17 @@ namespace StudioByStorm {
             isJumpLocked = isLocked;
         }
 
-        public void OnJumpJoyStickDown()
+        public void OnJumpJoyStickDown(bool isUsable, Vector2 downPosition)
         {
+            if (! isUsable) {
+                jumpIsUpSafetySwitch = false;
+                jumpIsUp = true;
+                isJumpIndicatorOn = false;
+                GameManager.Singleton.PlayerController.JumpIndicator.SetActive(false);
+                downPosition = ActionModel.CurrentNode.gameObject.transform.position;
+                return;
+            }
+
             if (isJumpLocked || !GameManager.Singleton.player.activeSelf || !GameManager.Singleton.PlayerController.isDashAvailable) {
                 return;
             }
@@ -462,26 +543,31 @@ namespace StudioByStorm {
             //$$HERE
             jumpIsUpSafetySwitch = true;
             jumpIsUp = false;
-            jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
+            //jumpJoystickDownPoint = ActionView.JumpJoyStick.ScaledValue;
+            jumpJoystickDownPoint = downPosition;
 
             isJumpIndicatorOn = true;
             GameManager.Singleton.PlayerController.JumpIndicator.SetActive(true);
         }
 
-        public void OnJumpJoyStickUp()
-        {
+        public void OnJumpJoyStickUp(bool isUsable)
+        {         
+            if (! isUsable) {
+                return;
+            }
+
             if (isJumpLocked || !GameManager.Singleton.player.activeSelf) {
                 return;
             }
 
             jumpIsUpSafetySwitch = false;
             StartCoroutine(DeplayedJumpIsUp());
-            jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
+            /*jumpJoystickUpPoint = ActionView.JumpJoyStick.ScaledValue;
             if (jumpJoystickUpPoint.magnitude < JUMPTHRESHOLD) {
                 return;
-            }
-            Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
-            GameManager.Singleton.PlayerController.JumpOverride(-jumpJoystickUpPoint);
+            }*/
+            Vector2 dir = (jumpJoystickDownPoint - (Vector2)GameManager.Singleton.player.transform.position).normalized;
+            GameManager.Singleton.PlayerController.JumpOverride(dir);
             ActionView.OnJumpJoyStickUp();
 
             isJumpIndicatorOn = false;

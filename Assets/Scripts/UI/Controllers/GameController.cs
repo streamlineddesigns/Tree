@@ -29,6 +29,16 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void OnPlayerNodeChange(int nodeID)
         {
+            StartCoroutine(DelayedOnPlayerNodeChange(nodeID));
+        }
+
+        IEnumerator DelayedOnPlayerNodeChange(int nodeID)
+        {
+            //this is to wait for any connections to be made
+            yield return null;
+            yield return null;
+            yield return null;
+
             //need the current node
             Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
             //need to check if that color has a completed path
@@ -36,17 +46,42 @@ namespace StudioByStorm.UI.Controllers {
 
             //fetch the action controller
             ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+
+            //cache the color connection count
+            int colorIndex = (int) currentNode.NodeColor;
+            int colorConnectionCount = actionController.ActionModel.ColorConnectionsCount[colorIndex];
+
+            //hide the active reset button by default
+            if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+            
             //need to check if a current edge exists & the node path is completed & if its color is different than the current nodes color
-            if (actionController.ActionModel.CurrentEdge != null && 
-                isNodePathCompleted && 
-                actionController.ActionModel.CurrentEdge.EdgeColor != currentNode.NodeColor) {
-            //show the reset button for the color that is the current node color
-                if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+            if (actionController.ActionModel.CurrentEdge != null && isNodePathCompleted && actionController.ActionModel.CurrentEdge.EdgeColor != currentNode.NodeColor) {
+                /*show the reset button for the color that is the current node color*/
                 int nodeColorIndex = (int) currentNode.NodeColor;
                 ActiveResetButton = ResetButtons[nodeColorIndex];
                 ActiveResetButton.SetActive(true);
-            } else {
-                if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+                //Debug.LogError(1);
+
+            //if there is an edge & its the same as the node & theres no connections
+            } else if (actionController.ActionModel.CurrentEdge != null && colorConnectionCount <= 0 && actionController.ActionModel.CurrentEdge.EdgeColor == currentNode.NodeColor) {
+                //do nothing here
+                //Debug.LogError(2);
+
+            //if there is an edge at least
+            } else if (actionController.ActionModel.CurrentEdge != null) {
+                /*show the reset button for the color that is the current edge color*/
+                int edgeColorIndex = (int) actionController.ActionModel.CurrentEdge.EdgeColor;
+                ActiveResetButton = ResetButtons[edgeColorIndex];
+                ActiveResetButton.SetActive(true);
+                //Debug.LogError(3);
+
+            //might as well show the node color then
+            } else if (colorConnectionCount >= 1) {
+                /*show the reset button for the color that is the current node color*/
+                int nodeColorIndex = (int) currentNode.NodeColor;
+                ActiveResetButton = ResetButtons[nodeColorIndex];
+                ActiveResetButton.SetActive(true);
+                //Debug.LogError(4);
             }
         }
 
@@ -114,8 +149,8 @@ namespace StudioByStorm.UI.Controllers {
 
         protected void ResetButtonClick(NodeColor inputColor)
         {
-            if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
-            
+            //if (ActiveResetButton != null) ActiveResetButton.SetActive(false);
+
             ActionController ActionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
             Edge activeEdgeDuringReset = ActionController.ActionModel.CurrentEdge;
 
@@ -179,6 +214,10 @@ namespace StudioByStorm.UI.Controllers {
                     blueEdges[i].gameObject.SetActive(false);
                 }
             }
+
+            //fetch the action controller
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            OnPlayerNodeChange(actionController.ActionModel.CurrentNode.ID);
             
         }
         

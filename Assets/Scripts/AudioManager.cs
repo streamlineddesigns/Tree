@@ -199,5 +199,6 @@ namespace StudioByStorm {
         Anger,
         ProjectileBasic,
         Scissors,
+        CountdownTick,
     }
 }

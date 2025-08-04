@@ -550,7 +550,8 @@ namespace StudioByStorm.Gravity.Player {
             
             if (collider.CompareTag("Obstacle")) {
                 //get the obstacle part
-                ColorType obstacleColorType = collider.GetComponent<ObstaclePart>().colorType;
+                ObstaclePart obstaclePart = collider.GetComponent<ObstaclePart>();
+                ColorType obstacleColorType = obstaclePart.colorType;
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
                 if ((isLightColor && obstacleColorType == ColorType.Light) 
                      || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
@@ -570,7 +571,7 @@ namespace StudioByStorm.Gravity.Player {
                 //otherwise
                 } else {
                     //make sure we didn't hit an obstacle while traveling because that doesn't count
-                    if (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale) {
+                    if (obstaclePart.isBoid || (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
                         if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {

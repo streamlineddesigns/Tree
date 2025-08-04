@@ -91,9 +91,9 @@ namespace StudioByStorm.FX {
         protected int nodeRippleInPoolSize = 3;
         protected int nodeWindInPoolSize = 3;
         protected int fireworkPoolSize = 5;
-        protected int boidPoolSize = 12;
+        protected int boidPoolSize = 5;
         protected int colorCount = 4;
-        protected int boidPerColor = 3;
+        protected int boidPerColor = 5;
         protected int nodeConnectPoolSizes = 2;
         protected int projectilePoolSizes = 1;
         protected int wrongObstacleHitPoolSize = 3;
@@ -252,18 +252,27 @@ namespace StudioByStorm.FX {
             }
         }
         
-        protected void GenerateBoids()
+        public void GenerateBoids(int boidCount = 5)
         {
-            for (int i = 0; i < GameManager.Singleton.ColorModel.colorsInUse.Length; i++) {
-                for (int j = 0; j < boidPerColor; j++) {
-                    NodeColor currentColor = GameManager.Singleton.ColorModel.colorsInUse[i];
-                    int nodeColorIndex = (int) currentColor;
-                    Color color = GameManager.Singleton.ColorModel.lightColor[nodeColorIndex];
+            //for (int i = 0; i < GameManager.Singleton.ColorModel.colorsInUse.Length; i++) {
+                for (int j = 0; j < boidCount; j++) {
+                    //NodeColor currentColor = GameManager.Singleton.ColorModel.colorsInUse[i];
+                    //int nodeColorIndex = (int) currentColor;
+                    //Color color = GameManager.Singleton.ColorModel.lightColor[nodeColorIndex];
+                    
                     Boid boid = BoidPool.Get().GetComponent<Boid>();
-                    boid.SetColor(color);
+                    //boid.SetColor(color);
+                    
+                    //get random direction
+                    Vector2 randomDirection = Vector2.zero;
+                    randomDirection.x = (float)UnityEngine.Random.Range(-10, 10);
+                    randomDirection.y = (float)UnityEngine.Random.Range(-10, 10);
+                    //set random direction w/ 28 magnitude
+                    boid.gameObject.transform.position = ((Vector2)GameManager.Singleton.LevelManager.CurrentLevelData.Centroid) + (randomDirection.normalized * 28.0f);
+
                     boid.gameObject.SetActive(true);
                 }
-            }
+            //}
         }
 
         IEnumerator DelayedLaunchFireWork()

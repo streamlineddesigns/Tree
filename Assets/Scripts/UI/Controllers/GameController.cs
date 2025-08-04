@@ -1,17 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using StudioByStorm.EventPublishers;
 using DG.Tweening;
+using TMPro;
 
 namespace StudioByStorm.UI.Controllers {
 
     public class GameController : Controller
     {
         [SerializeField] private GameObject[] ResetButtons;
+        [SerializeField] private GameObject bossCountdownTimerContainer;
+        [SerializeField] private TMP_Text bossCountdownTimerText;
         private GameObject ActiveResetButton;
+        public bool isBossLevelLost {
+            get {
+                return _isBossLevelLost;
+            }
+        }
         public GameObject Centroid;
         protected bool isZooming = false;
+        private bool _isBossLevel = false;
+        private float _currentLevelCompletionTime;
+        private bool _isBossLevelLost = false;
+        private bool isLevelCompleted;
 
         void OnEnable()
         {
@@ -27,9 +40,58 @@ namespace StudioByStorm.UI.Controllers {
             GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
         }
 
+        public void SetBossLevelState(bool isBossLevel, float currentLevelCompletionTime)
+        {
+            _isBossLevel = isBossLevel;
+            _currentLevelCompletionTime = currentLevelCompletionTime;
+        }
+
         protected void OnPlayerNodeChange(int nodeID)
         {
             StartCoroutine(DelayedOnPlayerNodeChange(nodeID));
+        }
+
+        IEnumerator DelayedBossLevelInit()
+        {
+            yield return null;
+            _isBossLevelLost = false;
+            isLevelCompleted = false;
+            //init the timer text
+            float timer = _currentLevelCompletionTime;
+            string label = timer.ToString() + "s";
+            bossCountdownTimerText.text = label;
+            //set to active
+            bossCountdownTimerContainer.SetActive(true);
+
+            //wait until player isn't landing anymore
+            yield return new WaitUntil(()=> !GameManager.Singleton.PlayerController.isLanding);
+            //animated countdown timer
+            while (timer >= 0.0f && !isLevelCompleted) {
+                float timerForLabel = (timer <= 0.0f) ? 0.0f : timer;
+                label = timerForLabel.ToString() + "s";
+                bossCountdownTimerText.text = label;
+                
+                if (timer < 0.0f) {
+                    
+                    
+                } else {
+                    //pulse the timer
+                    bossCountdownTimerContainer.transform.DOScale(1.25f, 0.125f).OnComplete(() => {
+                        bossCountdownTimerContainer.transform.DOScale(1.0f, 0.125f);
+                        AudioManager.Singleton.Play(SoundType.CountdownTick);
+                    });
+                }
+                
+
+                yield return new WaitForSeconds(1.0f);
+                timer -= 1.0f;
+            }
+
+
+            if (!isLevelCompleted && !isBossLevelLost) {
+                GameManager.Singleton.FXManager.GenerateBoids(16);
+                _isBossLevelLost = true;
+            }
         }
 
         IEnumerator DelayedOnPlayerNodeChange(int nodeID)
@@ -109,6 +171,7 @@ namespace StudioByStorm.UI.Controllers {
                     break;
 
                 case GameState.LevelComplete :
+                    isLevelCompleted = true;
                     break;
 
                 case GameState.LevelExited :
@@ -224,6 +287,10 @@ namespace StudioByStorm.UI.Controllers {
         protected void GameStart()
         {
             Centroid.transform.position = GameManager.Singleton.LevelManager.CurrentLevelData.Centroid;
+
+            if (_isBossLevel) {
+                StartCoroutine(DelayedBossLevelInit());
+            }
         }
 
         protected void LevelExited()

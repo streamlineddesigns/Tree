@@ -296,8 +296,6 @@ namespace StudioByStorm {
 
         protected void GameStart()
         {
-            BossLevelCheck();
-
             CleanUpOnGameStart();
 
             nodePositions = new List<float[]>();
@@ -340,6 +338,9 @@ namespace StudioByStorm {
             CreateFullAdjacencyList();
             //create our horizontal/vertical adjacency list
             StartCoroutine(createHorizontalVerticalAdjacencyList());
+
+            //check if its a boss level
+            BossLevelCheck();
         }
 
         private void BossLevelCheck()
@@ -350,6 +351,13 @@ namespace StudioByStorm {
             pos = (pos == 0) ? 6 : pos;
             levelDotsView.SetLevelDots(pos);
             bool isBossLevel = (pos == 6);
+            //check for current level completion time
+            float currentLevelCompletionTime = levelChapters.chapters[currentChapterID].levels[currentLevelID].completionTime;
+            //1.5 x nodes will be default completion time
+            int calculatedCompletionTime = (int)((currentLevelNodeCount * 1.5f) + 0.5f);
+            currentLevelCompletionTime = (currentLevelCompletionTime <= 0.0f) ? ((float)(calculatedCompletionTime)) : currentLevelCompletionTime;
+            //get game controller
+            GameController gameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
             //boss level
             if (isBossLevel) {
                 GameManager.Singleton.FXManager.SeaDustBossLevel.SetActive(true);
@@ -359,6 +367,8 @@ namespace StudioByStorm {
                 GameManager.Singleton.FXManager.SeaDustRegularLevel.SetActive(true);
                 GameManager.Singleton.FXManager.SeaDustBossLevel.SetActive(false);
             }
+            //set the boss level state
+            gameController.SetBossLevelState(isBossLevel, currentLevelCompletionTime);
         }
 
         IEnumerator PlayerSuperHeroLandingHelper()

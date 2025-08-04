@@ -8,6 +8,7 @@ namespace StudioByStorm.Data.LevelChapters {
     public struct Level
     {
         public TextAsset levelFile;
+        public float completionTime;
     }
 
 }

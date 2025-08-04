@@ -7,6 +7,7 @@ namespace StudioByStorm.Obstacles {
     public class ObstaclePart : MonoBehaviour
     {
         public ColorType colorType;
+        public bool isBoid;
 
         public void RegisterViaNodeID(int nodeID)
         {

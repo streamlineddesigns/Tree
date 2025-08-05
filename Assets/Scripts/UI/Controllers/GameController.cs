@@ -172,6 +172,7 @@ namespace StudioByStorm.UI.Controllers {
 
                 case GameState.LevelComplete :
                     isLevelCompleted = true;
+                    GameManager.Singleton.FXManager.BoidTargets = null;
                     break;
 
                 case GameState.LevelExited :

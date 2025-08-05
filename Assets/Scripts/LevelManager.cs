@@ -353,8 +353,8 @@ namespace StudioByStorm {
             bool isBossLevel = (pos == 6);
             //check for current level completion time
             float currentLevelCompletionTime = levelChapters.chapters[currentChapterID].levels[currentLevelID].completionTime;
-            //1.5 x nodes will be default completion time
-            int calculatedCompletionTime = (int)((currentLevelNodeCount * 1.5f) + 0.5f);
+            //1.25 x nodes will be default completion time
+            int calculatedCompletionTime = (int)((currentLevelNodeCount * 1.25f) + 0.5f);
             currentLevelCompletionTime = (currentLevelCompletionTime <= 0.0f) ? ((float)(calculatedCompletionTime)) : currentLevelCompletionTime;
             //get game controller
             GameController gameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;

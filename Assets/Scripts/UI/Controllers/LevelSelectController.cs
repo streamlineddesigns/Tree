@@ -50,6 +50,10 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator DelayedShow()
         {
             yield return null;
+
+            bool isCutSceneHighestUnlocked = true;
+            CutSceneSelectButtonView highestCutSceneSelectButtonView = null;
+            LevelSelectButtonView highestLevelSelectButtonView = null;
             
             for (int i = 0; i < GameManager.Singleton.LevelManager.levelChapters.chapters.Count; i++) {
                 Chapter currentChapter = GameManager.Singleton.LevelManager.levelChapters.chapters[i];
@@ -79,9 +83,17 @@ namespace StudioByStorm.UI.Controllers {
                     int highestCutSceneAllowedToBePlayed = highestCutSceneCompletedForCurrentChapter + 1;
 
                     int previousRowsLastLevelID = cutSceneID * 3 - 1;
+                    int previousChapterID = ChapterID - 1;
+
                     string previousRowsLastLevelIDKEY = (LevelPackSelectController.currentLevelPackName + "-" + ChapterID +"-"+ previousRowsLastLevelID);
                     bool isPreviousRowsLastLevelCompleted = (GameManager.Singleton.ProgressManager.GetLevelProgress(previousRowsLastLevelIDKEY) > 0);
-                    bool isCutSceneLocked = ((cutSceneID == 0 || isPreviousRowsLastLevelCompleted) && /*maybe unecessary after here*/ highestCutSceneAllowedToBePlayed >= cutSceneID) ? false : true;
+
+                    string previousChaptersLastLevelIDKEY = (LevelPackSelectController.currentLevelPackName + "-" + previousChapterID +"-"+ 14);
+                    bool isPreviousChaptersLastLevelCompleted = (GameManager.Singleton.ProgressManager.GetLevelProgress(previousChaptersLastLevelIDKEY) > 0);
+
+                    bool isCutSceneLocked = (((cutSceneID == 0 && ChapterID == 0) || isPreviousRowsLastLevelCompleted) || (cutSceneID == 0 && isPreviousChaptersLastLevelCompleted)) ? false : true;
+
+                    Debug.LogError(GameManager.Singleton.ProgressManager.GetLevelProgress(previousRowsLastLevelIDKEY));
 
                     //place a cut scene button 
                     GameObject cutsceneselectbuttongo = Instantiate(CutSceneSelectButtonGO, levelrowgo.transform);
@@ -100,6 +112,8 @@ namespace StudioByStorm.UI.Controllers {
                         bool cutSceneCompletionValue = GameManager.Singleton.ProgressManager.GetCutSceneProgress(cutSceneKey);
                         CutSceneSelectButtonView.SetProgress(cutSceneCompletionValue, GameManager.Singleton.LevelManager.levelCompletionColor);
                         CutSceneSelectButtonView.SetLockStatus(false);
+                        isCutSceneHighestUnlocked = true;
+                        highestCutSceneSelectButtonView = CutSceneSelectButtonView;
                     } else {
                         CutSceneSelectButtonView.SetLockStatus(true);
                     }
@@ -138,6 +152,8 @@ namespace StudioByStorm.UI.Controllers {
                             int levelCompletionValue = GameManager.Singleton.ProgressManager.GetLevelProgress(levelKey);
                             LevelSelectButtonView.SetProgress(levelCompletionValue, GameManager.Singleton.LevelManager.levelCompletionColor);
                             LevelSelectButtonView.SetLockStatus(false);
+                            isCutSceneHighestUnlocked = false;
+                            highestLevelSelectButtonView = LevelSelectButtonView;
                         } else {
                             LevelSelectButtonView.SetLockStatus(true);
                         }
@@ -147,6 +163,12 @@ namespace StudioByStorm.UI.Controllers {
                         levelID++;
                     }
                 }
+            }
+
+            if (isCutSceneHighestUnlocked) {
+                highestCutSceneSelectButtonView.SetToPlayIndication();
+            } else {
+                highestLevelSelectButtonView.SetToPlayIndication();
             }
 
             yield return null;

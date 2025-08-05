@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace StudioByStorm.UI {
 
@@ -11,8 +12,18 @@ namespace StudioByStorm.UI {
         public int ChapterID;
         public GameObject unlockedContainer;
         public GameObject lockContainer;
+        public GameObject playContainer;
         public Image progressImage;
         public bool IsLocked;
+        public Image playImage;
+        private bool isHighestAvailableToSelect;
+
+        protected void OnEnable()
+        {
+            if (isHighestAvailableToSelect) {
+                StartCoroutine(FadeInOut());
+            }
+        }
 
         public void SetLockStatus(bool isLocked)
         {
@@ -36,6 +47,30 @@ namespace StudioByStorm.UI {
         {
             if (completionValue) {
                 progressImage.color = completionColor;
+            }
+        }
+
+        public void SetToPlayIndication()
+        {
+            playContainer.SetActive(true);
+            lockContainer.SetActive(false);
+            unlockedContainer.SetActive(false);
+
+            isHighestAvailableToSelect = true;
+        }
+
+        IEnumerator FadeInOut()
+        {
+            while(gameObject.activeSelf) {
+
+                playContainer.transform.DOScale(0.6f, 0.0f);
+                yield return null;
+
+                playContainer.transform.DOScale(0.9f, 0.5f);
+                yield return new WaitForSeconds(0.5f);
+
+                playContainer.transform.DOScale(0.6f, 0.5f);
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }

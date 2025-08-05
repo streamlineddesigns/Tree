@@ -168,10 +168,13 @@ namespace StudioByStorm {
                         //then we can send its position to OnJumpJoyStickDown & refuse all other inputs to it
                         OnJumpJoyStickDown(true, nearbyNode.gameObject.transform.position);
                         OnTravelJoyStickDown(true);
+                        GameManager.Singleton.FXManager.SelectionIndicatorFX.transform.position = nearbyNode.gameObject.transform.position;
+                        GameManager.Singleton.FXManager.SelectionIndicatorFX.SetActive(true);
 
                     }  else {
                         OnJumpJoyStickDown(false, clickPos);
                         OnTravelJoyStickDown(false);
+                        GameManager.Singleton.FXManager.SelectionIndicatorFX.SetActive(false);
                         clickedNode = null;
                     }
                 } else {
@@ -184,6 +187,7 @@ namespace StudioByStorm {
                     }
                     OnJumpJoyStickDown(false, clickPos);
                     OnTravelJoyStickDown(false);
+                    GameManager.Singleton.FXManager.SelectionIndicatorFX.SetActive(false);
                     clickedNode = null;
                 }
                 
@@ -195,6 +199,7 @@ namespace StudioByStorm {
                 OnJumpJoyStickUp(true);
                 OnTravelJoyStickUp(true);
                 clickedNode = null;
+                GameManager.Singleton.FXManager.SelectionIndicatorFX.SetActive(false);
             }
 
         }

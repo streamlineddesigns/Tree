@@ -194,6 +194,7 @@ namespace StudioByStorm.FX {
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
 
             SelectionIndicatorFX = Instantiate(SelectionIndicatorPrefab, FXParent);
+            SelectionIndicatorFX.SetActive(false);
 
             fingerSlingShotAnimation = Instantiate(fingerSlingShotAnimationPrefab, tutorialParent).GetComponent<FingerSlingShotAnimation>();
         

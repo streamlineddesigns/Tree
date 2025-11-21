@@ -41,9 +41,6 @@ namespace StudioByStorm.FX {
         public GameObject EdgeLightPrefab;
         [HideInInspector]
         public Pool EdgeLightPool;
-        //selection indicator fx
-        public GameObject SelectionIndicatorPrefab;
-        public GameObject SelectionIndicatorFX;
         //ConnectionIndicatorFX
         public GameObject ConnectionIndicatorPrefab;
         [HideInInspector]
@@ -192,8 +189,6 @@ namespace StudioByStorm.FX {
             ConnectionIndicatorPool.DependencyInjection(ConnectionIndicatorPrefab, FXParent, connectionIndicatorPoolSize);
 
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
-
-            SelectionIndicatorFX = Instantiate(SelectionIndicatorPrefab, FXParent);
 
             fingerSlingShotAnimation = Instantiate(fingerSlingShotAnimationPrefab, tutorialParent).GetComponent<FingerSlingShotAnimation>();
         

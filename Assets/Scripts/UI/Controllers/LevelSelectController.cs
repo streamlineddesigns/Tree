@@ -93,7 +93,7 @@ namespace StudioByStorm.UI.Controllers {
 
                     bool isCutSceneLocked = (((cutSceneID == 0 && ChapterID == 0) || isPreviousRowsLastLevelCompleted) || (cutSceneID == 0 && isPreviousChaptersLastLevelCompleted)) ? false : true;
 
-                    //Debug.LogError(GameManager.Singleton.ProgressManager.GetLevelProgress(previousRowsLastLevelIDKEY));
+                    Debug.LogError(GameManager.Singleton.ProgressManager.GetLevelProgress(previousRowsLastLevelIDKEY));
 
                     //place a cut scene button 
                     GameObject cutsceneselectbuttongo = Instantiate(CutSceneSelectButtonGO, levelrowgo.transform);

@@ -46,7 +46,7 @@ namespace StudioByStorm {
         private bool isEdgeOutOfBounds = false;
         private int projectilesFired;
         private Node clickedNode;
-        private int autoConnectionHelperCounter = 1;
+        private int autoConnectionHelperCounter;
 
         void Update()
         {
@@ -136,7 +136,7 @@ namespace StudioByStorm {
                     ManualOnTriggerEnter2D(ActionModel.CurrentNode);
                 }
 
-                if (autoConnectionHelperCounter % 7 == 0) AutoConnectionHelperListener();
+                if (autoConnectionHelperCounter % 10 == 0) AutoConnectionHelperListener();
                 autoConnectionHelperCounter++;
             }
         }
@@ -483,12 +483,10 @@ namespace StudioByStorm {
         {
             if (ActionModel.CurrentNode != null && ActionView.GetEdgeButton.interactable) {
                 GetEdgeButtonClick();
-                autoConnectionHelperCounter = 1;
             } else if (ActionModel.CurrentEdge != null && ActionView.SetEdgeButton.interactable) {
                 ActionModel.CurrentEdge.isOutOfBounds = false;
                 ActionModel.CurrentEdge.InBoundsIndicator();
                 SetEdgeButtonClick();
-                autoConnectionHelperCounter = 1;
             }
 
             if (ActionModel.CurrentEdge != null && !ActionModel.CurrentEdge.isOutOfBounds && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) > EdgeDistanceThreshold) {

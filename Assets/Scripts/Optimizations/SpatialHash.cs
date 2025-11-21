@@ -119,11 +119,6 @@ namespace StudioByStorm.Optimizations {
 		{
             return new Vector2((int)(go.transform.position.x / cellSize), (int)(go.transform.position.y / cellSize));
 		}
-
-        public Vector2 GetCellIDForPos(Vector2 pos)
-		{
-            return new Vector2((int)(pos.x / cellSize), (int)(pos.y / cellSize));
-		}
 		
 	}
 

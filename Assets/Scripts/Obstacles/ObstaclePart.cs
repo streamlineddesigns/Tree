@@ -22,7 +22,7 @@ namespace StudioByStorm.Obstacles {
 
         protected void Start()
         {
-            SetColor();
+            if (GameManager.Singleton != null) SetColor();
         }
 
         protected void SetColor()

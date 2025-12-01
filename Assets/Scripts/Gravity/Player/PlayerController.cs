@@ -334,6 +334,22 @@ namespace StudioByStorm.Gravity.Player {
         {
             movementForce = _movementForce;
             StateCleanUp();
+
+            //click
+            if (Input.GetMouseButtonDown(0) && isOnSurface) {
+                int safePathCount = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count;
+                int nodeSafePathIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(playerNodeID);
+                int nextNodeSafePathIndex = nodeSafePathIndex + 1;
+                
+                if (nextNodeSafePathIndex <= safePathCount - 1) {
+                    int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];
+                    int childNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex];
+                    Vector2 parentPosition = GameManager.Singleton.NodeRegistry.TryGetValue(parentNodeID).gameObject.transform.position;
+                    Vector2 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childNodeID).gameObject.transform.position;
+                    Vector2 jumpDir = (childPosition - parentPosition).normalized;
+                    JumpOverride(jumpDir);
+                }
+            }
         }
 
         void FixedUpdate()

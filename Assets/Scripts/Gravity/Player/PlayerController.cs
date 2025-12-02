@@ -19,6 +19,7 @@ namespace StudioByStorm.Gravity.Player {
 
     public class PlayerController : MonoBehaviour
     {
+        public ControlType controlType;
         public float _movementForce = 0.1f;
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
@@ -51,7 +52,7 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] public Sprite moltenSprite;
         [SerializeField] public float spoolUpTimer;
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
-
+        [SerializeField] private GameObject slingshotJoyStick;
         [SerializeField] public Material glowMaterial;
         [SerializeField] private Material lightMaterial;
         [SerializeField] public Material darkMaterial;
@@ -95,7 +96,8 @@ namespace StudioByStorm.Gravity.Player {
         private bool didJump = false;
         private float jumpForce = 7f;
         private float powerJumpForce = 13f;
-
+        private Vector2 jumpDirection;
+        
         private Vector2 dashDirection = Vector2.zero;
         private float spaceDashForce = 9f;
         private Vector2 minimumSpaceVelocity = new Vector2(0.25f, 0.25f);
@@ -137,6 +139,9 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
         private float _projectileFireRate = 0.5f;
+
+        private bool bAnimate;
+        private bool canUseControlTypes;
         
         void Awake()
         {
@@ -160,6 +165,7 @@ namespace StudioByStorm.Gravity.Player {
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
             FTUECheck();
             StartCoroutine(SpawnTrailFXUpdateLoop());
         }
@@ -168,6 +174,7 @@ namespace StudioByStorm.Gravity.Player {
         {
             GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange -= OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
         }
 
         public void OnStateChange(GameState state)
@@ -183,6 +190,76 @@ namespace StudioByStorm.Gravity.Player {
 
                 case GameState.LevelLost :                    
                     break;
+            }
+        }
+
+        protected void OnPlayerNodeChange(int nodeID)
+        {
+            if (nodeID == GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0]) {
+                canUseControlTypes = true;
+            }
+
+            if (! canUseControlTypes) {
+                return;
+            }
+
+            int safePathCount = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count;
+            int nodeSafePathIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(playerNodeID);
+            int nextNodeSafePathIndex = nodeSafePathIndex + 1;
+            Vector2 parentPosition = Vector2.zero;
+            Vector2 childPosition = Vector2.zero;
+                
+            if (nextNodeSafePathIndex <= safePathCount - 1) {
+                int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];
+                int childNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex];
+                parentPosition = GameManager.Singleton.NodeRegistry.TryGetValue(parentNodeID).gameObject.transform.position;
+                childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childNodeID).gameObject.transform.position;
+                if (controlType == ControlType.Tap) jumpDirection = (childPosition - parentPosition).normalized;
+
+                if (controlType == ControlType.Tap) {
+                    StartCoroutine(DelayedJumpIndicatorActivation(nodeID, playerNodeID));
+                }
+                
+                if (controlType == ControlType.Animate) {
+                    Vector2 cachedJumpDirection = (childPosition - parentPosition).normalized;
+                    StartCoroutine(DelayedAnimateActivation(nodeID, playerNodeID, cachedJumpDirection));
+                }
+
+                if (controlType == ControlType.Jump) {
+                    Vector2 cachedJumpDirection = (childPosition - parentPosition).normalized;
+                    StartCoroutine(DelayedJumpActivation(nodeID, playerNodeID, cachedJumpDirection));
+                }
+            }
+        }
+
+        IEnumerator DelayedJumpIndicatorActivation(int currentNodeID, int currentParentNodeID)
+        {
+            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+
+            if (currentNodeID == currentParentNodeID) {
+                JumpIndicator.transform.position = GameManager.Singleton.NodeRegistry.TryGetValue(currentParentNodeID).gameObject.transform.position;
+                var angle = Mathf.Atan2(-jumpDirection.y, -jumpDirection.x) * Mathf.Rad2Deg;
+                JumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+                JumpIndicator.SetActive(true);
+            }
+        }
+
+        IEnumerator DelayedAnimateActivation(int currentNodeID, int currentParentNodeID, Vector2 cachedJumpDirection)
+        {
+            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+
+            if (currentNodeID == currentParentNodeID) {
+                jumpDirection = cachedJumpDirection;
+                bAnimate = true;
+            }
+        }
+
+        IEnumerator DelayedJumpActivation(int currentNodeID, int currentParentNodeID, Vector2 cachedJumpDirection)
+        {
+            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+
+            if (currentNodeID == currentParentNodeID) {
+                jumpDirection = cachedJumpDirection;
             }
         }
 
@@ -335,20 +412,22 @@ namespace StudioByStorm.Gravity.Player {
             movementForce = _movementForce;
             StateCleanUp();
 
-            //click
-            if (Input.GetMouseButtonDown(0) && isOnSurface) {
-                int safePathCount = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count;
-                int nodeSafePathIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(playerNodeID);
-                int nextNodeSafePathIndex = nodeSafePathIndex + 1;
-                
-                if (nextNodeSafePathIndex <= safePathCount - 1) {
-                    int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];
-                    int childNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex];
-                    Vector2 parentPosition = GameManager.Singleton.NodeRegistry.TryGetValue(parentNodeID).gameObject.transform.position;
-                    Vector2 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childNodeID).gameObject.transform.position;
-                    Vector2 jumpDir = (childPosition - parentPosition).normalized;
-                    JumpOverride(jumpDir);
-                }
+            if (controlType == ControlType.Tap && Input.GetMouseButtonDown(0) && isOnSurface) {
+                JumpOverride(jumpDirection);
+                JumpIndicator.SetActive(false);
+            }
+
+            if (controlType == ControlType.Slingshot && !slingshotJoyStick.activeSelf) {
+                slingshotJoyStick.SetActive(true);
+            }
+
+            if (controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
+                rigidbody.velocity = jumpDirection * 3.0f;
+            }
+
+            if (canUseControlTypes && controlType == ControlType.Jump && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
+                rigidbody.velocity = jumpDirection * powerJumpForce;
+                //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
             }
         }
 
@@ -358,18 +437,22 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
+            if (canUseControlTypes &&!isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
+                ApplyJumpGravity();
+            }
+
             if (isOnSurface || isInAtmosphere)
             {
-                if (gravityDirection != Vector2.zero && !isOnSurface) {
+                if (gravityDirection != Vector2.zero && !isOnSurface && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                     ApplyGravity();
                 }
-                
+
                 /*if (movementDirection != Vector2.zero) {
                     Move();
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete) {
+            if (! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                 ApplyGravityFailSafe();
             }
 
@@ -744,6 +827,36 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
 
+        protected void ApplyJumpGravity()
+        {
+            /*
+             * Overriding gravity completely for new movement testing
+             */
+            gravityDirection = (-jumpDirection).normalized;
+
+            //transform.up = - gravityDirection;
+            
+
+            float velocityDistanceToZero = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce * 0.4f)));
+            float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce)));
+
+            rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 10.0f;
+
+            //falling
+            if (velocityDistanceToZero < velocityDistanceToJumpForce) {
+                //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
+                rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
+            //jumping
+            } else {
+                //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
+                
+            }
+
+            /*if (rigidbody.velocity.magnitude >= (jumpDirection * jumpForce).magnitude) {
+                rigidbody.velocity = (jumpDirection * jumpForce);
+            }*/
+        }
+
         protected void ApplyGravity()
         {
             /*
@@ -773,6 +886,8 @@ namespace StudioByStorm.Gravity.Player {
             transform.position = nearbyNodePosition;
             
             AudioManager.Singleton.Play(SoundType.CellLand);
+
+            bAnimate = false;
         }
 
         protected void ResetMovement()

@@ -68,7 +68,7 @@ namespace StudioByStorm {
                 }
             }
 
-            if (isJumpIndicatorOn) {
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot && isJumpIndicatorOn) {
                 
                 //SPOOL UP FEATURE $$$$
                 /*GameManager.Singleton.PlayerController.spoolUpTimer += (JumpJoyStick.ScaledValue.magnitude > JUMPTHRESHOLD) ? Time.deltaTime : 0.0f;

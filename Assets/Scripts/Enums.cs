@@ -139,5 +139,12 @@ namespace StudioByStorm {
     public enum ProjectileType {
         Basic,
     }
+
+    public enum ControlType {
+        Slingshot,
+        Tap,
+        Animate,
+        Jump,
+    }
     
 }

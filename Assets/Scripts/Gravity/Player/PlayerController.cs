@@ -837,19 +837,20 @@ namespace StudioByStorm.Gravity.Player {
             //transform.up = - gravityDirection;
             
 
-            float velocityDistanceToZero = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce * 0.4f)));
+            float velocityDistanceToSlowingDown = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce * 0.425f)));
             float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce)));
 
-            rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 10.0f;
+            //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 10.0f;
 
             //falling
-            if (velocityDistanceToZero < velocityDistanceToJumpForce) {
+            if (velocityDistanceToSlowingDown < velocityDistanceToJumpForce) {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
-                rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
+                //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
+                rigidbody.AddForce(-jumpDirection * powerJumpForce * 4.25f, ForceMode2D.Force);
             //jumping
             } else {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
-                
+                rigidbody.AddForce(-jumpDirection * powerJumpForce, ForceMode2D.Force);
             }
 
             /*if (rigidbody.velocity.magnitude >= (jumpDirection * jumpForce).magnitude) {

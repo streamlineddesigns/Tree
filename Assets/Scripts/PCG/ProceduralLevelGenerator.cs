@@ -145,7 +145,7 @@ namespace StudioByStorm.PCG {
             }
 
             //2/6 as minimum needs to change to scale up for larger maps
-            int[] numbers = GetRandomNumbersWithSum(requiredNumberOfColorsToPlace, GraphConstructionManager.nodeColors.Count, 2, 6);
+            int[] numbers = GetRandomNumbersWithSum(requiredNumberOfColorsToPlace, GraphConstructionManager.nodeColors.Count, 2, 8);
             Debug.Log($"Numbers: {string.Join(", ", numbers)}");
 
             //GraphConstructionManager.GlobalLevelData.safePath

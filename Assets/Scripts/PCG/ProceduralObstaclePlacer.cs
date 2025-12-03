@@ -111,7 +111,7 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (greyNodeIndex != -1) {
                 //scale the position based on the original node position
-                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 7.0f;
+                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 10.0f;
                 //create our VectorData from it
                 VectorData pos = new VectorData(scaled);
                 //use random rotation
@@ -171,8 +171,8 @@ namespace StudioByStorm.PCG {
 
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 7.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 7.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
 
                 //get direction
                 Vector3 nodeDir = (firstScaled - secondScaled).normalized;
@@ -288,8 +288,8 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
                 //get node positions
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 7.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 7.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
 
                 //get direction
                 Vector3 nodeDir = (firstScaled - secondScaled).normalized;

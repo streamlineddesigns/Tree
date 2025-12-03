@@ -19,6 +19,7 @@ namespace StudioByStorm.Gravity.Player {
 
     public class PlayerController : MonoBehaviour
     {
+        public NodeColor NodeColor;
         public ControlType controlType;
         public float _movementForce = 0.1f;
         public float mockNodeRadius = 0.6f;
@@ -97,7 +98,12 @@ namespace StudioByStorm.Gravity.Player {
         private float jumpForce = 7f;
         private float powerJumpForce = 13f;
         private Vector2 jumpDirection;
-        
+        public Vector2 directionFacing {
+            get {
+                return jumpDirection;
+            }
+        }
+        public Vector2 parentChildCentroid;
         private Vector2 dashDirection = Vector2.zero;
         private float spaceDashForce = 9f;
         private Vector2 minimumSpaceVelocity = new Vector2(0.25f, 0.25f);
@@ -142,6 +148,7 @@ namespace StudioByStorm.Gravity.Player {
 
         private bool bAnimate;
         private bool canUseControlTypes;
+        private Color colorHit;
         
         void Awake()
         {
@@ -203,6 +210,15 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+            if (currentNode.NodeType == NodeType.Parent) {
+                NodeColor = currentNode.NodeColor;
+                
+                int colorIndex = (int) NodeColor;
+                spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+            }
+
             int safePathCount = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count;
             int nodeSafePathIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(playerNodeID);
             int nextNodeSafePathIndex = nodeSafePathIndex + 1;
@@ -214,6 +230,8 @@ namespace StudioByStorm.Gravity.Player {
                 int childNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex];
                 parentPosition = GameManager.Singleton.NodeRegistry.TryGetValue(parentNodeID).gameObject.transform.position;
                 childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childNodeID).gameObject.transform.position;
+                parentChildCentroid = new Vector2(((parentPosition.x + childPosition.x)/2.0f), ((parentPosition.y + childPosition.y)/2.0f));
+
                 if (controlType == ControlType.Tap) jumpDirection = (childPosition - parentPosition).normalized;
 
                 if (controlType == ControlType.Tap) {
@@ -260,6 +278,7 @@ namespace StudioByStorm.Gravity.Player {
 
             if (currentNodeID == currentParentNodeID) {
                 jumpDirection = cachedJumpDirection;
+                surface.gameObject.GetComponent<Collider2D>().enabled = false;
             }
         }
 
@@ -314,12 +333,16 @@ namespace StudioByStorm.Gravity.Player {
             }*/
 
             //if enforcing light color
-            isLightColor = true;
+            //isLightColor = true;
             light2D.SetActive(true);
-            spriteRenderer.color = lightColor;
-            spriteRenderer.material = lightMaterial;
-            currentColor = lightColor;
+            //spriteRenderer.color = lightColor;
+            //spriteRenderer.material = darkMaterial;
+            //currentColor = lightColor;
             currentMaterial = lightMaterial;
+            
+            int currentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID);
+            NodeColor = currentNode.NodeColor;
         }
 
         public bool isPlayerGrounded() 
@@ -395,9 +418,13 @@ namespace StudioByStorm.Gravity.Player {
             while(true) {
                 if (!lerping && (previousTrailFX == null || Vector2.Distance(previousTrailFX.transform.position, transform.position) > 0.75f)) {
                     PlayerTrailFX currentTrailFX = GameManager.Singleton.FXManager.PlayerTrailPool.Get().GetComponent<PlayerTrailFX>();
-                    Color colorHit = (isLightColor) ? lightColor : darkColor;
-                    colorHit.a = 0.75f;
-                    currentTrailFX.SetColor(colorHit);
+                    
+                    int colorIndex = (int) NodeColor;
+                    Color trailColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                    
+
+                    trailColor.a = 0.75f;
+                    currentTrailFX.SetColor(trailColor);
                     currentTrailFX.transform.position = transform.position;
                     currentTrailFX.gameObject.SetActive(true);
 
@@ -413,7 +440,7 @@ namespace StudioByStorm.Gravity.Player {
             StateCleanUp();
 
             if (controlType == ControlType.Tap && Input.GetMouseButtonDown(0) && isOnSurface) {
-                JumpOverride(jumpDirection);
+                JumpOverride(jumpDirection * 2.0f);
                 JumpIndicator.SetActive(false);
             }
 
@@ -519,8 +546,6 @@ namespace StudioByStorm.Gravity.Player {
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
-
-                Color colorHit = (isLightColor) ? lightColor : darkColor;
                 WrongObstacleHitFX wrongObstacleHitFX = GameManager.Singleton.FXManager.WrongObstacleHitPool.Get().GetComponent<WrongObstacleHitFX>();
                 wrongObstacleHitFX.SetColor(colorHit);
                 wrongObstacleHitFX.gameObject.transform.position = transform.position;
@@ -651,16 +676,19 @@ namespace StudioByStorm.Gravity.Player {
                 //get the obstacle part
                 ObstaclePart obstaclePart = collider.GetComponent<ObstaclePart>();
                 ColorType obstacleColorType = obstaclePart.colorType;
+                NodeColor obstaclePartColor = obstaclePart.NodeColor;
+
+                int colorIndex = (int) obstaclePartColor;
+                colorHit = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                colorHit.a = 0.5f;
+
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
-                if ((isLightColor && obstacleColorType == ColorType.Light) 
-                     || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
+                if (obstaclePartColor == NodeColor) {
                         
                     if (! lerping) {
                         GameEventPublisher.PublishPlayerHitCorrectObstacle();
                         AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
-
-                        Color colorHit = (isLightColor) ? lightColor : darkColor;
-                        colorHit.a = 0.5f;
+                        
                         CorrectObstacleHitFX correctObstacleHitFX = GameManager.Singleton.FXManager.CorrectObstacleHitPool.Get().GetComponent<CorrectObstacleHitFX>();
                         correctObstacleHitFX.SetColor(colorHit);
                         correctObstacleHitFX.gameObject.transform.position = transform.position;
@@ -669,6 +697,8 @@ namespace StudioByStorm.Gravity.Player {
 
                 //otherwise
                 } else {
+
+
                     //make sure we didn't hit an obstacle while traveling because that doesn't count
                     if (obstaclePart.isBoid || (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
 

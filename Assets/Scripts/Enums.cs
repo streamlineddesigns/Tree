@@ -13,12 +13,12 @@ namespace StudioByStorm {
 
     public enum NodeColor
     {
-        Blue,
-        Green,
-        Purple,
+        Blue,//blue
+        Green,//yellow
+        Purple,//purple
         Orange,
         GrayScale,
-        White,
+        White,//pink
         Yellow,
     }
 

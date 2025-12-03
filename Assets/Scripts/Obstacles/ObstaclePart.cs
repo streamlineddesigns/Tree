@@ -6,6 +6,7 @@ namespace StudioByStorm.Obstacles {
 
     public class ObstaclePart : MonoBehaviour
     {
+        public NodeColor NodeColor;
         public ColorType colorType;
         public bool isBoid;
 
@@ -27,6 +28,11 @@ namespace StudioByStorm.Obstacles {
 
         protected void SetColor()
         {
+            int colorIndex = (int) NodeColor;
+            gameObject.GetComponent<SpriteRenderer>().color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+            return;
+            
+
             if (colorType == ColorType.Light) {
                 gameObject.GetComponent<SpriteRenderer>().color = GameManager.Singleton.PlayerController.lightColor;
                 gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;

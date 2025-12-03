@@ -28,6 +28,7 @@ namespace StudioByStorm {
         private Vector2 swipeStart;
         private bool IsLevelComplete = false;
         private bool isShaking;
+        private bool isCameraMovementOkay;
 
         public void MoveToCentroid()
         {
@@ -125,6 +126,11 @@ namespace StudioByStorm {
             Camera.orthographicSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
 
             GameManager.Singleton.player.SetActive(true);
+
+            yield return new WaitForSeconds(2.0f);
+
+            isCameraMovementOkay = true;
+            Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InQuad);
         }
     
         private void OnDrawGizmos()
@@ -145,8 +151,8 @@ namespace StudioByStorm {
             if (centroid != null) {
                 SwipeDetection();
             } else {
-                Vector3 targetCamPos = (Vector3) GameManager.Singleton.nearbyNode.GetPosition() - offset;
-                //transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
+                Vector3 targetCamPos = (Vector3) GameManager.Singleton.PlayerController.parentChildCentroid - offset;
+                if (isCameraMovementOkay) transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
             }
         }
 

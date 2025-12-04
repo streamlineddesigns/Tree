@@ -35,8 +35,10 @@ namespace StudioByStorm.PCG {
             UnloadObstacles();
 
             //get the grey nodes ids
+            //actually just get all ids except the first in the safe path
             greyNodeIDs = GraphConstructionManager.nodeColors.Select((n, index) => new { NodeColor = n, Index = index })
-                                                             .Where(x => x.NodeColor == NodeColor.GrayScale)
+                                                             //.Where(x => x.NodeColor == NodeColor.GrayScale)
+                                                             .Where(x => x.Index != GraphConstructionManager.GlobalLevelData.safePath[0])
                                                              .Select(x => x.Index)
                                                              .ToList();
 

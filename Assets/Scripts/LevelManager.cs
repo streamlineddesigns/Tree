@@ -73,6 +73,7 @@ namespace StudioByStorm {
         protected AdjacencyList horizontalVerticalAdjacencyList;
         protected List<int> nodeIDsWithAnimations;
         protected List<int> playingAnimations = new List<int>();
+        private List<int> visitedNodeIDsWithAnimations = new List<int>();
 
         void Awake()
         {
@@ -127,6 +128,27 @@ namespace StudioByStorm {
         {
             playerNodeID = nodeID;
             if (ObstacleContainer.activeSelf) StartCoroutine(UpdateNearbyObstacles());
+
+            //get current animation associated with node
+            CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(nodeID);
+
+            //if theres an animation at the current node and its not marked as visited
+            if (currentAnim != null && !visitedNodeIDsWithAnimations.Contains(nodeID)) {
+                //mark as visited
+                visitedNodeIDsWithAnimations.Add(nodeID);
+
+                //double check that all nodes that the animation uses have been marked visited
+                bool visitedAllNodesWithSameAnimation = true;
+
+                for (int i = 0; i < currentAnim.nodeIDs.Count; i++) {
+                    if (! visitedNodeIDsWithAnimations.Contains(currentAnim.nodeIDs[i])) {
+                        visitedAllNodesWithSameAnimation = false;
+                    }
+                }
+
+                //if they're all visited, disable the gameObject
+                if (GameManager.Singleton.PlayerController.controlType == ControlType.Tap && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
+            }
         }
 
         protected void OnLevelComplete()
@@ -181,26 +203,34 @@ namespace StudioByStorm {
 
                 connectedNodesWithAnimations.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
-                    int count = 0;
-                    for (int j = 0; j < currentAnim.nodeIDs.Count; j++) {
-                        //if the node ID isn't a "connected node" then its redundant
-                        if (!connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
-                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
-                        } else if (connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
-                            count++;
-                        }
-                        //if another one was all ready counted, then this one is redundant
-                        if (count > 1) {
-                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                    if (currentAnim != null) {
+                        int count = 0;
+                        for (int j = 0; j < currentAnim.nodeIDs.Count; j++) {
+                            //if the node ID isn't a "connected node" then its redundant
+                            if (!connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                                RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                            } else if (connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                                count++;
+                            }
+                            //if another one was all ready counted, then this one is redundant
+                            if (count > 1) {
+                                RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                            }
                         }
                     }
+                    
                 });
 
                 //Debug.Log("Connected nodes with animations: " + connectedNodesWithAnimations.Count);
 
                 //any animation id that is not in the playing animations list needs to be animated
                 List<int> animationsToEnable = connectedNodesWithAnimations.Where(x => !playingAnimations.Contains(x)).ToList();
-                animationsToEnable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Animate());
+                animationsToEnable.ForEach(x => {
+                    CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                    if (currentAnim != null) {
+                        currentAnim.Animate();
+                    }
+                });
                 //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
                 List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
                 //animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
@@ -208,8 +238,11 @@ namespace StudioByStorm {
                 //If we want animations connected to more than one node (which are in connectedNodesWithAnimations) to stay active too
                 animationsToDisable.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
-                    bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
-                    if (! hasMatch) currentAnim.Stop();
+                    if (currentAnim != null) {
+                        bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
+                        if (! hasMatch) currentAnim.Stop();
+                    }
+                    
                 });
 
                 //Debug.Log("animationsToEnable: " + animationsToEnable.Count);

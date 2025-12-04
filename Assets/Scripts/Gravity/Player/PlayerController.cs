@@ -149,6 +149,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool bAnimate;
         private bool canUseControlTypes;
         private Color colorHit;
+        private bool bFirstJumpMadeByUser;
         
         void Awake()
         {
@@ -276,9 +277,12 @@ namespace StudioByStorm.Gravity.Player {
         {
             yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
 
-            if (currentNodeID == currentParentNodeID) {
+            if (currentNodeID == playerNodeID) {
                 jumpDirection = cachedJumpDirection;
-                surface.gameObject.GetComponent<Collider2D>().enabled = false;
+                if (bFirstJumpMadeByUser) {
+                    surface.gameObject.GetComponent<Collider2D>().enabled = false;
+                    rigidbody.velocity = jumpDirection * jumpForce;
+                }
             }
         }
 
@@ -454,6 +458,9 @@ namespace StudioByStorm.Gravity.Player {
 
             if (canUseControlTypes && controlType == ControlType.Jump && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
                 rigidbody.velocity = jumpDirection * powerJumpForce;
+                if (!bFirstJumpMadeByUser) {
+                    bFirstJumpMadeByUser = true;
+                }
                 //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
             }
         }
@@ -464,7 +471,7 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
-            if (canUseControlTypes &&!isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (bFirstJumpMadeByUser && canUseControlTypes &&!isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
                 ApplyJumpGravity();
             }
 

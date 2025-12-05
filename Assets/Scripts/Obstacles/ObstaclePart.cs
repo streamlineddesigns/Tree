@@ -9,6 +9,7 @@ namespace StudioByStorm.Obstacles {
         public NodeColor NodeColor;
         public ColorType colorType;
         public bool isBoid;
+        private Material originalMaterial;
 
         public void RegisterViaNodeID(int nodeID)
         {
@@ -24,6 +25,21 @@ namespace StudioByStorm.Obstacles {
         protected void Start()
         {
             if (GameManager.Singleton != null) SetColor();
+            originalMaterial = gameObject.GetComponent<SpriteRenderer>().material;
+        }
+
+        public void DisableGlow()
+        {
+            gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+        }
+
+        public void EnableGlow()
+        {
+            if (NodeColor == GameManager.Singleton.PlayerController.NodeColor) {
+                gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;
+            } else {
+                gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+            }
         }
 
         protected void SetColor()

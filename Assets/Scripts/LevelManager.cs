@@ -240,7 +240,13 @@ namespace StudioByStorm {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
                     if (currentAnim != null) {
                         bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
-                        if (! hasMatch) currentAnim.Stop();
+                        if (! hasMatch) {
+                            List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                            for (int i = 0; i < parts.Count; i++) {
+                                parts[i].DisableGlow();
+                            }
+                            currentAnim.Stop();
+                        }
                     }
                     
                 });
@@ -254,14 +260,14 @@ namespace StudioByStorm {
                 //if the player isn't doing the super hero landing lol
                 if (! GameManager.Singleton.PlayerController.isLanding) {
                     //updated color swapping mechanic ie swap out nearby obstacle part colors only
-                    /*connectedNodesWithAnimations.ForEach(x => {
+                    connectedNodesWithAnimations.ForEach(x => {
                         if (!RedundantNodesWithAnimations.Contains(x)) {
                             List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
                             for (int i = 0; i < parts.Count; i++) {
-                                parts[i].SwapColor();
+                                parts[i].EnableGlow();
                             }
                         }
-                    });*/
+                    });
                 }
                 
             }

@@ -248,6 +248,9 @@ namespace StudioByStorm.Gravity.Player {
                     Vector2 cachedJumpDirection = (childPosition - parentPosition).normalized;
                     StartCoroutine(DelayedJumpActivation(nodeID, playerNodeID, cachedJumpDirection));
                 }
+
+                var angle = Mathf.Atan2(jumpDirection.y, jumpDirection.x) * Mathf.Rad2Deg;
+                GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
             }
         }
 
@@ -550,6 +553,8 @@ namespace StudioByStorm.Gravity.Player {
         {
             //play the hit animation
             if (! isHitObstacle) {
+                rigidbody.velocity = Vector2.zero;
+                
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
@@ -630,6 +635,10 @@ namespace StudioByStorm.Gravity.Player {
             isPositionHelperPlayingBack = true;
             yield return StartCoroutine(PlayerPositionHelper.WaitUntilFinished());
             isPositionHelperPlayingBack = false;
+
+            if (controlType == ControlType.Tap) {
+                JumpIndicator.SetActive(true);
+            }
         }
 
         void OnTriggerEnter2D(Collider2D collider)
@@ -707,7 +716,7 @@ namespace StudioByStorm.Gravity.Player {
 
 
                     //make sure we didn't hit an obstacle while traveling because that doesn't count
-                    if (obstaclePart.isBoid || (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
+                    if (obstaclePart.isBoid || (!isPositionHelperPlayingBack && ! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
                         if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {

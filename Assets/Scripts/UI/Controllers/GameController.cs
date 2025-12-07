@@ -25,6 +25,7 @@ namespace StudioByStorm.UI.Controllers {
         private float _currentLevelCompletionTime;
         private bool _isBossLevelLost = false;
         private bool isLevelCompleted;
+        private bool isLevelLost;
 
         void OnEnable()
         {
@@ -56,6 +57,7 @@ namespace StudioByStorm.UI.Controllers {
             yield return null;
             _isBossLevelLost = false;
             isLevelCompleted = false;
+            isLevelLost = false;
             //init the timer text
             float timer = _currentLevelCompletionTime;
             string label = timer.ToString() + "s";
@@ -66,7 +68,7 @@ namespace StudioByStorm.UI.Controllers {
             //wait until player isn't landing anymore
             yield return new WaitUntil(()=> !GameManager.Singleton.PlayerController.isLanding);
             //animated countdown timer
-            while (timer >= 0.0f && !isLevelCompleted) {
+            while (timer >= 0.0f && !isLevelCompleted && !isLevelLost) {
                 float timerForLabel = (timer <= 0.0f) ? 0.0f : timer;
                 label = timerForLabel.ToString() + "s";
                 bossCountdownTimerText.text = label;
@@ -88,7 +90,7 @@ namespace StudioByStorm.UI.Controllers {
             }
 
 
-            if (!isLevelCompleted && !isBossLevelLost) {
+            if (!isLevelCompleted && !isBossLevelLost && !isLevelLost) {
                 GameManager.Singleton.FXManager.GenerateBoids(8);
                 _isBossLevelLost = true;
             }
@@ -177,6 +179,10 @@ namespace StudioByStorm.UI.Controllers {
 
                 case GameState.LevelExited :
                     LevelExited();
+                    break;
+
+                case GameState.LevelLost :
+                    isLevelLost = true;
                     break;
             }
         }

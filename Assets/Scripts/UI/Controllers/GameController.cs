@@ -89,7 +89,7 @@ namespace StudioByStorm.UI.Controllers {
 
 
             if (!isLevelCompleted && !isBossLevelLost) {
-                GameManager.Singleton.FXManager.GenerateBoids(16);
+                GameManager.Singleton.FXManager.GenerateBoids(8);
                 _isBossLevelLost = true;
             }
         }

@@ -59,7 +59,12 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] public Material darkMaterial;
         [SerializeField] public Color lightColor;
         [SerializeField] public Color darkColor;
-        [SerializeField] private Color hitObstacleColor;
+        [SerializeField] private Color _hitObstacleColor;
+        public Color hitObstacleColor {
+            get {
+                return _hitObstacleColor;
+            }
+        }
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;

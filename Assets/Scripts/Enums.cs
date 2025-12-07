@@ -20,6 +20,8 @@ namespace StudioByStorm {
         GrayScale,
         White,//pink
         Yellow,
+        Pink,
+        Red,
     }
 
     public enum ColorType

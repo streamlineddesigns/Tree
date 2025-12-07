@@ -76,6 +76,7 @@ namespace StudioByStorm.FX {
         public GameObject PurpleNodeConnectPrefab;
         public GameObject OrangeNodeConnectPrefab;
         public GameObject WhitNodeConnectPrefab;
+        public GameObject PinkNodeConnectPrefab;
 
         public Dictionary<NodeColor, GameObject> SuperHeroLandingImpacts = new Dictionary<NodeColor, GameObject>();
         public GameObject BlueImpactPrefab;
@@ -83,6 +84,7 @@ namespace StudioByStorm.FX {
         public GameObject WhiteImpactPrefab;
         public GameObject PurpleImpactPrefab;
         public GameObject OrangeImpactPrefab;
+        public GameObject PinkImpactPrefab;
 
         public Dictionary<ProjectileType, Pool> ProjectilePool = new Dictionary<ProjectileType, Pool>();
         public GameObject ProjectileBasicPrefab;
@@ -213,6 +215,10 @@ namespace StudioByStorm.FX {
             WhiteNodeConnectPool.DependencyInjection(WhitNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.White, WhiteNodeConnectPool);
 
+            Pool PinkNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            PinkNodeConnectPool.DependencyInjection(PinkNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Pink, PinkNodeConnectPool);
+
             WrongObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
             WrongObstacleHitPool.DependencyInjection(WrongObstacleHitFX, FXParent, wrongObstacleHitPoolSize);
 
@@ -230,6 +236,7 @@ namespace StudioByStorm.FX {
             SuperHeroLandingImpacts.Add(NodeColor.Green, Instantiate(GreenImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Orange, Instantiate(OrangeImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Pink, Instantiate(PinkImpactPrefab, FXParent));
 
             Pool BasicProjectilePool = ScriptableObject.CreateInstance<Pool>();
             BasicProjectilePool.DependencyInjection(ProjectileBasicPrefab, FXParent, projectilePoolSizes);

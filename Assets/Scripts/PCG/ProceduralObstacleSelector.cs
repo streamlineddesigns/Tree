@@ -72,7 +72,7 @@ namespace StudioByStorm.PCG {
 
             //target obstacle count is our level percent interpolated based on the the min and max obstacles in a level an our easing fucntion
             float percentOffset = Mathf.Min((0.035f + levelPercent), 100.0f);
-            int targetObstacleCount = (int) DOVirtual.EasedValue(0.0f, maxObstaclesInALevel, percentOffset, obstacleCountEasing);
+            int targetObstacleCount = GraphConstructionManager.GlobalLevelData.safePath.Count - 1;// (int) DOVirtual.EasedValue(0.0f, maxObstaclesInALevel, percentOffset, obstacleCountEasing);
 
             List<ObstacleData> selectedObstacleList = new List<ObstacleData>();
 

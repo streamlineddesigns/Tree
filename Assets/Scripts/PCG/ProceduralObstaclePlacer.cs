@@ -43,8 +43,8 @@ namespace StudioByStorm.PCG {
                                                              .ToList();
 
             //shuffle the grey nodes
-            Shuffle shuffle = new Shuffle();
-            greyNodeIDs = shuffle.FisherYates(greyNodeIDs);
+            //Shuffle shuffle = new Shuffle();
+            //greyNodeIDs = shuffle.FisherYates(greyNodeIDs);
 
             //initialize list for nodes that end up being used by obstacles
             usedGreyNodeIDs = new List<int>();
@@ -99,9 +99,9 @@ namespace StudioByStorm.PCG {
             int greyNodeIndex = -1;
 
             //look for a grey node that we can place at
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
                 //get the current index
-                int currentGreyNodeIndex = greyNodeIDs[i];
+                int currentGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i];
                 //if it's available, use it
                 if (! usedGreyNodeIDs.Contains(currentGreyNodeIndex)) {
                     usedGreyNodeIDs.Add(currentGreyNodeIndex);
@@ -136,14 +136,14 @@ namespace StudioByStorm.PCG {
             int firstFoundGreyNodeIndex = -1;
             int secondFoundGreyNodeIndex = -1;
 
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
 
-                int firstGreyNodeIndex = greyNodeIDs[i]; 
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
                 Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
 
-                for (int j = 0; j < greyNodeIDs.Count; j++) {
+                for (int j = 1; j < GraphConstructionManager.GlobalLevelData.safePath.Count; j++) {
 
-                    int secondGreyNodeIndex = greyNodeIDs[j]; 
+                    int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[j]; 
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself
@@ -252,14 +252,14 @@ namespace StudioByStorm.PCG {
             int firstFoundGreyNodeIndex = -1;
             int secondFoundGreyNodeIndex = -1;
 
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
 
-                int firstGreyNodeIndex = greyNodeIDs[i]; 
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
                 Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
 
-                for (int j = 0; j < greyNodeIDs.Count; j++) {
+                for (int j = 1; j < GraphConstructionManager.GlobalLevelData.safePath.Count; j++) {
 
-                    int secondGreyNodeIndex = greyNodeIDs[j]; 
+                    int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[j]; 
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself

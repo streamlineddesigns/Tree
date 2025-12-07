@@ -33,9 +33,11 @@ namespace StudioByStorm.PCG {
         {
             ProceduralLevelGenerator.DependencyInjection(GraphConstructionManager);
             yield return StartCoroutine(ProceduralLevelGenerator.CreateLevel());
+            yield return new WaitForSeconds(0.1f);
 
             ProceduralObstacleSelector.DependencyInjection(ObstacleDataRepository, GraphConstructionManager, LevelConfig);
             yield return StartCoroutine(ProceduralObstacleSelector.SelectObstacles());
+            yield return new WaitForSeconds(0.1f);
 
             ProceduralObstaclePlacer.DependencyInjection(ObstacleDataRepository, GraphConstructionManager);
             yield return StartCoroutine(ProceduralObstaclePlacer.PlaceObstacles());

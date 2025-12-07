@@ -353,7 +353,7 @@ namespace StudioByStorm.PCG {
 
         private void CreateAllPotentialSolutionsFromPathIndexCombinations()
         {
-            allPotentialSolutions = new List<List<List<int>>>(100000);
+            allPotentialSolutions = new List<List<List<int>>>(1000000);
 
             //iterate over all possible combinations of solutions
             Parallel.For(0, cartesianPathIndexCombinations.Count, (i, state) => {

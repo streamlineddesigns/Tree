@@ -16,6 +16,7 @@ using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
 using StudioByStorm.Graph;
 using StudioByStorm.Data.LevelChapters;
+using StudioByStorm.Data.LevelPacks;
 using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.Obstacles.Animations;
@@ -29,6 +30,11 @@ namespace StudioByStorm {
         public Chapters levelChapters {
             get {
                 return LevelPackSelectController.currentLevelPack.chapters;
+            }
+        }
+        public LevelPack currentLevelPack {
+            get {
+                return LevelPackSelectController.currentLevelPack;
             }
         }
         public List<string> romanNumerals;
@@ -177,6 +183,7 @@ namespace StudioByStorm {
 
         public void LoadLevel()
         {
+            GameManager.Singleton.PlayerController.controlType = currentLevelPack.ControlType;
             TextAsset currentLevelTextAsset = levelChapters.chapters[currentChapterID].levels[currentLevelID].levelFile;
             CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(currentLevelTextAsset.text);
             //Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);

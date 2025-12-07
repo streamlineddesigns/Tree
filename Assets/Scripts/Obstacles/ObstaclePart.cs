@@ -44,6 +44,14 @@ namespace StudioByStorm.Obstacles {
 
         protected void SetColor()
         {
+            //swap out the color using the current level pack assigned colors
+            NodeColor CurrentNodeColor = NodeColor;
+            int currentNodeColorIndex = GameManager.Singleton.ColorModel.colorsInUse.IndexOf(CurrentNodeColor);
+            if (currentNodeColorIndex != -1) {
+                CurrentNodeColor = GameManager.Singleton.LevelManager.currentLevelPack.colors[currentNodeColorIndex];
+            }
+            NodeColor = CurrentNodeColor;
+
             int colorIndex = (int) NodeColor;
             gameObject.GetComponent<SpriteRenderer>().color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
             return;

@@ -356,7 +356,12 @@ namespace StudioByStorm {
                     currentNode.gameObject.transform.position = new Vector2(CurrentLevelData.Layers[i].nodePositions[j].x, CurrentLevelData.Layers[i].nodePositions[j].y);
                     nodePositions.Add(new float[2]{currentNode.gameObject.transform.position.x, currentNode.gameObject.transform.position.y});
                     currentNode.ID = ID;
-                    currentNode.NodeColor = CurrentLevelData.Layers[i].nodeColors[j];
+                    NodeColor CurrentNodeColor = CurrentLevelData.Layers[i].nodeColors[j];
+                    int currentNodeColorIndex = GameManager.Singleton.ColorModel.colorsInUse.IndexOf(CurrentNodeColor);
+                    if (currentNodeColorIndex != -1) {
+                        CurrentNodeColor = currentLevelPack.colors[currentNodeColorIndex];
+                    }
+                    currentNode.NodeColor = CurrentNodeColor;
                     if (! parentColorsConnected.ContainsKey(currentNode.NodeColor) && currentNode.NodeColor != NodeColor.GrayScale) {
                         parentColorsConnected.Add(currentNode.NodeColor, false);
                     }

@@ -82,6 +82,7 @@ namespace StudioByStorm.FX {
         public GameObject GreenImpactPrefab;
         public GameObject WhiteImpactPrefab;
         public GameObject PurpleImpactPrefab;
+        public GameObject OrangeImpactPrefab;
 
         public Dictionary<ProjectileType, Pool> ProjectilePool = new Dictionary<ProjectileType, Pool>();
         public GameObject ProjectileBasicPrefab;
@@ -204,9 +205,9 @@ namespace StudioByStorm.FX {
             PurpleNodeConnectPool.DependencyInjection(PurpleNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.Purple, PurpleNodeConnectPool);
 
-            /*Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             OrangeNodeConnectPool.DependencyInjection(OrangeNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
-            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);*/
+            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);
 
             Pool WhiteNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             WhiteNodeConnectPool.DependencyInjection(WhitNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
@@ -228,6 +229,7 @@ namespace StudioByStorm.FX {
             SuperHeroLandingImpacts.Add(NodeColor.Purple, Instantiate(PurpleImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Green, Instantiate(GreenImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Orange, Instantiate(OrangeImpactPrefab, FXParent));
 
             Pool BasicProjectilePool = ScriptableObject.CreateInstance<Pool>();
             BasicProjectilePool.DependencyInjection(ProjectileBasicPrefab, FXParent, projectilePoolSizes);

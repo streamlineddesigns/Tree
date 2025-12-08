@@ -288,7 +288,7 @@ namespace StudioByStorm.Gravity.Player {
             if (currentNodeID == playerNodeID) {
                 jumpDirection = cachedJumpDirection;
                 if (bFirstJumpMadeByUser) {
-                    surface.gameObject.GetComponent<Collider2D>().enabled = false;
+                    if (surface != null) surface.gameObject.GetComponent<Collider2D>().enabled = false;
                     rigidbody.velocity = jumpDirection * jumpForce;
                 }
             }
@@ -479,7 +479,7 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
-            if (bFirstJumpMadeByUser && canUseControlTypes &&!isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (bFirstJumpMadeByUser && canUseControlTypes && !isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
                 ApplyJumpGravity();
             }
 

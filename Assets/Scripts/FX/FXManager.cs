@@ -77,6 +77,7 @@ namespace StudioByStorm.FX {
         public GameObject OrangeNodeConnectPrefab;
         public GameObject WhitNodeConnectPrefab;
         public GameObject PinkNodeConnectPrefab;
+        public GameObject YellowNodeConnectPrefab;
 
         public Dictionary<NodeColor, GameObject> SuperHeroLandingImpacts = new Dictionary<NodeColor, GameObject>();
         public GameObject BlueImpactPrefab;
@@ -85,6 +86,7 @@ namespace StudioByStorm.FX {
         public GameObject PurpleImpactPrefab;
         public GameObject OrangeImpactPrefab;
         public GameObject PinkImpactPrefab;
+        public GameObject YellowImpactPrefab;
 
         public Dictionary<ProjectileType, Pool> ProjectilePool = new Dictionary<ProjectileType, Pool>();
         public GameObject ProjectileBasicPrefab;
@@ -97,7 +99,7 @@ namespace StudioByStorm.FX {
         protected int boidPoolSize = 5;
         protected int colorCount = 4;
         protected int boidPerColor = 5;
-        protected int nodeConnectPoolSizes = 2;
+        protected int nodeConnectPoolSizes = 1;
         protected int projectilePoolSizes = 1;
         protected int wrongObstacleHitPoolSize = 3;
         protected int correctObstacleHitPoolSize = 3;
@@ -219,6 +221,10 @@ namespace StudioByStorm.FX {
             PinkNodeConnectPool.DependencyInjection(PinkNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.Pink, PinkNodeConnectPool);
 
+            Pool YellowNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            YellowNodeConnectPool.DependencyInjection(YellowNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Yellow, YellowNodeConnectPool);
+
             WrongObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
             WrongObstacleHitPool.DependencyInjection(WrongObstacleHitFX, FXParent, wrongObstacleHitPoolSize);
 
@@ -237,6 +243,7 @@ namespace StudioByStorm.FX {
             SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Orange, Instantiate(OrangeImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Pink, Instantiate(PinkImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Yellow, Instantiate(YellowImpactPrefab, FXParent));
 
             Pool BasicProjectilePool = ScriptableObject.CreateInstance<Pool>();
             BasicProjectilePool.DependencyInjection(ProjectileBasicPrefab, FXParent, projectilePoolSizes);

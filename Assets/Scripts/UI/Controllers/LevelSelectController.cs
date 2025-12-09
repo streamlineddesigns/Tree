@@ -51,6 +51,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             yield return null;
 
+            bool isShowingPlayButton = true;
             bool isCutSceneHighestUnlocked = true;
             CutSceneSelectButtonView highestCutSceneSelectButtonView = null;
             LevelSelectButtonView highestLevelSelectButtonView = null;
@@ -154,6 +155,13 @@ namespace StudioByStorm.UI.Controllers {
                             LevelSelectButtonView.SetLockStatus(false);
                             isCutSceneHighestUnlocked = false;
                             highestLevelSelectButtonView = LevelSelectButtonView;
+
+                            if (levelCompletionValue != 0) {
+                                isShowingPlayButton = false;
+                            } else {
+                                isShowingPlayButton = true;
+                            }
+
                         } else {
                             LevelSelectButtonView.SetLockStatus(true);
                         }
@@ -168,7 +176,7 @@ namespace StudioByStorm.UI.Controllers {
             if (isCutSceneHighestUnlocked) {
                 highestCutSceneSelectButtonView.SetToPlayIndication();
             } else {
-                highestLevelSelectButtonView.SetToPlayIndication();
+                if (isShowingPlayButton) highestLevelSelectButtonView.SetToPlayIndication();
             }
 
             yield return null;

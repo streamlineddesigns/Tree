@@ -724,7 +724,7 @@ namespace StudioByStorm.Gravity.Player {
                     if (obstaclePart.isBoid || (!isPositionHelperPlayingBack && ! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
-                        if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {
+                        if (!isLevelLost && ! isInAtmosphere && ! isOnSurface && controlType != ControlType.Jump) {
                             PlayerPositionHelper.PlayBack();
                             StartCoroutine(WaitForPositionHelper());
                         }

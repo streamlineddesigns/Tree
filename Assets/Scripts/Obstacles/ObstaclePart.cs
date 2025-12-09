@@ -9,6 +9,7 @@ namespace StudioByStorm.Obstacles {
         public NodeColor NodeColor;
         public ColorType colorType;
         public bool isBoid;
+        public bool isCameraHitBox;
         private Material originalMaterial;
 
         public void RegisterViaNodeID(int nodeID)

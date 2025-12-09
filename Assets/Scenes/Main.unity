@@ -1582,6 +1582,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 207744205}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &10915292
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -72696,6 +72698,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 463471154}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &391847235
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -87721,6 +87725,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 0}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &466060441
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -99994,6 +100000,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 1863189343}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &531986646
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -187720,6 +187728,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 748325408}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &762612814
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -201789,6 +201799,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 1785853413}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &798109402
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -226237,6 +226249,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &830156343 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5087707411447375403, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+  m_PrefabInstance: {fileID: 988134469}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &830586523
 GameObject:
   m_ObjectHideFlags: 0
@@ -232595,6 +232612,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 1683419069}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &876780732
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -256691,6 +256710,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 0}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &971996367
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -258556,6 +258577,168 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987917592}
   m_CullTransparentMesh: 1
+--- !u!1001 &988134469
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1110042289}
+    m_Modifications:
+    - target: {fileID: 854735715218973017, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isBoid
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 854735715218973017, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: NodeColor
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 854735715218973017, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isCameraHitBox
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 942992823727271891, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isBoid
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942992823727271891, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: NodeColor
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 942992823727271891, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isCameraHitBox
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2391222031263413543, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isBoid
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2391222031263413543, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: NodeColor
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2391222031263413543, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isCameraHitBox
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473833341063644003, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473833341063644003, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473833341063644003, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494502601701001097, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494502601701001097, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494502601701001097, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087707411447375403, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Name
+      value: CameraBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087707411447375403, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779740048867440852, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isBoid
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779740048867440852, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: NodeColor
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779740048867440852, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: isCameraHitBox
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387218493486591501, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387218493486591501, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387218493486591501, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318186980841004026, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318186980841004026, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318186980841004026, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+--- !u!4 &988134470 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4394670361403130248, guid: a492ecacb9770a84f9a7988f40ad9805, type: 3}
+  m_PrefabInstance: {fileID: 988134469}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &988473938
 GameObject:
   m_ObjectHideFlags: 0
@@ -260193,6 +260376,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 721074884}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1000845435
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -280479,7 +280664,8 @@ Transform:
   m_LocalPosition: {x: 3.32, y: -1.01, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 988134470}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1110042290
@@ -280507,6 +280693,7 @@ MonoBehaviour:
   - 81
   - 88
   Camera: {fileID: 1110042288}
+  CameraHitBox: {fileID: 830156343}
   sensitivity: 0.2
   smoothSpeed: 7
 --- !u!114 &1110042291
@@ -369029,6 +369216,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 607406898}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1495522493
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -454223,6 +454412,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 983846187}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1705035785
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -462525,6 +462716,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 0}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1734658693
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -479775,6 +479968,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 0}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1781406075
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -524804,6 +524999,8 @@ MonoBehaviour:
   coloredRing: {fileID: 0}
   currentEdge: {fileID: 787440010}
   isNodeCellular: 0
+  nodeCircleCollider2D: {fileID: 0}
+  darkSurfaceCircleCollider2D: {fileID: 0}
 --- !u!58 &1935412944
 CircleCollider2D:
   m_ObjectHideFlags: 0

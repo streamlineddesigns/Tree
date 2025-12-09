@@ -155,8 +155,9 @@ namespace StudioByStorm.Gravity.Player {
         private bool canUseControlTypes;
         private Color colorHit;
         private bool bFirstJumpMadeByUser;
-
-        public static int nextNodeSafePathID;
+        private int lastSafeNodeIDCheckpoint;
+        private int nextNodeSafePathID;
+        private bool bFirstJumpAfterCheckpoint = false;
         
         void Awake()
         {
@@ -177,6 +178,7 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
+            lastSafeNodeIDCheckpoint = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
@@ -238,6 +240,9 @@ namespace StudioByStorm.Gravity.Player {
             if (currentNode.ID != nextNodeSafePathID) {
                 return;
             }
+
+            //update this as a checkpoint
+            lastSafeNodeIDCheckpoint = currentNode.ID;
 
             //update the next node id in the safe path
             nextNodeSafePathID = (nextNodeSafePathIndex <= safePathCount - 1) ? GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex] : nextNodeSafePathID;
@@ -480,6 +485,7 @@ namespace StudioByStorm.Gravity.Player {
                 if (!bFirstJumpMadeByUser) {
                     bFirstJumpMadeByUser = true;
                 }
+                bFirstJumpAfterCheckpoint = true;
                 //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
             }
         }
@@ -490,7 +496,7 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
-            if (bFirstJumpMadeByUser && canUseControlTypes && !isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (bFirstJumpMadeByUser && bFirstJumpAfterCheckpoint && canUseControlTypes && !isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
                 ApplyJumpGravity();
             }
 
@@ -505,7 +511,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (!_isLanding && ! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
+            if (!_isLanding && !canDash && ! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                 ApplyGravityFailSafe();
             }
 
@@ -710,8 +716,9 @@ namespace StudioByStorm.Gravity.Player {
                 ColorType obstacleColorType = obstaclePart.colorType;
                 NodeColor obstaclePartColor = obstaclePart.NodeColor;
 
+                int whiteColorIndex = (int) NodeColor.White;
                 int colorIndex = (int) obstaclePartColor;
-                colorHit = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                colorHit = (obstaclePart.isCameraHitBox) ? GameManager.Singleton.ColorModel.lightColor[whiteColorIndex] : GameManager.Singleton.ColorModel.lightColor[colorIndex];
                 colorHit.a = 0.5f;
 
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
@@ -742,6 +749,13 @@ namespace StudioByStorm.Gravity.Player {
                         
                         if (! isHitObstacle) {
                             HitObstacle();
+                        }
+
+                        if (obstaclePart.isCameraHitBox) {
+                            Node nodeCheckpointGO = GameManager.Singleton.NodeRegistry.TryGetValue(lastSafeNodeIDCheckpoint);
+                            rigidbody.velocity = Vector2.zero;
+                            gameObject.transform.position = nodeCheckpointGO.gameObject.transform.position;
+                            bFirstJumpAfterCheckpoint = false;
                         }
                         
                     }

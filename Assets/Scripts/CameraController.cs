@@ -16,6 +16,7 @@ namespace StudioByStorm {
         public int[] maxNodeDistance;
         public float[] maxNodeDistanceIndexToProjectionSize;
         public Camera Camera;
+        public GameObject CameraHitBox;
         protected float smoothing = 1f;
 
         protected Vector3 offset;
@@ -130,7 +131,11 @@ namespace StudioByStorm {
             yield return new WaitForSeconds(2.0f);
 
             isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
-            if (isCameraMovementOkay) Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine);
+            if (isCameraMovementOkay) {
+                Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine).OnComplete(() => {
+                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) CameraHitBox.SetActive(true);
+                });
+            }
         }
     
         private void OnDrawGizmos()

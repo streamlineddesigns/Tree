@@ -155,6 +155,8 @@ namespace StudioByStorm.Gravity.Player {
         private bool canUseControlTypes;
         private Color colorHit;
         private bool bFirstJumpMadeByUser;
+
+        public static int nextNodeSafePathID;
         
         void Awake()
         {
@@ -175,6 +177,7 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
+            nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
@@ -217,6 +220,7 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+
             if (currentNode.NodeType == NodeType.Parent) {
                 NodeColor = currentNode.NodeColor;
                 
@@ -230,6 +234,13 @@ namespace StudioByStorm.Gravity.Player {
             int nextNodeSafePathIndex = nodeSafePathIndex + 1;
             Vector2 parentPosition = Vector2.zero;
             Vector2 childPosition = Vector2.zero;
+
+            if (currentNode.ID != nextNodeSafePathID) {
+                return;
+            }
+
+            //update the next node id in the safe path
+            nextNodeSafePathID = (nextNodeSafePathIndex <= safePathCount - 1) ? GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex] : nextNodeSafePathID;
                 
             if (nextNodeSafePathIndex <= safePathCount - 1) {
                 int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];
@@ -494,7 +505,7 @@ namespace StudioByStorm.Gravity.Player {
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
+            if (!_isLanding && ! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                 ApplyGravityFailSafe();
             }
 
@@ -872,9 +883,9 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (Mathf.Abs(rigidbody.velocity.x) <= minimumSpaceVelocity.x && Mathf.Abs(rigidbody.velocity.y) <= minimumSpaceVelocity.y) {
-                //gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
-                //rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
-                Move();
+                gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
+                rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
+                //Move();
             }
         }
 

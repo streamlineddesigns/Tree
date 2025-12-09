@@ -482,7 +482,7 @@ namespace StudioByStorm {
                 return;
             }
             Vector2 dir = (jumpJoystickDownPoint - jumpJoystickUpPoint);
-            GameManager.Singleton.PlayerController.JumpOverride(-jumpJoystickUpPoint);
+            GameManager.Singleton.PlayerController.JumpOverride(-jumpJoystickUpPoint * 1.25f);
             ActionView.OnJumpJoyStickUp();
 
             isJumpIndicatorOn = false;

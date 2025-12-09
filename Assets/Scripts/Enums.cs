@@ -22,6 +22,8 @@ namespace StudioByStorm {
         Yellow,
         Pink,
         Red,
+        Black,
+        
     }
 
     public enum ColorType

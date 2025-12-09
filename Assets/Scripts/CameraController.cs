@@ -129,8 +129,8 @@ namespace StudioByStorm {
 
             yield return new WaitForSeconds(2.0f);
 
-            isCameraMovementOkay = true;
-            Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine);
+            isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
+            if (isCameraMovementOkay) Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine);
         }
     
         private void OnDrawGizmos()

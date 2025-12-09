@@ -372,6 +372,9 @@ namespace StudioByStorm {
                     currentLevelParentCount = (currentNode.NodeType == NodeType.Parent) ? currentLevelParentCount + 1 : currentLevelParentCount;
                     currentLevelNodeCount++;
                     ID++;
+                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+                        currentNode.UseSlingShotSizedCollider();
+                    }
                 }
             }
 

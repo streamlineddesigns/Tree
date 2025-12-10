@@ -81,6 +81,8 @@ namespace StudioByStorm {
         protected List<int> playingAnimations = new List<int>();
         private List<int> visitedNodeIDsWithAnimations = new List<int>();
 
+        private bool canUseControlTypes;
+
         void Awake()
         {
             NodePool = ScriptableObject.CreateInstance<Pool>();
@@ -132,6 +134,14 @@ namespace StudioByStorm {
 
         protected void OnPlayerNodeChange(int nodeID)
         {
+            if (nodeID == CurrentLevelData.safePath[0]) {
+                canUseControlTypes = true;
+            }
+
+            if (! canUseControlTypes) {
+                return;
+            }
+
             playerNodeID = nodeID;
             if (ObstacleContainer.activeSelf) StartCoroutine(UpdateNearbyObstacles());
 

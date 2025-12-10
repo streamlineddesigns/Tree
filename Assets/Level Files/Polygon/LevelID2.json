@@ -1,24 +1,31 @@
 {
   "Layers": [
     {
-      "nodeCount": 2,
+      "nodeCount": 3,
       "nodePositions": [
         {
-          "x": 24.5,
-          "y": -12.1100006,
+          "x": -5.0,
+          "y": 42.7,
           "z": 0.0
         },
         {
-          "x": 31.5,
-          "y": -12.1100006,
+          "x": 5.0,
+          "y": 42.7,
+          "z": 0.0
+        },
+        {
+          "x": 15.0,
+          "y": 42.7,
           "z": 0.0
         }
       ],
       "nodeColors": [
-        5,
-        2
+        2,
+        0,
+        0
       ],
       "nodeTypes": [
+        1,
         1,
         1
       ]
@@ -27,51 +34,28 @@
       "nodeCount": 3,
       "nodePositions": [
         {
-          "x": 21.0,
-          "y": -19.11,
+          "x": -5.0,
+          "y": 32.7,
           "z": 0.0
         },
         {
-          "x": 28.0,
-          "y": -19.11,
+          "x": 5.0,
+          "y": 32.7,
           "z": 0.0
         },
         {
-          "x": 35.0,
-          "y": -19.11,
+          "x": 15.0,
+          "y": 32.7,
           "z": 0.0
         }
       ],
       "nodeColors": [
         4,
-        2,
-        4
+        4,
+        2
       ],
       "nodeTypes": [
         0,
-        1,
-        0
-      ]
-    },
-    {
-      "nodeCount": 2,
-      "nodePositions": [
-        {
-          "x": 24.5,
-          "y": -26.11,
-          "z": 0.0
-        },
-        {
-          "x": 31.5,
-          "y": -26.11,
-          "z": 0.0
-        }
-      ],
-      "nodeColors": [
-        4,
-        5
-      ],
-      "nodeTypes": [
         0,
         1
       ]
@@ -80,70 +64,94 @@
   "AdjacencyListData": [
     [
       1,
-      2,
-      3
-    ],
-    [
       3,
       4
     ],
     [
+      2,
       3,
+      4,
       5
     ],
     [
       4,
-      5,
-      6
+      5
     ],
     [
-      6
+      4
     ],
     [
-      6
+      5
     ],
     []
   ],
   "PlayerStartPosition": {
-    "x": 24.5,
-    "y": -12.1100006,
+    "x": 15.0,
+    "y": 32.7,
     "z": 0.0,
     "normalized": {
-      "x": 0.896466851,
-      "y": -0.4431108,
-      "z": 0.0,
-      "magnitude": 1.0,
-      "sqrMagnitude": 1.0
-    },
-    "magnitude": 27.32951,
-    "sqrMagnitude": 746.9021
-  },
-  "Centroid": {
-    "x": 28.0,
-    "y": -19.11,
-    "z": 0.0,
-    "normalized": {
-      "x": 0.825965166,
-      "y": -0.56372124,
+      "x": 0.416941822,
+      "y": 0.9089332,
       "z": 0.0,
       "magnitude": 1.0,
       "sqrMagnitude": 1.00000012
     },
-    "magnitude": 33.8997345,
-    "sqrMagnitude": 1149.19214
+    "magnitude": 35.9762421,
+    "sqrMagnitude": 1294.29
+  },
+  "Centroid": {
+    "x": 5.0,
+    "y": 37.7,
+    "z": 0.0,
+    "normalized": {
+      "x": 0.131474733,
+      "y": 0.991319537,
+      "z": 0.0,
+      "magnitude": 1.0,
+      "sqrMagnitude": 1.0
+    },
+    "magnitude": 38.03012,
+    "sqrMagnitude": 1446.29
   },
   "obstacleNames": [
-    "Spin Opposite Double Sided - 4 white Obstacle"
+    "Spin Opposite Double Sided - 1 white Obstacle",
+    "Spin Opposite Double Sided - 5 white Obstacle",
+    "WaypointPath Square - 2 white Obstacle",
+    "Spin Octagon - 3 white Obstacle"
   ],
   "obstacleNodeIDs": [
     [
-      5
+      4
+    ],
+    [
+      3
+    ],
+    [
+      0
+    ],
+    [
+      1
     ]
   ],
   "obstaclePositions": [
     {
-      "x": 24.5,
-      "y": -26.11,
+      "x": 5.0,
+      "y": 32.7,
+      "z": 0.0
+    },
+    {
+      "x": -5.0,
+      "y": 32.7,
+      "z": 0.0
+    },
+    {
+      "x": -5.0,
+      "y": 42.7,
+      "z": 0.0
+    },
+    {
+      "x": 5.0,
+      "y": 42.7,
       "z": 0.0
     }
   ],
@@ -151,13 +159,30 @@
     {
       "x": 0.0,
       "y": 0.0,
+      "z": -90.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "z": -90.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "z": -90.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
       "z": 180.0
     }
   ],
   "safePath": [
-    0,
-    2,
     5,
-    6
+    4,
+    3,
+    0,
+    1,
+    2
   ]
 }

@@ -89,6 +89,10 @@ namespace StudioByStorm.UI.Controllers {
             int starsAwarded = (edgePercent >= percentOfLevelCompletedToStarTierMapping[3]) ? 3 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[2]) ? 2 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[1]) ? 1 : 0;
+            //maps heart count to stars earned for anything other than slingshot
+            if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                starsAwarded = GameManager.Singleton.PlayerController.playerHeartsCount;
+            }
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
             
             //get cells used for xp purposes

@@ -476,7 +476,7 @@ namespace StudioByStorm.Gravity.Player {
                 slingshotJoyStick.SetActive(true);
             }
 
-            if (controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (GameManager.Singleton.CameraController.isReady && canUseControlTypes && controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
                 rigidbody.velocity = jumpDirection * 2.5f;
             }
 

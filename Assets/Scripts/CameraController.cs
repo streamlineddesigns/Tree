@@ -17,6 +17,7 @@ namespace StudioByStorm {
         public float[] maxNodeDistanceIndexToProjectionSize;
         public Camera Camera;
         public GameObject CameraHitBox;
+        public bool isReady;
         protected float smoothing = 1f;
 
         protected Vector3 offset;
@@ -134,6 +135,7 @@ namespace StudioByStorm {
             if (isCameraMovementOkay) {
                 Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine).OnComplete(() => {
                     if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) CameraHitBox.SetActive(true);
+                    isReady = true;
                 });
             }
         }

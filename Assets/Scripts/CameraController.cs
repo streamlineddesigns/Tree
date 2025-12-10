@@ -137,6 +137,12 @@ namespace StudioByStorm {
                     if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) CameraHitBox.SetActive(true);
                     isReady = true;
                 });
+                
+            } else {
+                //slingshot mechanic only
+                Camera.DOOrthoSize(29, 1.0f).SetEase(Ease.InSine).OnComplete(() => {
+                    isReady = true;
+                });
             }
         }
     

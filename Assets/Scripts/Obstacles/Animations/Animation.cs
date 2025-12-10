@@ -57,6 +57,10 @@ namespace StudioByStorm.Obstacles.Animations {
             for (int k = 0; k < initialRotationTeleportCount; k++) {
                 TeleportBuildingBlocksRotation();
             }
+
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
+                time /= 2.0f;
+            }
         }
 
         protected void OnDisable()

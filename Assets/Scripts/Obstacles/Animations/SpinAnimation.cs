@@ -11,11 +11,17 @@ namespace StudioByStorm.Obstacles.Animations {
         {
             yield return new WaitUntil(() => animate);
 
+            float speed = 2.0f;
+
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
+                speed = 4.0f;
+            }
+
             while(animate) {
                 if (direction == 0) {
-                    gameObject.transform.Rotate(0.0f, 0.0f, -2.0f);
+                    gameObject.transform.Rotate(0.0f, 0.0f, -speed);
                 } else {
-                    gameObject.transform.Rotate(0.0f, 0.0f, 2.0f);
+                    gameObject.transform.Rotate(0.0f, 0.0f, speed);
                 }
 
                 /*float speed = (360.0f / time) / 30.0f;

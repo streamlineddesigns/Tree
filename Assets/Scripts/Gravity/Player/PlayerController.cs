@@ -477,7 +477,15 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
-                rigidbody.velocity = jumpDirection * 3.0f;
+                rigidbody.velocity = jumpDirection * 2.5f;
+            }
+
+            if (Input.GetMouseButtonDown(0) && controlType == ControlType.Animate) {
+                GameManager.Singleton.LevelManager.StartPlayingAnimations();
+            }
+
+            if (Input.GetMouseButtonUp(0) && controlType == ControlType.Animate) {
+                GameManager.Singleton.LevelManager.StopPlayingAnimations();
             }
 
             if (canUseControlTypes && controlType == ControlType.Jump && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
@@ -488,6 +496,8 @@ namespace StudioByStorm.Gravity.Player {
                 bFirstJumpAfterCheckpoint = true;
                 //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
             }
+
+            
         }
 
         void FixedUpdate()

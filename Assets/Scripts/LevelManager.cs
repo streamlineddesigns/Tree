@@ -153,7 +153,7 @@ namespace StudioByStorm {
                 }
 
                 //if they're all visited, disable the gameObject
-                if (GameManager.Singleton.PlayerController.controlType == ControlType.Tap && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
+                if ((GameManager.Singleton.PlayerController.controlType == ControlType.Tap || GameManager.Singleton.PlayerController.controlType == ControlType.Animate) && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
             }
         }
 
@@ -235,7 +235,7 @@ namespace StudioByStorm {
                 animationsToEnable.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
                     if (currentAnim != null) {
-                        currentAnim.Animate();
+                        if (GameManager.Singleton.PlayerController.controlType != ControlType.Animate) currentAnim.Animate();
                     }
                 });
                 //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
@@ -278,6 +278,26 @@ namespace StudioByStorm {
                 }
                 
             }
+        }
+
+        public void StopPlayingAnimations()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    currentAnim.Stop();
+                }
+            });
+        }
+
+        public void StartPlayingAnimations()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    currentAnim.Animate();
+                }
+            });
         }
 
         protected void UnloadObstacles()

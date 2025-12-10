@@ -127,7 +127,12 @@ namespace StudioByStorm.Gravity.Player {
         private bool isJoystickUp = true;
         private Vector2 joystickDownPoint;
         private Vector2 joystickUpPoint;
-        private int playerHeartsCount = 3;
+        private int _playerHeartsCount = 3;
+        public int playerHeartsCount {
+            get {
+                return _playerHeartsCount;
+            }
+        }
         private bool isLevelLost = false;
 
         private int playerNodeID = -1;
@@ -599,14 +604,14 @@ namespace StudioByStorm.Gravity.Player {
                 HitObstacleAnimation();
 
                 //check if the player still has hearts left after this
-                if ((playerHeartsCount - 1) > 0) {
+                if ((_playerHeartsCount - 1) > 0) {
                     GameManager.Singleton.CameraController.Shake(0.15f, 0.15f);
-                    playerHeartsCount--;
+                    _playerHeartsCount--;
                     UpdatePlayerHearts();
 
                 } else if (! isLevelLost) {
                     GameManager.Singleton.CameraController.Shake(0.225f, 0.225f);
-                    playerHeartsCount--;
+                    _playerHeartsCount--;
                     UpdatePlayerHearts();
                     StartCoroutine(LevelLostAnimation());
                 }
@@ -629,6 +634,14 @@ namespace StudioByStorm.Gravity.Player {
                                     isHitAnimationPlaying = false;
                                     spriteRenderer.material = currentMaterial;
                                     isHitObstacle = false;
+
+                                    //fixes the bug where color changes while OnNodeChange occurs
+                                    ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+                                    if (actionController.ActionModel.CurrentEdge != null) {
+                                        int colorIndex = (int) actionController.ActionModel.CurrentEdge.EdgeColor;
+                                        spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                                        currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                                    }
                                 });
         }
 
@@ -637,7 +650,7 @@ namespace StudioByStorm.Gravity.Player {
             PlayerHeartsView playerHeartsView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.PlayerHeartsView) as PlayerHeartsView;
 
             if (isInit) {
-                playerHeartsView.SetPlayerHearts(playerHeartsCount);
+                playerHeartsView.SetPlayerHearts(_playerHeartsCount);
             } else {
                 playerHeartsView.LoseHeart();
             }

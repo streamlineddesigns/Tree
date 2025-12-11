@@ -35,6 +35,9 @@ namespace StudioByStorm {
             EdgeColor = (parentNode != null) ? parentNode.NodeColor : GameManager.Singleton.NodeRegistry.TryGetValue(parentID).NodeColor;
             int colorIndex = (int) EdgeColor;
 
+            //set hook to corresponding color
+            hookSpriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
                 LinkSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
                 //LinkSpriteRenderers[i].sprite = GameManager.Singleton.ColorModel.ColoredGetters[colorIndex];
@@ -168,8 +171,11 @@ namespace StudioByStorm {
             //then move the empty target to that scaled target position for a smoother looking animation
             emptyTarget.transform.DOMove(scaledTargetPosition, 0.3f).SetEase(Ease.InQuad);
 
+            //Debug.LogError("distance: " + distance);
             //while that's happening, disable some of the end links, so they don't extend passed child node
-            if (distance >= 9.0f) {
+            if (distance >= 10.0f) {
+                //do nothing
+            } else if (distance >= 9.0f) {
                 StartCoroutine(DisableLinks(1));
             } else if (distance >= 7.5f) {    
                 StartCoroutine(DisableLinks(2));

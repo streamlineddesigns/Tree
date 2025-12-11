@@ -304,12 +304,18 @@ namespace StudioByStorm.Gravity.Player {
 
         IEnumerator DelayedJumpActivation(int currentNodeID, int currentParentNodeID, Vector2 cachedJumpDirection)
         {
-            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID); 
+
+            yield return new WaitUntil(() => ML.Math.GetDistance(gameObject.transform.position, currentNode.gameObject.transform.position) <= 0.5f);
+            Move();
 
             if (currentNodeID == playerNodeID) {
                 jumpDirection = cachedJumpDirection;
                 if (bFirstJumpMadeByUser) {
-                    if (surface != null) surface.gameObject.GetComponent<Collider2D>().enabled = false;
+                    if (surface == null) {
+                        surface = currentNode.DarkSurface.GetComponent<Surface>();
+                    }
+                    surface.gameObject.GetComponent<Collider2D>().enabled = false;
                     rigidbody.velocity = jumpDirection * jumpForce;
                 }
             }
@@ -717,7 +723,14 @@ namespace StudioByStorm.Gravity.Player {
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;
-                Move(true);    
+                if (controlType != ControlType.Jump) {
+                    Move(true);   
+                } else {
+                    //for the first node while using jump movement ie pre canUseControlTypes
+                    if (!canUseControlTypes) {
+                        Move(true);   
+                    }
+                } 
                 
                 if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.isOutOfBounds) {
                     StartCoroutine(ActionController.ActionModel.CurrentEdge.StretchTowardsPlayerAnimation());
@@ -945,7 +958,7 @@ namespace StudioByStorm.Gravity.Player {
             if (velocityDistanceToSlowingDown < velocityDistanceToJumpForce) {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
                 //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
-                rigidbody.AddForce(-jumpDirection * powerJumpForce * 4.25f, ForceMode2D.Force);
+                rigidbody.AddForce(-jumpDirection * powerJumpForce * 3.25f, ForceMode2D.Force);
             //jumping
             } else {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));

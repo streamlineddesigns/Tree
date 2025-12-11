@@ -174,7 +174,7 @@ namespace StudioByStorm {
             //Debug.LogError("distance: " + distance);
             //while that's happening, disable some of the end links, so they don't extend passed child node
             if (distance >= 10.0f) {
-                //do nothing
+                StartCoroutine(DisableLinks(0));
             } else if (distance >= 9.0f) {
                 StartCoroutine(DisableLinks(1));
             } else if (distance >= 7.5f) {    

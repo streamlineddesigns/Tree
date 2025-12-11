@@ -307,7 +307,15 @@ namespace StudioByStorm.Gravity.Player {
             Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID); 
 
             yield return new WaitUntil(() => ML.Math.GetDistance(gameObject.transform.position, currentNode.gameObject.transform.position) <= 0.5f);
-            Move();
+            
+            transform.position = currentNode.gameObject.transform.position;
+
+            if (currentNodeID == GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0]) {
+                rigidbody.velocity = Vector2.zero;
+            }
+
+            var angle = Mathf.Atan2(jumpDirection.y, jumpDirection.x) * Mathf.Rad2Deg;
+            GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
 
             if (currentNodeID == playerNodeID) {
                 jumpDirection = cachedJumpDirection;
@@ -948,7 +956,6 @@ namespace StudioByStorm.Gravity.Player {
 
             //transform.up = - gravityDirection;
             
-
             float velocityDistanceToSlowingDown = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce * 0.425f)));
             float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce)));
 

@@ -59,7 +59,17 @@ namespace StudioByStorm.Obstacles.Animations {
             }
 
             if (GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
-                time /= 2.0f;
+                time /= 3.0f;
+
+            } else if (GameManager.Singleton.PlayerController.controlType == ControlType.Tap) {
+                float currentLevelID = GameManager.Singleton.LevelManager.displayLevelID * 1.0f;
+                float currentChapterID = GameManager.Singleton.LevelManager.currentChapterID * 15.0f;//will be 0 or 15 for chapter 1 vs chapter 2
+                float actualCurrentLevel = currentLevelID + currentChapterID;
+                float maxLevel = GameManager.Singleton.LevelManager.levelChapters.chapters.Count * 15.0f;
+                float percentage = actualCurrentLevel / maxLevel;
+                float clampedPercent = Mathf.Min(percentage, 1.0f);
+                float divisor = DOVirtual.EasedValue(1.5f, 3.0f, clampedPercent, Ease.Linear);
+                time /= divisor;
             }
         }
 

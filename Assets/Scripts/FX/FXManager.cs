@@ -108,6 +108,8 @@ namespace StudioByStorm.FX {
         protected int playerTrailPoolSize = 3;
         protected int playerJumpPoolSize = 2;
 
+        private bool canShowConnectionIndicator;
+
         int playerEdgeChangeID = -1;
 
         private int rewardAnimationCount = 0;
@@ -117,12 +119,28 @@ namespace StudioByStorm.FX {
         {
             GameEventPublisher.OnPlayerEdgeChange += OnPlayerEdgeChange;
             GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
+            GameEventPublisher.OnStateChange      += OnStateChange;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnPlayerEdgeChange -= OnPlayerEdgeChange;
             GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
+            GameEventPublisher.OnStateChange      -= OnStateChange;
+        }
+
+        public void OnStateChange(GameState state)
+        {
+            switch(state) {
+                case GameState.GameStart :
+                    canShowConnectionIndicator = true;
+                    break;
+
+                case GameState.LevelComplete :
+                    ConnectionIndicatorPool.DeactivateAll();
+                    canShowConnectionIndicator = false;
+                    break;
+            }
         }
 
         protected void OnPlayerEdgeChange(int ParentNodeID)
@@ -192,7 +210,7 @@ namespace StudioByStorm.FX {
                         //show a connection indicator at the same position of the cell if it can be connected to
                         GameObject connectionIndicator = ConnectionIndicatorPool.Get();
                         connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
-                        connectionIndicator.SetActive(true);
+                        if (canShowConnectionIndicator) connectionIndicator.SetActive(true);
                     }
 
                 }
@@ -204,7 +222,7 @@ namespace StudioByStorm.FX {
                 //show a connection indicator at the same position of the cell if it can be connected to
                 GameObject connectionIndicator = ConnectionIndicatorPool.Get();
                 connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
-                connectionIndicator.SetActive(true);
+                if (canShowConnectionIndicator) connectionIndicator.SetActive(true);
             }
             
             
@@ -364,10 +382,8 @@ namespace StudioByStorm.FX {
 
                 firework.transform.position = currentTargetPosition;
                 firework.SetActive(true);
-                
-                ConnectionIndicatorPool.DeactivateAll();
+
                 yield return new WaitForSeconds(timeBetweenLaunches);
-                ConnectionIndicatorPool.DeactivateAll();
             }
         }
 

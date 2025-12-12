@@ -211,6 +211,10 @@ namespace StudioByStorm {
                 List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
                 List<int> connectedNodesWithAnimations = (connectedNodes != null) ? connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList() : new List<int>();
+                //if not slingshot only use next node animations
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                    connectedNodesWithAnimations = connectedNodesWithAnimations.Where(x => x == GameManager.Singleton.PlayerController.nextNodeSafePathID).ToList();
+                }
                 //also add the current node if it has an animation too
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);

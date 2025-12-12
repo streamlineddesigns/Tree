@@ -252,9 +252,15 @@ namespace StudioByStorm.Gravity.Player {
 
             Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
 
-            if (currentNode.NodeType == NodeType.Parent) {
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+
+            if (actionController.ActionModel.CurrentEdge != null) {
+                int colorIndex = (int) actionController.ActionModel.CurrentEdge.EdgeColor;
+                spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+
+            } else if (currentNode.NodeType != NodeType.Disjoint) {
                 NodeColor = currentNode.NodeColor;
-                
                 int colorIndex = (int) NodeColor;
                 spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
                 currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
@@ -520,7 +526,7 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (GameManager.Singleton.CameraController.isReady && canUseControlTypes && controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
-                rigidbody.velocity = jumpDirection * 2.5f;
+                rigidbody.velocity = jumpDirection * 3.0f;
             }
 
             if (Input.GetMouseButtonDown(0) && controlType == ControlType.Animate) {

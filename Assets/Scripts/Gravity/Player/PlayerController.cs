@@ -196,6 +196,8 @@ namespace StudioByStorm.Gravity.Player {
             GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
             FTUECheck();
             StartCoroutine(SpawnTrailFXUpdateLoop());
+
+            StartCoroutine(LandingRoutine());
         }
 
         void OnDisable()
@@ -219,6 +221,23 @@ namespace StudioByStorm.Gravity.Player {
                 case GameState.LevelLost :                    
                     break;
             }
+        }
+
+        IEnumerator LandingRoutine()
+        {
+            //clean up isLanding state
+            yield return new WaitUntil(()=> (Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, gameObject.transform.position) < 2.0f));
+
+            _isLanding = false;
+            SetRigidBodyType(RigidbodyType2D.Dynamic);
+
+            GameObject SuperHeroImpact = GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor];
+            SuperHeroImpact.transform.position = gameObject.transform.position;
+            SuperHeroImpact.SetActive(true);
+        
+            yield return new WaitForSeconds(0.5f);
+
+            SuperHeroImpact.SetActive(false);
         }
 
         protected void OnPlayerNodeChange(int nodeID)
@@ -1183,18 +1202,6 @@ namespace StudioByStorm.Gravity.Player {
             } else if (! isInAtmosphere && ! isOnSurface) {
                 canDash = true;
                 didJump = false;
-            }
-
-            //clean up isLanding state
-            if (_isLanding && 
-                Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, gameObject.transform.position) < 2.0f && 
-                rigidbody.bodyType == RigidbodyType2D.Kinematic) 
-            {
-
-                _isLanding = false;
-                SetRigidBodyType(RigidbodyType2D.Dynamic);
-                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].transform.position = gameObject.transform.position;
-                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].SetActive(true);
             }
         }
     }

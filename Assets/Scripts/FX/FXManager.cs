@@ -116,15 +116,22 @@ namespace StudioByStorm.FX {
         void OnEnable()
         {
             GameEventPublisher.OnPlayerEdgeChange += OnPlayerEdgeChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnPlayerEdgeChange -= OnPlayerEdgeChange;
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
         }
 
         protected void OnPlayerEdgeChange(int ParentNodeID)
         {
+            //only used for slingshot
+            if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                return;
+            }
+
             //send -1 if deactivating an edge
             if (ParentNodeID == -1) {
                 ConnectionIndicatorPool.DeactivateAll();
@@ -145,6 +152,20 @@ namespace StudioByStorm.FX {
             StartCoroutine(DelayedOnPlayerEdgeChange(ParentNodeID, actionController));
         }
 
+        protected void OnPlayerNodeChange(int ParentNodeID)
+        {
+            //only used for control types besides slingshot
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+                return;
+            }
+
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            if (actionController == null) {
+                return;
+            }
+            StartCoroutine(DelayedOnPlayerEdgeChange(ParentNodeID, actionController));
+        }
+
         IEnumerator DelayedOnPlayerEdgeChange(int ParentNodeID, ActionController actionController)
         {
             ConnectionIndicatorPool.DeactivateAll();
@@ -152,24 +173,41 @@ namespace StudioByStorm.FX {
             yield return null;
 
             List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ParentNodeID);
-            
-            for (int i = 0; i < connectedNodes.Count; i++) {
-                int nid = connectedNodes[i];
-                Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(nid);
 
-                if  (
-                        //the other parent
-                        (nearbyNode.currentEdge.childID == -1 && nearbyNode.NodeColor == actionController.ActionModel.CurrentEdge.EdgeColor) || 
-                        //disjoint
-                        (nearbyNode.NodeType == NodeType.Disjoint)
-                    ){
-                    
-                    //show a connection indicator at the same position of the cell if it can be connected to
-                    GameObject connectionIndicator = ConnectionIndicatorPool.Get();
-                    connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
-                    connectionIndicator.SetActive(true);
+
+            //if slingshot
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+
+                for (int i = 0; i < connectedNodes.Count; i++) {
+                    int nid = connectedNodes[i];
+                    Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(nid);
+
+                    if  (
+                            //the other parent
+                            (nearbyNode.currentEdge.childID == -1 && nearbyNode.NodeColor == actionController.ActionModel.CurrentEdge.EdgeColor) || 
+                            //disjoint
+                            (nearbyNode.NodeType == NodeType.Disjoint)
+                        ){
+                        
+                        //show a connection indicator at the same position of the cell if it can be connected to
+                        GameObject connectionIndicator = ConnectionIndicatorPool.Get();
+                        connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
+                        connectionIndicator.SetActive(true);
+                    }
+
                 }
+
+            //all other control types besides slingshot
+            } else {
+                int id = GameManager.Singleton.PlayerController.nextNodeSafePathID;
+                Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(id);
+                //show a connection indicator at the same position of the cell if it can be connected to
+                GameObject connectionIndicator = ConnectionIndicatorPool.Get();
+                connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
+                connectionIndicator.SetActive(true);
             }
+            
+            
         }
 
         void Awake()
@@ -326,7 +364,10 @@ namespace StudioByStorm.FX {
 
                 firework.transform.position = currentTargetPosition;
                 firework.SetActive(true);
+                
+                ConnectionIndicatorPool.DeactivateAll();
                 yield return new WaitForSeconds(timeBetweenLaunches);
+                ConnectionIndicatorPool.DeactivateAll();
             }
         }
 

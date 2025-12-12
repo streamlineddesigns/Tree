@@ -161,7 +161,12 @@ namespace StudioByStorm.Gravity.Player {
         private Color colorHit;
         private bool bFirstJumpMadeByUser;
         private int lastSafeNodeIDCheckpoint;
-        private int nextNodeSafePathID;
+        public int nextNodeSafePathID {
+            get {
+                return _nextNodeSafePathID;
+            }
+        }
+        private int _nextNodeSafePathID;
         private bool bFirstJumpAfterCheckpoint = false;
         
         void Awake()
@@ -184,7 +189,7 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             lastSafeNodeIDCheckpoint = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
-            nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
+            _nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
@@ -242,7 +247,7 @@ namespace StudioByStorm.Gravity.Player {
             Vector2 parentPosition = Vector2.zero;
             Vector2 childPosition = Vector2.zero;
 
-            if (currentNode.ID != nextNodeSafePathID) {
+            if (currentNode.ID != _nextNodeSafePathID) {
                 return;
             }
 
@@ -250,7 +255,7 @@ namespace StudioByStorm.Gravity.Player {
             lastSafeNodeIDCheckpoint = currentNode.ID;
 
             //update the next node id in the safe path
-            nextNodeSafePathID = (nextNodeSafePathIndex <= safePathCount - 1) ? GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex] : nextNodeSafePathID;
+            _nextNodeSafePathID = (nextNodeSafePathIndex <= safePathCount - 1) ? GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex] : _nextNodeSafePathID;
                 
             if (nextNodeSafePathIndex <= safePathCount - 1) {
                 int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];

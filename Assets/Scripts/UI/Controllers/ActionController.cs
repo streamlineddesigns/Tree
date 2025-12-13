@@ -538,7 +538,7 @@ namespace StudioByStorm {
                     //$$jiggle the edge
                     //Vector3 edgeTarget = Vector3.zero;
                     //edgeTarget.x += 0.1f;
-                    currentEdge.gameObject.transform.DOPunchPosition(scaledTargetPosition, 0.2f, 1, 0.1f, false);
+                    currentEdge.gameObject.transform.DOPunchPosition(scaledTargetPosition, 0.4f, 1, 0.1f, false);
                 }
 
                 currentEdge.DisplayLineRendererFX();

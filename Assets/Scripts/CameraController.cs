@@ -129,18 +129,18 @@ namespace StudioByStorm {
 
             GameManager.Singleton.player.SetActive(true);
 
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(1.5f);
 
             isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
             if (isCameraMovementOkay) {
-                Camera.DOOrthoSize(20, 1.0f).SetEase(Ease.InSine).OnComplete(() => {
+                Camera.DOOrthoSize(20, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
                     if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) CameraHitBox.SetActive(true);
                     isReady = true;
                 });
                 
             } else {
                 //slingshot mechanic only
-                Camera.DOOrthoSize(29, 1.0f).SetEase(Ease.InSine).OnComplete(() => {
+                Camera.DOOrthoSize(30, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
                     isReady = true;
                 });
             }

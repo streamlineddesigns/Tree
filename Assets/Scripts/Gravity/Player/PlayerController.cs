@@ -516,7 +516,7 @@ namespace StudioByStorm.Gravity.Player {
             movementForce = _movementForce;
             StateCleanUp();
 
-            if (controlType == ControlType.Tap && Input.GetMouseButtonDown(0) && isOnSurface) {
+            if (controlType == ControlType.Tap && GameManager.Singleton.CameraController.isReady && Input.GetMouseButtonDown(0) && isOnSurface) {
                 JumpOverride(jumpDirection * 2.0f);
                 JumpIndicator.SetActive(false);
             }
@@ -525,19 +525,19 @@ namespace StudioByStorm.Gravity.Player {
                 slingshotJoyStick.SetActive(true);
             }
 
-            if (GameManager.Singleton.CameraController.isReady && canUseControlTypes && controlType == ControlType.Animate && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (GameManager.Singleton.CameraController.isReady && canUseControlTypes && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
                 rigidbody.velocity = jumpDirection * 3.0f;
             }
 
-            if (Input.GetMouseButtonDown(0) && controlType == ControlType.Animate) {
+            if (Input.GetMouseButtonDown(0) && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady) {
                 GameManager.Singleton.LevelManager.StartPlayingAnimations();
             }
 
-            if (Input.GetMouseButtonUp(0) && controlType == ControlType.Animate) {
+            if (Input.GetMouseButtonUp(0) && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady) {
                 GameManager.Singleton.LevelManager.StopPlayingAnimations();
             }
 
-            if (canUseControlTypes && controlType == ControlType.Jump && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (canUseControlTypes && controlType == ControlType.Jump && GameManager.Singleton.CameraController.isReady && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
                 rigidbody.velocity = jumpDirection * powerJumpForce;
                 if (!bFirstJumpMadeByUser) {
                     bFirstJumpMadeByUser = true;

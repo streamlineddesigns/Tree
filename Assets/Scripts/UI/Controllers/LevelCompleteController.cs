@@ -253,7 +253,7 @@ namespace StudioByStorm.UI.Controllers {
                 int lastChapterID = GameManager.Singleton.LevelManager.levelChapters.chapters.Count - 1;
                 if (currentChapterID >= lastChapterID) {
                     //Debug.LogError("last level beaten");
-                    HomeButtonClick();
+                    HomeButtonClick(false);
                 } else {
                     StartCoroutine(GoToNextChapter(nextChapterID));
                 }
@@ -271,18 +271,20 @@ namespace StudioByStorm.UI.Controllers {
             StartCoroutine(GoToNextLevel(nextLevelID, currentChapterID));
         }
 
-        public void HomeButtonClick()
+        public void HomeButtonClick(bool needsToCountStars = true)
         {
+            LevelPackSelectController.bNeedsToCountStars = needsToCountStars;
+            
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             
             PauseController PauseController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.PauseView) as PauseController;
-            PauseController.HomeButtonClick();
+            PauseController.HomeButtonClick(needsToCountStars);
         }
 
         IEnumerator GoToNextChapter(int nextChapterID)
         {
             //Debug.Log("GoToNextChapter");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
 
@@ -295,7 +297,7 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator GoToNextCutScene(int nextLevelID, int chapterID)
         {
             //Debug.Log("GoToNextCutScene");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
 
@@ -306,8 +308,9 @@ namespace StudioByStorm.UI.Controllers {
 
         IEnumerator GoToNextLevel(int nextLevelID, int chapterID)
         {
+            LevelPackSelectController.bNeedsToCountStars = false;
             //Debug.Log("GoToNextLevel");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
             

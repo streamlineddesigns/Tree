@@ -11,10 +11,12 @@ namespace StudioByStorm.UI.Controllers {
 
     public class LevelPackSelectController : Controller
     {
+        public List<LevelPackProgressionData> progressionData = new List<LevelPackProgressionData>();
         public List<LevelPackData> levelPacks = new List<LevelPackData>();
         public int levelPackID = -1;
         public bool isRunning;
         
+        public static bool bNeedsToCountStars = true;
         public static LevelPackName currentLevelPackName;
         public static string currentLevelPackAlias;
         public static GameObject currentLevelPackGO;
@@ -33,6 +35,8 @@ namespace StudioByStorm.UI.Controllers {
             } else {
                 StartCoroutine(InitLevelPackID());
             }
+
+            if (LevelPackSelectController.bNeedsToCountStars) UpdateLevelPackProgressionData();
         }
 
         protected void Update()
@@ -215,6 +219,57 @@ namespace StudioByStorm.UI.Controllers {
 
             //move to sibling index 1 ie right after heading text
             //levelPacks[levelPackID].UICard.transform.SetSiblingIndex(1);
+        }
+
+        private void UpdateLevelPackProgressionData()
+        {
+            
+            int totalStarCount = 0;
+
+            //iterate over all level packs/chapters/levels to get total star count
+            for (int i = 0; i < progressionData.Count; i++) {
+                for (int j = 0; j < progressionData[i].chaptersCount; j++) {
+                    for (int k = 0; k < progressionData[i].levelPerChapterCount; k++) {
+                        //level pack name
+                        LevelPackName levelPackNameEnum = (LevelPackName) progressionData[i].name;
+                        string levelPackNameString = levelPackNameEnum.ToString();
+                        //level pack key
+                        string key = (levelPackNameString + "-" + j + "-" + k);
+                        //get previous stars awarded
+                        int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
+                        //add up total stars
+                        totalStarCount += previousStarsAwarded;
+                    }
+                }
+            }
+
+            //start at 1 because first is always unlocked
+            for (int l = 1; l < progressionData.Count; l++) {
+                bool isLocked = (totalStarCount < progressionData[l].starsToUnlock);
+                float dividend = totalStarCount * 1.0f;
+                float divisor = progressionData[l].starsToUnlock * 1.0f;
+                float percentage = dividend / divisor;
+                int percentageInteger = (int) (percentage * 100.0f);
+                string percentageString = percentageInteger.ToString() + "%";
+
+                if (isLocked) {
+                    progressionData[l].playButton.SetActive(false);
+                    progressionData[l].lockedButton.SetActive(true);
+                    progressionData[l].lockedBanner.SetActive(true);
+                    progressionData[l].progressBar.value = percentage;
+                    progressionData[l].progressPercentText.gameObject.SetActive(true);
+                    progressionData[l].progressPercentText.text = percentageString;
+
+                } else {
+                    progressionData[l].playButton.SetActive(true);
+                    progressionData[l].lockedButton.SetActive(false);
+                    progressionData[l].lockedBanner.SetActive(false);
+                    progressionData[l].progressBar.value = 1.0f;
+                    progressionData[l].progressPercentText.gameObject.SetActive(false);
+                }
+            }
+
+            //Debug.LogError(totalStarCount);
         }
 
         private void SelectLevelPack(LevelPackName levelPackName)

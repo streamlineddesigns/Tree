@@ -36,6 +36,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void HomeButtonClick()
         {
+            LevelPackSelectController.bNeedsToCountStars = true;
+            
             AudioManager.Singleton.Play(SoundType.ButtonPress);
 
             Time.timeScale = 1.0f;

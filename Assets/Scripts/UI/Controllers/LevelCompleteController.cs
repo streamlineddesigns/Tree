@@ -253,7 +253,7 @@ namespace StudioByStorm.UI.Controllers {
                 int lastChapterID = GameManager.Singleton.LevelManager.levelChapters.chapters.Count - 1;
                 if (currentChapterID >= lastChapterID) {
                     //Debug.LogError("last level beaten");
-                    HomeButtonClick(false);
+                    HomeButtonClick(true);
                 } else {
                     StartCoroutine(GoToNextChapter(nextChapterID));
                 }

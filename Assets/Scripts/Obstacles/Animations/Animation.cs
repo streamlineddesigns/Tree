@@ -58,10 +58,10 @@ namespace StudioByStorm.Obstacles.Animations {
                 TeleportBuildingBlocksRotation();
             }
 
-            if (GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
+            if (GameManager.Singleton != null && GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
                 time /= 3.0f;
 
-            } else if (GameManager.Singleton.PlayerController.controlType == ControlType.Tap) {
+            } else if (GameManager.Singleton != null && GameManager.Singleton.PlayerController.controlType == ControlType.Tap) {
                 float currentLevelID = GameManager.Singleton.LevelManager.displayLevelID * 1.0f;
                 float currentChapterID = GameManager.Singleton.LevelManager.currentChapterID * 15.0f;//will be 0 or 15 for chapter 1 vs chapter 2
                 float actualCurrentLevel = currentLevelID + currentChapterID;

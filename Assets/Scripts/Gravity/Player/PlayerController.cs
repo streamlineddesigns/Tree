@@ -235,7 +235,7 @@ namespace StudioByStorm.Gravity.Player {
             SuperHeroImpact.transform.position = gameObject.transform.position;
             SuperHeroImpact.SetActive(true);
         
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.75f);
 
             SuperHeroImpact.SetActive(false);
         }

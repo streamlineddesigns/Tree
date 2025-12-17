@@ -18,7 +18,7 @@ namespace StudioByStorm {
         public Camera Camera;
         public GameObject CameraHitBox;
         public bool isReady;
-        protected float smoothing = 1f;
+        protected float smoothing = 2.5f;
 
         protected Vector3 offset;
         protected Vector3 originalPosition;
@@ -129,7 +129,7 @@ namespace StudioByStorm {
 
             GameManager.Singleton.player.SetActive(true);
 
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitUntil(()=> (Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, GameManager.Singleton.PlayerController.gameObject.transform.position) < 2.0f));
 
             isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
             if (isCameraMovementOkay) {

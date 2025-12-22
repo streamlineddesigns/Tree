@@ -177,7 +177,7 @@ namespace StudioByStorm.PCG {
                 Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
 
                 //get direction
-                Vector3 nodeDir = (firstScaled - secondScaled).normalized;
+                Vector3 nodeDir = (secondScaled - firstScaled).normalized;
                 Vector3 perpVec = Vector3.Cross(nodeDir, Vector3.forward);
                 float angle = Mathf.Atan2(perpVec.y, perpVec.x) * Mathf.Rad2Deg;
                 nodeDir = new Vector3(0, 0, angle);

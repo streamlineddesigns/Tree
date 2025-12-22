@@ -322,7 +322,57 @@ namespace StudioByStorm.PCG {
 
         protected void OnNodeObstacleTypePlacement(int obstacleNameIndex)
         {
+            int firstFoundGreyNodeIndex = -1;
+            int secondFoundGreyNodeIndex = -1;
 
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
+
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
+                Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
+
+
+                //use previous node ie one before
+                int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i - 1]; 
+                 Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
+
+                //if neither of the node indexs are being used, and the distance between the nodes is less than our threshold
+                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex)) {
+                    //keep track of used nodes
+                    usedGreyNodeIDs.Add(firstGreyNodeIndex);
+                    firstFoundGreyNodeIndex = firstGreyNodeIndex;
+                    secondFoundGreyNodeIndex = secondGreyNodeIndex;
+                    break;
+                }
+
+                //if we found nodes, break out of loop
+                if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
+                    break;
+                }
+            }
+
+            //if we found a spot to place the obstacle
+            if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
+                //get node positions
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
+
+                //get direction
+                Vector3 nodeDir = (firstScaled - secondScaled).normalized;
+                Vector3 perpVec = Vector3.Cross(nodeDir, Vector3.forward);
+                float angle = Mathf.Atan2(perpVec.y, perpVec.x) * Mathf.Rad2Deg;
+                nodeDir = new Vector3(0, 0, angle);
+
+                //use node position as centroid
+                Vector3 nodesCentroid = new Vector3(firstScaled.x, firstScaled.y, 0.0f);
+
+                //set obstacle position
+                VectorData pos = new VectorData(nodesCentroid);
+                VectorData rot = new VectorData(nodeDir);
+                GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
+                GraphConstructionManager.GlobalLevelData.obstacleRotations.Add(rot);
+                GraphConstructionManager.GlobalLevelData.obstacleNodeIDs.Add(new List<int>(){firstFoundGreyNodeIndex});
+                placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
+            }
         }
 
         protected void UnloadObstacles()

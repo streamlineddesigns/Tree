@@ -293,13 +293,11 @@ namespace StudioByStorm.Obstacles {
             //re-project between 0 and the highest numerical difficulty score assigned to an obstacle
             for (int i = 0; i < obstacleDataRepository.data.Count; i++) {
                 float currentDifficultyScore = obstacleDataRepository.data[i].difficultyScore;
-                float reProjectedTotalDifficulty = highestDifficultyScore - currentDifficultyScore;
-                float percent = reProjectedTotalDifficulty / highestDifficultyScore;
-                float rescaledDifficultyScore = percent * rescaledHighestDifficultyScore;
+                float percent = currentDifficultyScore / highestDifficultyScore;
                 float easedDifficultyScore = DOVirtual.EasedValue(0, rescaledHighestDifficultyScore, percent, easing);
                 //then update the obstacles difficulty score
                 obstacleDataRepository.data[i].difficultyScore = easedDifficultyScore;
-                Debug.Log("Name: " + obstacleDataRepository.data[i].name + " highestDifficultyScore: " + highestDifficultyScore + " currentDifficultyScore: " + currentDifficultyScore + " reProjectedTotalDifficulty: " + reProjectedTotalDifficulty + " percent: " + percent + " rescaledDifficultyScore: " + rescaledDifficultyScore + " easedDifficultyScore: " + easedDifficultyScore + " difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
+                Debug.Log("Name: " + obstacleDataRepository.data[i].name + " highestDifficultyScore: " + highestDifficultyScore + " currentDifficultyScore: " + currentDifficultyScore + " percent: " + percent + " easedDifficultyScore: " + easedDifficultyScore + " difficultyScore: " + obstacleDataRepository.data[i].difficultyScore);
             }
         }
 

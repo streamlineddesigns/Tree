@@ -144,12 +144,12 @@ namespace StudioByStorm.Obstacles {
                 
                 CircleCastHelper.SensorRayCast();
 
-                lightCount += CircleCastHelper.colorTypes.Count(x => x == ColorType.Light);
-                darkCount += CircleCastHelper.colorTypes.Count(x => x == ColorType.Dark);
-                defaultCount += CircleCastHelper.colorTypes.Count(x => x == ColorType.Default);
+                lightCount += CircleCastHelper.colorTypes.Count(x => x == NodeColor.Green);
+                darkCount += CircleCastHelper.colorTypes.Count(x => x == NodeColor.Black);
+                defaultCount += CircleCastHelper.colorTypes.Count(x => x == NodeColor.GrayScale);
 
                 ObstaclePartData tempObstaclePartData = GetMaxDistance();
-                foreach (ColorType ct in Enum.GetValues(typeof(ColorType))) {
+                foreach (NodeColor ct in Enum.GetValues(typeof(NodeColor))) {
                     //get highest max color distance
                     if ( (tempObstaclePartData.maxColorDistance.ContainsKey(ct) && ! maxObstaclePartData.maxColorDistance.ContainsKey(ct)) ||
                          (tempObstaclePartData.maxColorDistance.ContainsKey(ct) && maxObstaclePartData.maxColorDistance.ContainsKey(ct) && tempObstaclePartData.maxColorDistance[ct] > maxObstaclePartData.maxColorDistance[ct])) {
@@ -212,7 +212,7 @@ namespace StudioByStorm.Obstacles {
             float currentAverageMaxLightDistance = 0.0f;
             float currentAverageMaxDarkDistance = 0.0f;
 
-            foreach (ColorType ct in Enum.GetValues(typeof(ColorType))) {
+            foreach (NodeColor ct in Enum.GetValues(typeof(NodeColor))) {
                 int currentMaxConsecutiveColorTypeCount = 0;
                 float currentMaxColorDistance = 0.0f;
 
@@ -233,7 +233,7 @@ namespace StudioByStorm.Obstacles {
                     }*/
                 }
 
-                if (ct == ColorType.Light) {
+                if (ct == NodeColor.Green) {
                     unitMeasurement = (currentMaxConsecutiveColorTypeCount > 0) ? (currentMaxColorDistance / currentMaxConsecutiveColorTypeCount * 1.0f) : 0.0f;
                 }
 
@@ -244,7 +244,7 @@ namespace StudioByStorm.Obstacles {
                     currentAverageMaxConsecutiveColorTypeCount = (totalObstaclePartData.maxConsecutiveColorTypeCount[ct] * 1.0f) / iterations;
                     Debug.Log("AVERAGE maxConsecutiveColorTypeCount - " + ct.ToString() + ": " + currentAverageMaxConsecutiveColorTypeCount);
 
-                    if (ct == ColorType.Default) {
+                    if (ct == NodeColor.GrayScale) {
                         defaultAverageMaxConsecutiveColorTypeCount = currentAverageMaxConsecutiveColorTypeCount;
                     }
                 }
@@ -252,9 +252,9 @@ namespace StudioByStorm.Obstacles {
                     currentAverageMaxColorDistance = totalObstaclePartData.maxColorDistance[ct] / iterations;
                     Debug.Log("AVERAGE maxColorDistance - " + ct.ToString() + ": " + currentAverageMaxColorDistance);
 
-                    if (ct == ColorType.Light) {
+                    if (ct == NodeColor.Green) {
                         currentAverageMaxLightDistance += currentAverageMaxColorDistance;
-                    } else if (ct == ColorType.Dark) {
+                    } else if (ct == NodeColor.Black) {
                         currentAverageMaxDarkDistance += currentAverageMaxColorDistance;
                     }
                 }
@@ -268,7 +268,7 @@ namespace StudioByStorm.Obstacles {
 
             float defaultAverageDistance = defaultAverageMaxConsecutiveColorTypeCount * 0.4f;
             Debug.Log("MODIFIED default average distance: " + defaultAverageDistance);
-            totalDifficulty += defaultAverageDistance;
+            //totalDifficulty += defaultAverageDistance;
 
             int index = obstacleDataRepository.data.FindIndex(x => x.name == currentObstacleName);
             switch(obstacleDataRepository.data[index].obstacleType) {
@@ -329,12 +329,12 @@ namespace StudioByStorm.Obstacles {
         {
             ObstaclePartData obstaclePartData = new ObstaclePartData();
 
-            Dictionary<ColorType, float> maxColorDistance = new Dictionary<ColorType, float>();
+            Dictionary<NodeColor, float> maxColorDistance = new Dictionary<NodeColor, float>();
             //ColorType : List of indexes to CircleCastHelper.colorTypes which are the same type
-            Dictionary<ColorType, List<int>> consecutiveColorTypes = new Dictionary<ColorType, List<int>>();
-            Dictionary<ColorType, int> maxConsecutiveColorTypeCount = new Dictionary<ColorType, int>();
+            Dictionary<NodeColor, List<int>> consecutiveColorTypes = new Dictionary<NodeColor, List<int>>();
+            Dictionary<NodeColor, int> maxConsecutiveColorTypeCount = new Dictionary<NodeColor, int>();
 
-            ColorType currentColorType = ColorType.PurposelyUnassigned;
+            NodeColor currentColorType = NodeColor.GrayScale;
             int consecutiveCurrentColorType = 0;
             List<int> currentConsecutiveColorTypes = new List<int>();
             
@@ -382,7 +382,7 @@ namespace StudioByStorm.Obstacles {
                 }
             }
 
-            foreach (ColorType ct in Enum.GetValues(typeof(ColorType))) {
+            foreach (NodeColor ct in Enum.GetValues(typeof(NodeColor))) {
                     if (! maxColorDistance.ContainsKey(ct)) {
                         maxColorDistance.Add(ct, 0.0f);
                     }

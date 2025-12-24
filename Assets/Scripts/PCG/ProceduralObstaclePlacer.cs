@@ -147,7 +147,7 @@ namespace StudioByStorm.PCG {
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself
-                    if (i == j) {
+                    if (i == j || j != (i+1)) {
                         continue;
                     }
 
@@ -263,7 +263,7 @@ namespace StudioByStorm.PCG {
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself
-                    if (i == j) {
+                    if (i == j || j != (i+1)) {
                         continue;
                     }
 
@@ -324,6 +324,7 @@ namespace StudioByStorm.PCG {
         {
             int firstFoundGreyNodeIndex = -1;
             int secondFoundGreyNodeIndex = -1;
+            int thirdFoundGreyNodeIndex = -1;
 
             for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
 
@@ -333,23 +334,47 @@ namespace StudioByStorm.PCG {
 
                 //use previous node ie one before
                 int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i - 1]; 
-                 Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
+                Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
+
+                bool hasThirdNode = (i+1) < GraphConstructionManager.GlobalLevelData.safePath.Count;
+
+                bool isDirectionOkay = true;
+
+                if (!hasThirdNode) {
+                    isDirectionOkay = true;
+                //check next node too
+                } else {
+                    int thirdGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i + 1]; 
+
+                    //get node positions
+                    Vector3 firstScaled = GraphConstructionManager.nodePositions[firstGreyNodeIndex] * 10.0f;
+                    Vector3 secondScaled = GraphConstructionManager.nodePositions[secondGreyNodeIndex] * 10.0f;
+                    Vector3 thirdScaled = GraphConstructionManager.nodePositions[thirdGreyNodeIndex] * 10.0f;
+
+                    //get direction between 1st and 2nd. First is current, second is previous
+                    Vector3 firstNodeDir = (firstScaled - secondScaled).normalized;
+                    //get direction between 3rd and 1st. Third is next current, and then first would be previous relative to that
+                    Vector3 thirdNodeDir = (thirdScaled - firstScaled).normalized;
+                    
+                    if (firstNodeDir == thirdNodeDir) {
+                        isDirectionOkay = true;
+                    } else {
+                        isDirectionOkay = false;
+                    }
+                }
+
+                
 
                 //if neither of the node indexs are being used, and the distance between the nodes is less than our threshold
-                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex)) {
+                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex) && isDirectionOkay) {
                     //keep track of used nodes
                     usedGreyNodeIDs.Add(firstGreyNodeIndex);
                     firstFoundGreyNodeIndex = firstGreyNodeIndex;
                     secondFoundGreyNodeIndex = secondGreyNodeIndex;
                     break;
                 }
-
-                //if we found nodes, break out of loop
-                if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
-                    break;
-                }
             }
-
+            
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
                 //get node positions

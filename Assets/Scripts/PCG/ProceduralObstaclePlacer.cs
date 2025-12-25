@@ -363,10 +363,35 @@ namespace StudioByStorm.PCG {
                     }
                 }
 
+                //check to see if its colored
+                NodeColor firstNodeColor = GraphConstructionManager.nodeColors[firstGreyNodeIndex];
+                bool isColored = (firstNodeColor != NodeColor.GrayScale);
+
+                //check to see if previous color is the same color
+                bool isPreviousParentSameColor = false;
                 
+                if (isColored) {
+                    if (i == 1) {
+                        isPreviousParentSameColor = true;
+                    } else {
+                        int startIndex = i-1;
+                        for (int k = startIndex ; k > 0; k--) {
+                            NodeColor currentNodeColor = GraphConstructionManager.nodeColors[k];
+                            bool isCurrentNodeColored = (currentNodeColor != NodeColor.GrayScale);
+                            //breakout once previous color is found
+                            if (isCurrentNodeColored) {
+                                isPreviousParentSameColor = (currentNodeColor == firstNodeColor);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //color coordination ie navigation solution to coloring issues with on node obstacles
+                //ie used to cause color change then instant collision
+                bool isColorCoordinationOkay = (!isColored || (isColored && isPreviousParentSameColor));
 
                 //if neither of the node indexs are being used, and the distance between the nodes is less than our threshold
-                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex) && isDirectionOkay) {
+                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex) && isDirectionOkay && isColorCoordinationOkay) {
                     //keep track of used nodes
                     usedGreyNodeIDs.Add(firstGreyNodeIndex);
                     firstFoundGreyNodeIndex = firstGreyNodeIndex;

@@ -463,7 +463,7 @@ namespace StudioByStorm.PCG {
             //use it to get the position of the node at said index
             Vector3 nodePosition = GraphConstructionManager.nodePositions[randomNodeIndex];
             //scale it to in game size
-            Vector3 playerTargetPosition = nodePosition * 10.0f;
+            Vector3 playerTargetPosition = nodePosition * 12.0f;
             //update it in the level data
             playerStartPosition = playerTargetPosition;
 

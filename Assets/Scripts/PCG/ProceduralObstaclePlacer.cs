@@ -113,7 +113,7 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (greyNodeIndex != -1) {
                 //scale the position based on the original node position
-                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 10.0f;
+                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 12.0f;
                 //create our VectorData from it
                 VectorData pos = new VectorData(scaled);
                 //use random rotation
@@ -173,8 +173,8 @@ namespace StudioByStorm.PCG {
 
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
 
                 //get direction
                 Vector3 nodeDir = (secondScaled - firstScaled).normalized;
@@ -290,8 +290,8 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
                 //get node positions
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
 
                 //get direction
                 Vector3 nodeDir = (firstScaled - secondScaled).normalized;
@@ -347,9 +347,9 @@ namespace StudioByStorm.PCG {
                     int thirdGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i + 1]; 
 
                     //get node positions
-                    Vector3 firstScaled = GraphConstructionManager.nodePositions[firstGreyNodeIndex] * 10.0f;
-                    Vector3 secondScaled = GraphConstructionManager.nodePositions[secondGreyNodeIndex] * 10.0f;
-                    Vector3 thirdScaled = GraphConstructionManager.nodePositions[thirdGreyNodeIndex] * 10.0f;
+                    Vector3 firstScaled = GraphConstructionManager.nodePositions[firstGreyNodeIndex] * 12.0f;
+                    Vector3 secondScaled = GraphConstructionManager.nodePositions[secondGreyNodeIndex] * 12.0f;
+                    Vector3 thirdScaled = GraphConstructionManager.nodePositions[thirdGreyNodeIndex] * 12.0f;
 
                     //get direction between 1st and 2nd. First is current, second is previous
                     Vector3 firstNodeDir = (firstScaled - secondScaled).normalized;
@@ -403,8 +403,8 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
                 //get node positions
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 10.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 10.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
 
                 //get direction
                 Vector3 nodeDir = (firstScaled - secondScaled).normalized;

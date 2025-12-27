@@ -27,6 +27,7 @@ namespace StudioByStorm.Obstacles {
         {
             if (GameManager.Singleton != null) SetColor();
             originalMaterial = gameObject.GetComponent<SpriteRenderer>().material;
+            gameObject.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
         }
 
         public void DisableGlow()

@@ -102,6 +102,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool didJump = false;
         private float jumpForce = 7f;
         private float powerJumpForce = 13f;
+        private float altJumpForce = 11f;
         private Vector2 jumpDirection;
         public Vector2 directionFacing {
             get {
@@ -519,6 +520,7 @@ namespace StudioByStorm.Gravity.Player {
             if (controlType == ControlType.Tap && GameManager.Singleton.CameraController.isReady && Input.GetMouseButtonDown(0) && isOnSurface) {
                 JumpOverride(jumpDirection * 2.0f);
                 JumpIndicator.SetActive(false);
+                AudioManager.Singleton.Play(SoundType.Jump);
             }
 
             if (controlType == ControlType.Slingshot && !slingshotJoyStick.activeSelf) {
@@ -537,12 +539,13 @@ namespace StudioByStorm.Gravity.Player {
                 GameManager.Singleton.LevelManager.StopPlayingAnimations();
             }
 
-            if (canUseControlTypes && controlType == ControlType.Jump && GameManager.Singleton.CameraController.isReady && Input.GetMouseButtonDown(0) && rigidbody.bodyType != RigidbodyType2D.Static) {
+            if (canUseControlTypes && controlType == ControlType.Jump && GameManager.Singleton.CameraController.isReady && (Input.GetKey(KeyCode.Space) || Input.GetMouseButtonDown(0)) && rigidbody.bodyType != RigidbodyType2D.Static) {
                 rigidbody.velocity = jumpDirection * powerJumpForce;
                 if (!bFirstJumpMadeByUser) {
                     bFirstJumpMadeByUser = true;
                 }
                 bFirstJumpAfterCheckpoint = true;
+                AudioManager.Singleton.Play(SoundType.Jump);
                 //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
             }
 
@@ -986,8 +989,8 @@ namespace StudioByStorm.Gravity.Player {
 
             //transform.up = - gravityDirection;
             
-            float velocityDistanceToSlowingDown = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce * 0.425f)));
-            float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (powerJumpForce)));
+            float velocityDistanceToSlowingDown = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (altJumpForce * 0.425f)));
+            float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (altJumpForce)));
 
             //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 10.0f;
 
@@ -995,11 +998,11 @@ namespace StudioByStorm.Gravity.Player {
             if (velocityDistanceToSlowingDown < velocityDistanceToJumpForce) {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
                 //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
-                rigidbody.AddForce(-jumpDirection * powerJumpForce * 3.25f, ForceMode2D.Force);
+                rigidbody.AddForce(-jumpDirection * altJumpForce * 3.25f, ForceMode2D.Force);
             //jumping
             } else {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
-                rigidbody.AddForce(-jumpDirection * powerJumpForce, ForceMode2D.Force);
+                rigidbody.AddForce(-jumpDirection * altJumpForce, ForceMode2D.Force);
             }
 
             /*if (rigidbody.velocity.magnitude >= (jumpDirection * jumpForce).magnitude) {

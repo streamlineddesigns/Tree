@@ -24,6 +24,7 @@ namespace StudioByStorm {
         public LineRenderer lineRendererFX;
         public bool isOutOfBounds;
         public bool areLinksDisabled = false;
+        private bool isFabrikEnabled;
 
         void Start()
         {
@@ -54,11 +55,33 @@ namespace StudioByStorm {
 
             lineRendererFX.enabled = false;
 
-            fabrikOn(true);
+            //fabrikOn(true);
+            isFabrikEnabled = true;
 
             isOutOfBounds = false;
             InBoundsIndicator();
             areLinksDisabled = false;
+
+            DisplayLineRendererOnPlayer(0.1f);
+        }
+
+        void Update()
+        {
+            if (isFabrikEnabled) {
+                lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
+            }
+        }
+
+        public void DisplayLineRendererOnPlayer(float size = 0.1f)
+        {
+            Vector3 parentPosition = gameObject.transform.position;
+            Vector3 childPosition = GameManager.Singleton.PlayerController.gameObject.transform.position;
+
+            lineRendererFX.enabled = true;
+            lineRendererFX.SetPosition(0, parentPosition);
+            lineRendererFX.SetPosition(1, childPosition);
+            lineRendererFX.SetWidth(size, size);
+            lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
         }
 
         public void DisplayLineRendererFX(float size = 0.1f)
@@ -146,8 +169,10 @@ namespace StudioByStorm {
 
         public void turnFabrikOff()
         {
+            isFabrikEnabled = false;
             Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(childID);
             if (childNode != null) {
+                lineRendererFX.SetPosition(1, childNode.gameObject.transform.position);
                 StartCoroutine(DelayedFabrikShutDown());
             }
         }
@@ -216,6 +241,7 @@ namespace StudioByStorm {
 
         protected void fabrikOn(bool isOn)
         {
+            isFabrikEnabled = isOn;
             FabrikSolver2D.enabled = isOn;
             IKManager2D.enabled = isOn;
         }

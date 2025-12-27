@@ -406,6 +406,8 @@ namespace StudioByStorm {
                 SetEdgeButtonClick();
             }
 
+            //Debug.Log(ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, GameManager.Singleton.player.transform.position));
+
             if (ActionModel.CurrentEdge != null && !ActionModel.CurrentEdge.isOutOfBounds && ML.Math.GetDistance(ActionModel.CurrentEdge.parentNode.gameObject.transform.position, GameManager.Singleton.player.transform.position) > EdgeDistanceThreshold) {
                 ActionModel.CurrentEdge.isOutOfBounds = true;
                 StartCoroutine(ActionModel.CurrentEdge.CantSetEdgeAnimation());
@@ -526,12 +528,14 @@ namespace StudioByStorm {
                     edgeLightFX.GetComponent<EdgeLight>().SetColor(GameManager.Singleton.ColorModel.lightColor[(int)currentEdge.EdgeColor]);
                     AudioManager.Singleton.Play(SoundType.EnergyTravel);
                     //send light along path :)
-                    for (int i = 0; i < waypoints.Length; i++) {
+                    /*for (int i = 0; i < waypoints.Length; i++) {
                         edgeLightFX.transform.DOMove(waypoints[i], 0.03f, false);
                         yield return new WaitForSeconds(0.03f);
-                    }
+                    }*/
                     
-                    edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.03f, false);
+                    edgeLightFX.transform.position = currentEdge.parentNode.gameObject.transform.position;
+                    edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.5f, false);
+                    yield return new WaitForSeconds(0.5f);
                     edgeLightFX.SetActive(false);
 
                     
@@ -541,7 +545,7 @@ namespace StudioByStorm {
                     currentEdge.gameObject.transform.DOPunchPosition(scaledTargetPosition, 0.4f, 1, 0.1f, false);
                 }
 
-                currentEdge.DisplayLineRendererFX();
+                //currentEdge.DisplayLineRendererFX(0.3f);
             }
 
             

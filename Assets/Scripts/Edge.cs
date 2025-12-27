@@ -24,7 +24,7 @@ namespace StudioByStorm {
         public LineRenderer lineRendererFX;
         public bool isOutOfBounds;
         public bool areLinksDisabled = false;
-        private bool isFabrikEnabled;
+        private bool isLineRendererFollowingPlayer;
 
         void Start()
         {
@@ -55,8 +55,9 @@ namespace StudioByStorm {
 
             lineRendererFX.enabled = false;
 
-            //fabrikOn(true);
-            isFabrikEnabled = true;
+            fabrikOn(false, false);
+            isLineRendererFollowingPlayer = true;
+            //FabrikSolver2D.gameObject.SetActive(false);
 
             isOutOfBounds = false;
             InBoundsIndicator();
@@ -67,7 +68,7 @@ namespace StudioByStorm {
 
         void Update()
         {
-            if (isFabrikEnabled) {
+            if (isLineRendererFollowingPlayer) {
                 lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
             }
         }
@@ -169,12 +170,19 @@ namespace StudioByStorm {
 
         public void turnFabrikOff()
         {
-            isFabrikEnabled = false;
+            isLineRendererFollowingPlayer = false;
             Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(childID);
             if (childNode != null) {
                 lineRendererFX.SetPosition(1, childNode.gameObject.transform.position);
-                StartCoroutine(DelayedFabrikShutDown());
+                //StartCoroutine(DelayedFabrikShutDown());
             }
+        }
+
+        public void AnimateFabrikShutdown()
+        {
+            fabrikOn(true, true);
+            isLineRendererFollowingPlayer = false;
+            StartCoroutine(DelayedFabrikShutDown());
         }
 
         protected IEnumerator DelayedFabrikShutDown()
@@ -221,7 +229,7 @@ namespace StudioByStorm {
             //FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = nearestNode.gameObject.transform;
             //yield return new WaitForSeconds(1.0f);
 
-            fabrikOn(false);
+            fabrikOn(false, true);
         }
 
         IEnumerator DisableLinks(int count)
@@ -239,11 +247,11 @@ namespace StudioByStorm {
             areLinksDisabled = true;
         }
 
-        protected void fabrikOn(bool isOn)
+        protected void fabrikOn(bool isOn, bool isVisualOn)
         {
-            isFabrikEnabled = isOn;
             FabrikSolver2D.enabled = isOn;
             IKManager2D.enabled = isOn;
+            FabrikSolver2D.gameObject.SetActive(isVisualOn);
         }
 
         

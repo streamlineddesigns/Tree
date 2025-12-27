@@ -534,8 +534,8 @@ namespace StudioByStorm {
                     }*/
                     
                     edgeLightFX.transform.position = currentEdge.parentNode.gameObject.transform.position;
-                    edgeLightFX.transform.DOMove(GameManager.Singleton.nearbyNode.GetPosition(), 0.5f, false);
-                    yield return new WaitForSeconds(0.5f);
+                    edgeLightFX.transform.DOMove(childNode.gameObject.transform.position, 0.4f, false);
+                    yield return new WaitForSeconds(0.4f);
                     edgeLightFX.SetActive(false);
 
                     
@@ -613,9 +613,13 @@ namespace StudioByStorm {
                 GetEdgeButtonClick();
             } else {
                 GameManager.Singleton.LevelManager.parentColorsConnected[ActionModel.CurrentNode.NodeColor] = true;
-                Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent && x.isNodeCellular).ToArray();
-                for (int i = 0; i < nodes.Length; i++) {
+                //Node[] nodes = GameManager.Singleton.ColorNodeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.NodeType != NodeType.Parent && x.isNodeCellular).ToArray();
+                Edge[] edges = GameManager.Singleton.ColorEdgeRegistry.TryGetValue(ActionModel.CurrentNode.NodeColor).Where(x => x.gameObject.activeSelf).ToArray();
+                /*for (int i = 0; i < nodes.Length; i++) {
                     nodes[i].AddColorRing(true);
+                }*/
+                for (int i = 0; i < edges.Length; i++) {
+                    edges[i].lineRendererFX.SetWidth(0.2f, 0.2f);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
             }

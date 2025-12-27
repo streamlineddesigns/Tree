@@ -454,7 +454,8 @@ namespace StudioByStorm.FX {
             
             if (node.currentEdge.gameObject.activeSelf) {
                 //hide lineRendererFX 
-                node.currentEdge.lineRendererFX.SetWidth(0.2f, 0.2f);
+                node.currentEdge.AnimateFabrikShutdown();
+                //node.currentEdge.lineRendererFX.SetWidth(0.2f, 0.2f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
                 StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers, 0.05f));
@@ -463,7 +464,7 @@ namespace StudioByStorm.FX {
                 //add to link loop animations
                 edgesWithAnimationsOn.Add(node.currentEdge);
                 //show lineRendererFX
-                node.currentEdge.lineRendererFX.SetWidth(0.3f, 0.3f);
+                //node.currentEdge.lineRendererFX.SetWidth(0.3f, 0.3f);
                 //continue for child node
                 Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(node.currentEdge.childID);
                 StartCoroutine(HighLightCell(childNode));

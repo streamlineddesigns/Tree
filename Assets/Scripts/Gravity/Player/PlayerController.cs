@@ -1002,7 +1002,7 @@ namespace StudioByStorm.Gravity.Player {
             //jumping
             } else {
                 //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
-                rigidbody.AddForce(-jumpDirection * altJumpForce, ForceMode2D.Force);
+                rigidbody.AddForce(-jumpDirection * altJumpForce * 1.5f, ForceMode2D.Force);
             }
 
             /*if (rigidbody.velocity.magnitude >= (jumpDirection * jumpForce).magnitude) {

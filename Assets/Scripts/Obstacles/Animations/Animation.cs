@@ -8,7 +8,7 @@ namespace StudioByStorm.Obstacles.Animations {
     public abstract class Animation : MonoBehaviour
     {
         public float time = 0.25f;
-        public Ease easing;
+        public Ease easing = Ease.Linear;
         public int direction = 0;
         public GameObject[] buildingBlocks;
         public int initialPositionTeleport = 0;//allows for customization of similar animations with different starting visual style
@@ -25,6 +25,8 @@ namespace StudioByStorm.Obstacles.Animations {
 
         protected void Awake()
         {
+            easing = Ease.Linear;
+            //if (buildingBlocks != null) buildingBlocks[0].transform.parent.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             int size = (buildingBlocks != null) ? buildingBlocks.Length : 0;
             buildingBlockPositions = new Vector3[size];
             buildingBlockRotations = new Quaternion[size];

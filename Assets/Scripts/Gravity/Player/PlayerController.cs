@@ -102,7 +102,7 @@ namespace StudioByStorm.Gravity.Player {
         private bool didJump = false;
         private float jumpForce = 7f;
         private float powerJumpForce = 13f;
-        private float altJumpForce = 11f;
+        private float altJumpForce = 12f;
         private Vector2 jumpDirection;
         public Vector2 directionFacing {
             get {

@@ -17,6 +17,7 @@ namespace StudioByStorm {
         public float[] maxNodeDistanceIndexToProjectionSize;
         public Camera Camera;
         public GameObject CameraHitBox;
+        public Vector3 CameraHitBoxScale;
         public bool isReady;
         protected float smoothing = 2.5f;
 
@@ -69,6 +70,7 @@ namespace StudioByStorm {
         IEnumerator GameStart()
         {
             yield return new WaitForSeconds(0.1f);
+            CameraHitBox.SetActive(false);
             List<GameObject> nodes = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
             bounds = ML.Math.ComputeAABB(nodes.Select(x => x.transform.position).ToList());
 
@@ -134,7 +136,15 @@ namespace StudioByStorm {
             isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
             if (isCameraMovementOkay) {
                 Camera.DOOrthoSize(20, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
-                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) CameraHitBox.SetActive(true);
+                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) {
+                        CameraHitBox.SetActive(true);
+                        int hitBoxChildrenCount = CameraHitBox.transform.childCount;
+                        for(int i = 0; i < hitBoxChildrenCount; i++)
+                        {
+                            GameObject child = CameraHitBox.transform.GetChild(i).gameObject;
+                            child.transform.localScale = CameraHitBoxScale;
+                        }
+                    }
                     isReady = true;
                 });
                 

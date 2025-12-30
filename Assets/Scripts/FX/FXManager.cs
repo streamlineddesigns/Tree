@@ -454,7 +454,7 @@ namespace StudioByStorm.FX {
             
             if (node.currentEdge.gameObject.activeSelf) {
                 //hide lineRendererFX 
-                node.currentEdge.AnimateFabrikShutdown();
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) node.currentEdge.AnimateFabrikShutdown();
                 //node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();

@@ -593,6 +593,7 @@ namespace StudioByStorm {
             ActionModel.CurrentNode.NumOfConnections++;
             ActionModel.CurrentEdge.childID = ActionModel.CurrentNode.ID;
             ActionModel.CurrentEdge.turnFabrikOff();
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) ActionModel.CurrentEdge.AnimateFabrikShutdown();
             
             StartCoroutine(EdgeLightFXTravel(ActionModel.CurrentEdge));
 

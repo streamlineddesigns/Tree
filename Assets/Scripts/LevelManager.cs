@@ -163,7 +163,7 @@ namespace StudioByStorm {
                 }
 
                 //if they're all visited, disable the gameObject
-                if ((GameManager.Singleton.PlayerController.controlType == ControlType.Tap || GameManager.Singleton.PlayerController.controlType == ControlType.Animate) && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
+                if ((GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot || GameManager.Singleton.PlayerController.controlType == ControlType.Tap || GameManager.Singleton.PlayerController.controlType == ControlType.Animate) && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
             }
         }
 

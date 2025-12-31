@@ -216,6 +216,8 @@ namespace StudioByStorm {
                 StartCoroutine(DisableLinks(3));
             }
 
+            hookSpriteRenderer.gameObject.SetActive(false);
+
             yield return new WaitForSeconds(0.325f);
 
             //$$jiggle the edge

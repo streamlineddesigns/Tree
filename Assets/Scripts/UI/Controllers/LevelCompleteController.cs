@@ -132,8 +132,11 @@ namespace StudioByStorm.UI.Controllers {
             bool isPreviousAwardedLarger = (previousCellsAwarded >= used);
 
             float usedPercent = (isPreviousAwardedLarger) ? (previousCellsAwarded * 1.0f) / (available * 1.0f) : (used * 1.0f) / (available * 1.0f);
+            usedPercent = Mathf.Min(usedPercent, 1.0f);//max at 1.0
             int earnedPercentInt = (int) (usedPercent * 100.0f);
+            
             int remainingPercentInt = 100 - earnedPercentInt;
+            remainingPercentInt = (int) Mathf.Max(remainingPercentInt, 0.0f);//min at 0.0
 
             float easedUsedPercent = 0.0f;
             float easedEarnedPercent = 0.0f;

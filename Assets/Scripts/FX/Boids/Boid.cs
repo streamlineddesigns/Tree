@@ -170,10 +170,10 @@ namespace StudioByStorm.FX.Boids {
          */
         protected void WrapAround()
         {
-            if (transform.position.x < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 40f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 40f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
-            if (transform.position.y < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 30f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 30f);
-            if (transform.position.x > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 40f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 40f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
-            if (transform.position.y > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 30f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 30f);
+            if (transform.position.x < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 120f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 120f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
+            if (transform.position.y < GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 90f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 90f);
+            if (transform.position.x > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x + 120f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x - 120f, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y);
+            if (transform.position.y > GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y + 90f) transform.position = new Vector2(GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.x, GameManager.Singleton.LevelManager.CurrentLevelData.Centroid.y - 90f);
         }
 
     }

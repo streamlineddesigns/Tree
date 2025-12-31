@@ -189,6 +189,12 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
+            //if loop, it needs a different altjump
+            if (LevelManager.currentLevelPackName == LevelPackName.Loop) {
+                altJumpForce = 12f;
+                //Debug.Log("altJumpForce: " + altJumpForce);
+            }
+
             lastSafeNodeIDCheckpoint = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             _nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;

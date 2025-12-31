@@ -32,6 +32,7 @@ namespace StudioByStorm {
         private bool IsLevelComplete = false;
         private bool isShaking;
         private bool isCameraMovementOkay;
+        private float originalOrthoSize;
 
         public void MoveToCentroid()
         {
@@ -52,6 +53,11 @@ namespace StudioByStorm {
         void OnDisable()
         {
             GameEventPublisher.OnStateChange -= OnStateChange;
+        }
+
+        public void ZoomOutToOriginal(float speed = 1.0f)
+        {
+            Camera.DOOrthoSize(originalOrthoSize, speed).SetEase(Ease.InQuad);
         }
 
         public void OnStateChange(GameState state)
@@ -126,8 +132,12 @@ namespace StudioByStorm {
                 }
             }
 
+            //Debug.LogError("Used Distance: " + usedDistance);
+            //Debug.LogError("maxNodeDistanceIndex: " + maxNodeDistanceIndex);
 
             Camera.orthographicSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
+            originalOrthoSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
+
 
             GameManager.Singleton.player.SetActive(true);
 

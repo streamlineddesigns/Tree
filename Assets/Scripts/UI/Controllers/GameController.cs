@@ -161,7 +161,7 @@ namespace StudioByStorm.UI.Controllers {
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             CameraController.centroid = Centroid.transform;
             GameManager.Singleton.CameraController.MoveToCentroid();
-            GameManager.Singleton.CameraController.GetComponent<Camera>().DOOrthoSize(45, speed).SetEase(Ease.InQuad);
+            GameManager.Singleton.CameraController.ZoomOutToOriginal(speed);//DOOrthoSize(45, speed).SetEase(Ease.InQuad);
             GameManager.Singleton.UIController.ShowView(ViewName.ZoomView);
         }
 

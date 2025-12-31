@@ -30,6 +30,9 @@ namespace StudioByStorm.EventPublishers {
         public static event PlayerEvent OnPlayerHitCorrectObstacle;
         public static event PlayerEvent OnPlayerHitWrongObstacle;
 
+        public delegate void UIEvent(ViewName ViewName);//delegate signature
+        public static event UIEvent OnViewChange;//subscribable event
+
         void Awake()
         {
             if (Singleton == null) {
@@ -120,6 +123,13 @@ namespace StudioByStorm.EventPublishers {
         {
             if (OnPlayerHitWrongObstacle != null) {
                 OnPlayerHitWrongObstacle();
+            }
+        }
+
+        public static void PublishViewChange(ViewName ViewName)
+        {
+            if (OnViewChange != null) {
+                OnViewChange(ViewName);
             }
         }
     }

@@ -25,10 +25,13 @@ namespace StudioByStorm {
         public bool isOutOfBounds;
         public bool areLinksDisabled = false;
         private bool isLineRendererFollowingPlayer;
+        private float EdgeDistanceThreshold;
 
         void Start()
         {
             GameManager.Singleton.EdgeRegistry.Add(parentID, this);
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            EdgeDistanceThreshold = actionController.EdgeDistanceThreshold;
         }
 
         void OnEnable()
@@ -69,6 +72,25 @@ namespace StudioByStorm {
         void Update()
         {
             if (isLineRendererFollowingPlayer) {
+
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                    lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
+                } else {
+                    SlingshotLineRendererRoutine();
+                }
+                
+                
+            }
+        }
+
+        private void SlingshotLineRendererRoutine()
+        {
+            float distance = ML.Math.GetDistance(gameObject.transform.position, GameManager.Singleton.PlayerController.gameObject.transform.position);
+            if (distance > EdgeDistanceThreshold) {
+                Vector3 dir = (GameManager.Singleton.PlayerController.gameObject.transform.position - gameObject.transform.position).normalized;
+                Vector3 targetPosition = gameObject.transform.position + (dir * EdgeDistanceThreshold);
+                lineRendererFX.SetPosition(1, targetPosition);
+            } else {
                 lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
             }
         }

@@ -335,7 +335,7 @@ namespace StudioByStorm.Gravity.Player {
 
             SquashAndStretchAnimation();
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.25f);
 
             if (currentNodeID == currentParentNodeID) {
                 jumpDirection = cachedJumpDirection;

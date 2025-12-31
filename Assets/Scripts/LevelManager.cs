@@ -82,6 +82,7 @@ namespace StudioByStorm {
         private List<int> visitedNodeIDsWithAnimations = new List<int>();
 
         private bool canUseControlTypes;
+        private bool canUpdateObstacles = false;
 
         void Awake()
         {
@@ -115,12 +116,14 @@ namespace StudioByStorm {
                     GameStart();
                     AudioManager.Singleton.Play(SoundType.GameStart);
                     AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Start, LevelManager.currentLevelPackName, displayChapterID, displayLevelID);
+                    canUpdateObstacles = true;
                     break;
 
                 case GameState.LevelComplete :
                     OnLevelComplete();
                     AudioManager.Singleton.Play(SoundType.LevelComplete);
                     MMVibrationManager.Haptic(HapticTypes.Success);
+                    canUpdateObstacles = false;
                     break;
 
                 case GameState.LevelLost :
@@ -143,7 +146,7 @@ namespace StudioByStorm {
             }
 
             playerNodeID = nodeID;
-            if (ObstacleContainer.activeSelf) StartCoroutine(UpdateNearbyObstacles());
+            if (ObstacleContainer.activeSelf && canUpdateObstacles) StartCoroutine(UpdateNearbyObstacles());
 
             //get current animation associated with node
             CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(nodeID);
@@ -172,6 +175,8 @@ namespace StudioByStorm {
             GameManager.Singleton.PlayerController.LockMovement(true);
             GameManager.Singleton.FXManager.LaunchFireWork();
             StartCoroutine(GameManager.Singleton.FXManager.LevelCompleteRewardAnimation());
+            StopPlayingAnimations();
+            DisableGlow();
         }
 
         IEnumerator OnLevelLost()
@@ -206,7 +211,7 @@ namespace StudioByStorm {
             yield return new WaitUntil(() => Obstacles.Count == CurrentLevelData.obstacleNames.Count && GameManager.Singleton.FullAdjacencyList != null);
             yield return new WaitForSeconds(0.1f);   
 
-            if (nodeIDsWithAnimations != null) {
+            if (nodeIDsWithAnimations != null && canUpdateObstacles) {
                 //get any connected nodes to the players current node
                 List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
@@ -292,6 +297,22 @@ namespace StudioByStorm {
                 }
                 
             }
+        }
+
+        private void DisableGlow()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                    if (parts != null) {
+                        for (int i = 0; i < parts.Count; i++) {
+                            parts[i].DisableGlow();
+                        }
+                    }
+                    
+                }
+            });
         }
 
         public void StopPlayingAnimations()

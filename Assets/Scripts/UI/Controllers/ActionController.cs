@@ -620,7 +620,7 @@ namespace StudioByStorm {
                     nodes[i].AddColorRing(true);
                 }*/
                 for (int i = 0; i < edges.Length; i++) {
-                    edges[i].lineRendererFX.SetWidth(0.2f, 0.2f);
+                    edges[i].lineRendererFX.SetWidth(0.3f, 0.3f);
                 }
                 AudioManager.Singleton.Play(SoundType.ColoredRingsAdded);
             }

@@ -10,6 +10,8 @@ using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Tutorials.Animations;
+using StudioByStorm.Obstacles;
+using StudioByStorm.Obstacles.Animations;
 
 namespace StudioByStorm.FX {
 
@@ -431,6 +433,26 @@ namespace StudioByStorm.FX {
             Vector3 StartNodeTargetRotation = node.gameObject.transform.localEulerAngles;
             StartNodeTargetRotation.z -= 180.0f;
             node.gameObject.transform.DORotate(StartNodeTargetRotation, 0.5f, RotateMode.LocalAxisAdd);
+
+            //light up the corresponding obstacle parts
+            List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(node.ID);
+            if (parts != null) {
+                for (int i = 0; i < parts.Count; i++) {
+                    parts[i].EnableGlow(node.NodeColor);
+                }
+            }
+            
+
+            //play obstacle animation once
+            CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(node.ID);
+            if (currentAnim != null) {
+                currentAnim.Animate();
+            }
+            yield return new WaitForSeconds(0.25f);
+            //disable obstacle animation
+            if (currentAnim != null) {
+                currentAnim.Stop();
+            }
             
             //scale up
             node.gameObject.transform.DOScale(targetScale, 0.25f).OnComplete(() => {
@@ -455,7 +477,7 @@ namespace StudioByStorm.FX {
             if (node.currentEdge.gameObject.activeSelf) {
                 //hide lineRendererFX 
                 if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) node.currentEdge.AnimateFabrikShutdown();
-                //node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
+                node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
                 StartCoroutine(node.currentEdge.DoPlayerPathAnimation(SpriteRenderers, 0.05f));
@@ -464,7 +486,7 @@ namespace StudioByStorm.FX {
                 //add to link loop animations
                 edgesWithAnimationsOn.Add(node.currentEdge);
                 //show lineRendererFX
-                //node.currentEdge.lineRendererFX.SetWidth(0.3f, 0.3f);
+                node.currentEdge.lineRendererFX.SetWidth(0.3f, 0.3f);
                 //continue for child node
                 Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(node.currentEdge.childID);
                 StartCoroutine(HighLightCell(childNode));

@@ -44,6 +44,15 @@ namespace StudioByStorm.Obstacles {
             }
         }
 
+        public void EnableGlow(NodeColor color)
+        {
+            if (NodeColor == color) {
+                gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;
+            } else {
+                gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+            }
+        }
+
         protected void SetColor()
         {
             //swap out the color using the current level pack assigned colors

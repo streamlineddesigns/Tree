@@ -465,6 +465,7 @@ namespace StudioByStorm {
             //1.25 x nodes will be default completion time
             int calculatedCompletionTime = (int)((currentLevelNodeCount * 1.25f) + 0.5f);
             currentLevelCompletionTime = (currentLevelCompletionTime <= 0.0f) ? ((float)(calculatedCompletionTime)) : currentLevelCompletionTime;
+            currentLevelCompletionTime += 2.0f;//needs a little extra padding for mobile
             //get game controller
             GameController gameController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.GameView) as GameController;
             //boss level

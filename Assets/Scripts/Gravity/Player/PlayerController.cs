@@ -327,6 +327,10 @@ namespace StudioByStorm.Gravity.Player {
         {
             yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
 
+            SquashAndStretchAnimation();
+
+            yield return new WaitForSeconds(1.0f);
+
             if (currentNodeID == currentParentNodeID) {
                 jumpDirection = cachedJumpDirection;
                 bAnimate = true;

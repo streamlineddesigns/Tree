@@ -190,8 +190,8 @@ namespace StudioByStorm.Gravity.Player {
         void OnEnable()
         {
             //if loop, it needs a different altjump
-            if (LevelManager.currentLevelPackName == LevelPackName.Loop) {
-                altJumpForce = 12f;
+            if (LevelManager.currentLevelPackName != LevelPackName.Line) {
+                altJumpForce = 11.5f;
                 //Debug.Log("altJumpForce: " + altJumpForce);
             }
 

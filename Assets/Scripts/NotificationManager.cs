@@ -25,15 +25,18 @@ namespace StudioByStorm {
         IEnumerator SendRoutine()
         {
             //request permissions
-            RequestNotificationsPermission();
+            if (AnalyticsManager.playerAge == 0) RequestNotificationsPermission();
             //wait for age verification to be completed (only required on first open and it will always pass through otherwise)
             yield return new WaitUntil(() => AnalyticsManager.playerAge != 0);
-            //register channel for notifications
-            RegisterNotificationChannel();
-            //cancel all notificiations
-            AndroidNotificationCenter.CancelAllNotifications();
-            //send churn notification after 4320 minutes ie 72 hours
-            SendNotification(churnNotificationHeaderTranslations[GameManager.Language], churnNotificationBodyTranslations[GameManager.Language], 3 * minutesInADay);
+            //if notification permission was granted
+            if (Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS")) {
+                //register channel for notifications
+                RegisterNotificationChannel();
+                //cancel all notificiations
+                AndroidNotificationCenter.CancelAllNotifications();
+                //send churn notification after 4320 minutes ie 72 hours
+                SendNotification(churnNotificationHeaderTranslations[GameManager.Language], churnNotificationBodyTranslations[GameManager.Language], 3 * minutesInADay);
+            }
         }
 
         private void RequestNotificationsPermission()

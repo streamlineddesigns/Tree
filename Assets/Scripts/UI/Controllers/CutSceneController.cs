@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using StudioByStorm.Data.LevelChapters;
 
 namespace StudioByStorm.UI.Controllers {
@@ -12,8 +12,8 @@ namespace StudioByStorm.UI.Controllers {
     {
         public int currentCutSceneID;
         public int currentChapterID;
-        public TMP_Text headingText;
-        public TMP_Text messageText;
+        public Text headingText;
+        public Text messageText;
         public GameObject continueButton;
 
         public void ShowCutScene(int cutSceneID, int chapterID)
@@ -62,7 +62,7 @@ namespace StudioByStorm.UI.Controllers {
             continueButton.SetActive(true);
         }
 
-        IEnumerator PrintText(TMP_Text TMP, string textToPrint)
+        IEnumerator PrintText(Text TMP, string textToPrint)
         {
             textToPrint = textToPrint.Replace("<br>", Environment.NewLine);
 
@@ -83,7 +83,7 @@ namespace StudioByStorm.UI.Controllers {
             yield return null;
         }
 
-        protected void SetTextToFullyOpaque(TMP_Text TMP)
+        protected void SetTextToFullyOpaque(Text TMP)
         {
             Color targetColor = TMP.color;
             targetColor.a = 255;

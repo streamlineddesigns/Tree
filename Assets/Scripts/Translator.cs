@@ -37,7 +37,17 @@ namespace StudioByStorm {
                         textData[i].textFields[j].text = textData[i].translations[(int)lpn];
                     }
                 } else {
-                    textData[i].textField.text = textData[i].translations[(int)lpn];
+                    if (textData[i].textField != null) textData[i].textField.text = textData[i].translations[(int)lpn];
+                }
+            }
+
+            for (int i = 0; i < textData.Count; i++) {
+                if (textData[i].multipleTextFields != null && textData[i].multipleTextFields.Length > 0) {
+                    for (int j = 0; j < textData[i].multipleTextFields.Length; j++) {
+                        textData[i].multipleTextFields[j].text = textData[i].translations[(int)lpn];
+                    }
+                } else {
+                    if (textData[i].singleTextField != null) textData[i].singleTextField.text = textData[i].translations[(int)lpn];
                 }
             }
         }

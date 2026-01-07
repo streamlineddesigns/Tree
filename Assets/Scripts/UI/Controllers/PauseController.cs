@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
+using UnityEngine.UI;
 using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI.Controllers {
@@ -12,8 +12,8 @@ namespace StudioByStorm.UI.Controllers {
         public GameObject nodeParent;
         public GameObject MockNodes; 
 
-        public TMP_Text headingText;
-        public TMP_Text levelText;
+        public Text headingText;
+        public Text levelText;
 
         protected void OnEnable()
         {

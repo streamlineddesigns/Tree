@@ -15,8 +15,8 @@ namespace StudioByStorm.UI.Controllers {
     public class LevelCompleteController : Controller
     {
         public static Dictionary<int, LevelCompleteController> instances = new  Dictionary<int, LevelCompleteController>();
-        public TMP_Text headingText;
-        public TMP_Text levelText;
+        public Text headingText;
+        public Text levelText;
         public Image[] starImages;
         public Slider xpSlider;
         public TMP_Text earnedXPText;

@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 namespace StudioByStorm.UI {
 
     public class LevelPackRowView : View
     {
-        public TMP_Text headingText;
+        public Text headingText;
     }
 
 }

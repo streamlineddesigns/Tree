@@ -10,8 +10,8 @@ namespace StudioByStorm {
     {
         public string[] churnNotificationHeaderTranslations;
         public string[] churnNotificationBodyTranslations;
-        public string[] churnNotificationChannelNameTranslations;
-        public string[] churnNotificationChannelDescriptions;
+        public string churnNotificationChannelNameTranslations = "Default Channel";
+        public string churnNotificationChannelDescriptions = "Reminder to play";
         protected int minutesInADay = 1440;
 
         protected void Start()
@@ -51,9 +51,9 @@ namespace StudioByStorm {
             var channel = new AndroidNotificationChannel()
             {
                 Id = "default_channel",
-                Name = churnNotificationChannelNameTranslations[GameManager.Language],
+                Name = churnNotificationChannelNameTranslations,
                 Importance = Importance.Default,
-                Description = churnNotificationChannelDescriptions[GameManager.Language],
+                Description = churnNotificationChannelDescriptions,
             };
             AndroidNotificationCenter.RegisterNotificationChannel(channel);
         }

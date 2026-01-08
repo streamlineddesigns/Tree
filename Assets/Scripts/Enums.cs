@@ -138,6 +138,18 @@ namespace StudioByStorm {
         English,
         Filipino,
         Spanish,
+        Mandarin,
+        Hindi,
+        French,
+        Russian,
+        Portuguese,
+        Dutch,
+        Japanese,
+        Italian,
+        Turkish,
+        Greek,
+        German,
+        Korean
     }
 
     public enum ProjectileType {

@@ -1042,9 +1042,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 32
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 32
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2990,7 +2990,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.95, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &20878685
@@ -6826,7 +6826,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1337726575}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectMandarin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &48369445
 GameObject:
   m_ObjectHideFlags: 0
@@ -9542,7 +9555,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: -40, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &64245767
 MonoBehaviour:
@@ -9566,11 +9579,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -16962,7 +16975,7 @@ MonoBehaviour:
   currentChapterID: 0
   headingText: {fileID: 1874442690}
   messageText: {fileID: 191170593}
-  continueButton: {fileID: 863095393}
+  continueButton: {fileID: 1990214675}
 --- !u!1 &82666815
 GameObject:
   m_ObjectHideFlags: 0
@@ -26118,6 +26131,18 @@ MonoBehaviour:
     - Square Surge
     - Parisukat na Alon
     - Oleada Cuadrada
+    - "\u65B9\u5757\u72C2\u6F6E"
+    - "\u0938\u094D\u0915\u094D\u0935\u093E\u092F\u0930 \u0938\u0930\u094D\u091C"
+    - "Vague Carr\xE9e"
+    - "\u041A\u0432\u0430\u0434\u0440\u0430\u0442\u043D\u044B\u0439 \u0432\u0441\u043F\u043B\u0435\u0441\u043A"
+    - Surto Quadrado
+    - Vierkantenstoot
+    - "\u30B9\u30AF\u30A8\u30A2\u30FB\u30B5\u30FC\u30B8"
+    - Surge Quadrato
+    - "Kare Dalgas\u0131"
+    - "\u03A4\u03B5\u03C4\u03C1\u03AC\u03B3\u03C9\u03BD\u03BF \u039A\u03CD\u03BC\u03B1"
+    - Quadratschub
+    - "\uC2A4\uD018\uC5B4 \uC11C\uC9C0"
   - singleTextField: {fileID: 1251101816}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26126,6 +26151,20 @@ MonoBehaviour:
     - Lazer Line Dash
     - Linya ng Laser na Dash
     - Carrera Laser
+    - "\u6FC0\u5149\u7EBF\u51B2\u523A"
+    - "\u0932\u0947\u091C\u093C\u0930 \u0932\u093E\u0907\u0928 \u0921\u0948\u0936"
+    - Dash de Ligne Laser
+    - "\u0420\u044B\u0432\u043E\u043A \u043F\u043E \u043B\u0430\u0437\u0435\u0440\u043D\u043E\u0439
+      \u043B\u0438\u043D\u0438\u0438"
+    - Dash da Linha Laser
+    - Laserlijn-dash
+    - "\u30EC\u30FC\u30B6\u30FC\u30E9\u30A4\u30F3\u30FB\u30C0\u30C3\u30B7\u30E5"
+    - Scatto sulla Linea Laser
+    - "Lazer \xC7izgisi Dal\u0131\u015F\u0131"
+    - "\u03A3\u03C0\u03C1\u03B9\u03BD\u03C4 \u03C3\u03C4\u03B7 \u0393\u03C1\u03B1\u03BC\u03BC\u03AE
+      \u039B\u03AD\u03B9\u03B6\u03B5\u03C1"
+    - Laserlinien-Sprint
+    - "\uB808\uC774\uC800 \uB77C\uC778 \uB300\uC2DC"
   - singleTextField: {fileID: 1104185886}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26134,6 +26173,18 @@ MonoBehaviour:
     - Zig Zag Zing
     - Zig Zag na Zing
     - Zig Zag Zumbido
+    - "\u4E4B\u5B57\u95EA\u51FB"
+    - "\u091C\u093C\u093F\u0917 \u091C\u093C\u0948\u0917 \u091C\u093C\u093F\u0902\u0917"
+    - Zigzag Zing
+    - "\u0417\u0438\u0433\u0437\u0430\u0433-\u0437\u0438\u043D\u0433"
+    - Zig Zag Zing
+    - Zigzag Zing
+    - "\u30B8\u30B0\u30B6\u30B0\u30FB\u30B8\u30F3\u30B0"
+    - Zig Zag Zing
+    - Zikzak Zing
+    - "\u0396\u03B9\u03B3\u03BA \u0396\u03B1\u03B3\u03BA \u0396\u03B9\u03BD\u03B3\u03BA"
+    - Zickzack Zing
+    - "\uC9C0\uADF8\uC7AC\uADF8 \uC9D5"
   - singleTextField: {fileID: 1492040957}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26142,6 +26193,18 @@ MonoBehaviour:
     - Loop de Loop
     - Ikot nang Ikot
     - Bucle de Bucle
+    - "\u56DE\u73AF\u5708"
+    - "\u0932\u0942\u092A-\u0921\u0940-\u0932\u0942\u092A"
+    - Loop-the-loop
+    - "\u041C\u0451\u0440\u0442\u0432\u0430\u044F \u043F\u0435\u0442\u043B\u044F"
+    - Loop de Loop
+    - Loop-de-loop
+    - "\u30EB\u30FC\u30D7\u30FB\u30C7\u30FB\u30EB\u30FC\u30D7"
+    - Giro della morte
+    - Loop de Loop
+    - "\u03A3\u03AC\u03BB\u03C4\u03BF \u03B8\u03B1\u03BD\u03AC\u03C4\u03BF\u03C5"
+    - Looping
+    - "\uB8E8\uD504 \uB354 \uB8E8\uD504"
   - singleTextField: {fileID: 64245767}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26150,6 +26213,19 @@ MonoBehaviour:
     - Rectangle Royale
     - Rektanggulong Maharlika
     - Rectangulo Real
+    - "\u77E9\u5F62\u5927\u4E71\u6597"
+    - "\u0930\u0947\u0915\u094D\u091F\u0948\u0902\u0917\u0932 \u0930\u0949\u092F\u0932"
+    - Royale Rectangle
+    - "\u041F\u0440\u044F\u043C\u043E\u0443\u0433\u043E\u043B\u044C\u043D\u044B\u0439
+      \u0440\u043E\u044F\u043B\u044C"
+    - "Royale do Ret\xE2ngulo"
+    - Rectangle Royale
+    - "\u30EC\u30AF\u30BF\u30F3\u30B0\u30EB\u30FB\u30ED\u30EF\u30A4\u30E4\u30EB"
+    - Rectangle Royale
+    - "Dikd\xF6rtgen Royale"
+    - Rectangle Royale
+    - Rectangle Royale
+    - "\uB808\uD06C\uD0F1\uAE00 \uB85C\uC584"
   - singleTextField: {fileID: 0}
     multipleTextFields:
     - {fileID: 1669657654}
@@ -26163,6 +26239,18 @@ MonoBehaviour:
     - 30 Levels
     - 30 Mga Antas
     - 30 Niveles
+    - "30\u4E2A\u5173\u5361"
+    - "30 \u0932\u0947\u0935\u0932"
+    - 30 niveaux
+    - "30 \u0443\u0440\u043E\u0432\u043D\u0435\u0439"
+    - "30 n\xEDveis"
+    - 30 levels
+    - "30\u30EC\u30D9\u30EB"
+    - 30 livelli
+    - 30 seviye
+    - "30 \u03B5\u03C0\u03AF\u03C0\u03B5\u03B4\u03B1"
+    - 30 Level
+    - "30\uAC1C \uB808\uBCA8"
   - singleTextField: {fileID: 0}
     multipleTextFields:
     - {fileID: 1419250595}
@@ -26176,6 +26264,18 @@ MonoBehaviour:
     - Play
     - Maglaro
     - Jugar
+    - "\u5F00\u59CB\u6E38\u620F"
+    - "\u0916\u0947\u0932\u0947\u0902"
+    - Jouer
+    - "\u0418\u0433\u0440\u0430\u0442\u044C"
+    - Jogar
+    - Spelen
+    - "\u30D7\u30EC\u30A4"
+    - Gioca
+    - Oyna
+    - "\u03A0\u03B1\u03AF\u03BE\u03B5"
+    - Spielen
+    - "\uD50C\uB808\uC774"
   - singleTextField: {fileID: 0}
     multipleTextFields:
     - {fileID: 319222214}
@@ -26189,6 +26289,18 @@ MonoBehaviour:
     - Locked
     - Naka-lock
     - Bloqueado
+    - "\u5DF2\u9501\u5B9A"
+    - "\u0932\u0949\u0915\u094D\u0921"
+    - "Verrouill\xE9"
+    - "\u0417\u0430\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u043D\u043E"
+    - Bloqueado
+    - Vergrendeld
+    - "\u30ED\u30C3\u30AF\u4E2D"
+    - Bloccato
+    - Kilitli
+    - "\u039A\u03BB\u03B5\u03B9\u03B4\u03C9\u03BC\u03AD\u03BD\u03BF"
+    - Gesperrt
+    - "\uC7A0\uAE40"
   - singleTextField: {fileID: 1846363237}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26197,6 +26309,21 @@ MonoBehaviour:
     - Earn 30 to unlock
     - Kumita ng 30 para mabuksan
     - Gana 30 para desbloquear
+    - "\u8D5A\u53D630\u4E2A\u5373\u53EF\u89E3\u9501"
+    - "\u0905\u0928\u0932\u0949\u0915 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F
+      30 \u0915\u092E\u093E\u090F\u0901"
+    - "Gagnez 30 pour d\xE9verrouiller"
+    - "\u0417\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u0439\u0442\u0435 30, \u0447\u0442\u043E\u0431\u044B
+      \u0440\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C"
+    - Ganhe 30 para desbloquear
+    - Verdien 30 om te ontgrendelen
+    - "30\u7372\u5F97\u3067\u30A2\u30F3\u30ED\u30C3\u30AF"
+    - Guadagna 30 per sbloccare
+    - "A\xE7mak i\xE7in 30 kazan"
+    - "\u039A\u03AD\u03C1\u03B4\u03B9\u03C3\u03B5 30 \u03B3\u03B9\u03B1 \u03BD\u03B1
+      \u03BE\u03B5\u03BA\u03BB\u03B5\u03B9\u03B4\u03CE\u03C3\u03B5\u03B9\u03C2"
+    - Verdiene 30, um es freizuschalten
+    - "30\uC744 \uD68D\uB4DD\uD558\uBA74 \uC7A0\uAE08 \uD574\uC81C"
   - singleTextField: {fileID: 1455620461}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26205,6 +26332,21 @@ MonoBehaviour:
     - Earn 60 to unlock
     - Kumita ng 60 para mabuksan
     - Gana 60 para desbloquear
+    - "\u8D5A\u53D660\u4E2A\u5373\u53EF\u89E3\u9501"
+    - "\u0905\u0928\u0932\u0949\u0915 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F
+      60 \u0915\u092E\u093E\u090F\u0901"
+    - "Gagnez 60 pour d\xE9verrouiller"
+    - "\u0417\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u0439\u0442\u0435 60, \u0447\u0442\u043E\u0431\u044B
+      \u0440\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C"
+    - Ganhe 60 para desbloquear
+    - Verdien 60 om te ontgrendelen
+    - "60\u7372\u5F97\u3067\u30A2\u30F3\u30ED\u30C3\u30AF"
+    - Guadagna 60 per sbloccare
+    - "A\xE7mak i\xE7in 60 kazan"
+    - "\u039A\u03AD\u03C1\u03B4\u03B9\u03C3\u03B5 60 \u03B3\u03B9\u03B1 \u03BD\u03B1
+      \u03BE\u03B5\u03BA\u03BB\u03B5\u03B9\u03B4\u03CE\u03C3\u03B5\u03B9\u03C2"
+    - Verdiene 60, um es freizuschalten
+    - "60\uC744 \uD68D\uB4DD\uD558\uBA74 \uC7A0\uAE08 \uD574\uC81C"
   - singleTextField: {fileID: 670635099}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26213,6 +26355,21 @@ MonoBehaviour:
     - Earn 90 to unlock
     - Kumita ng 90 para mabuksan
     - Gana 90 para desbloquear
+    - "\u8D5A\u53D690\u4E2A\u5373\u53EF\u89E3\u9501"
+    - "\u0905\u0928\u0932\u0949\u0915 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F
+      90 \u0915\u092E\u093E\u090F\u0901"
+    - "Gagnez 90 pour d\xE9verrouiller"
+    - "\u0417\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u0439\u0442\u0435 90, \u0447\u0442\u043E\u0431\u044B
+      \u0440\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C"
+    - Ganhe 90 para desbloquear
+    - Verdien 90 om te ontgrendelen
+    - "90\u7372\u5F97\u3067\u30A2\u30F3\u30ED\u30C3\u30AF"
+    - Guadagna 90 per sbloccare
+    - "A\xE7mak i\xE7in 90 kazan"
+    - "\u039A\u03AD\u03C1\u03B4\u03B9\u03C3\u03B5 90 \u03B3\u03B9\u03B1 \u03BD\u03B1
+      \u03BE\u03B5\u03BA\u03BB\u03B5\u03B9\u03B4\u03CE\u03C3\u03B5\u03B9\u03C2"
+    - Verdiene 90, um es freizuschalten
+    - "90\uC744 \uD68D\uB4DD\uD558\uBA74 \uC7A0\uAE08 \uD574\uC81C"
   - singleTextField: {fileID: 1658933655}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -26221,6 +26378,21 @@ MonoBehaviour:
     - Earn 120 to unlock
     - Kumita ng 120 para mabuksan
     - Gana 120 para desbloquear
+    - "\u8D5A\u53D6120\u4E2A\u5373\u53EF\u89E3\u9501"
+    - "\u0905\u0928\u0932\u0949\u0915 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F
+      120 \u0915\u092E\u093E\u090F\u0901"
+    - "Gagnez 120 pour d\xE9verrouiller"
+    - "\u0417\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u0439\u0442\u0435 120, \u0447\u0442\u043E\u0431\u044B
+      \u0440\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C"
+    - Ganhe 120 para desbloquear
+    - Verdien 120 om te ontgrendelen
+    - "120\u7372\u5F97\u3067\u30A2\u30F3\u30ED\u30C3\u30AF"
+    - Guadagna 120 per sbloccare
+    - "A\xE7mak i\xE7in 120 kazan"
+    - "\u039A\u03AD\u03C1\u03B4\u03B9\u03C3\u03B5 120 \u03B3\u03B9\u03B1 \u03BD\u03B1
+      \u03BE\u03B5\u03BA\u03BB\u03B5\u03B9\u03B4\u03CE\u03C3\u03B5\u03B9\u03C2"
+    - Verdiene 120, um es freizuschalten
+    - "120\uC744 \uD68D\uB4DD\uD558\uBA74 \uC7A0\uAE08 \uD574\uC81C"
 --- !u!1 &140639732
 GameObject:
   m_ObjectHideFlags: 0
@@ -30193,7 +30365,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 183219105}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d8ace26c11932640950d21c1213c3d3, type: 3}
   m_Name: 
@@ -32257,7 +32429,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1659292748}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165253}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &202834593
 GameObject:
   m_ObjectHideFlags: 0
@@ -59346,9 +59530,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 32
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 32
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -66840,7 +67024,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 103640749}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165253}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &340051046
 GameObject:
   m_ObjectHideFlags: 0
@@ -69112,7 +69308,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126.95, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &359617504
@@ -86402,9 +86598,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 32
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 32
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -86791,6 +86987,85 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 449452120}
+  m_CullTransparentMesh: 1
+--- !u!1 &449459100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 449459101}
+  - component: {fileID: 449459103}
+  - component: {fileID: 449459102}
+  m_Layer: 5
+  m_Name: Lanugage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &449459101
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449459100}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 790766996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 60}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &449459102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449459100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 22
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 50
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Deutsch
+--- !u!222 &449459103
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449459100}
   m_CullTransparentMesh: 1
 --- !u!1 &449757959
 GameObject:
@@ -91082,7 +91357,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 184625215}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectTurkish
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &476354593
 GameObject:
   m_ObjectHideFlags: 0
@@ -102303,7 +102591,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126.95, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &531440364
@@ -105677,9 +105965,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 32
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 32
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -156461,9 +156749,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 25
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -198994,7 +199282,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.95, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &786701740
@@ -199306,6 +199594,141 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &790766995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 790766996}
+  - component: {fileID: 790766999}
+  - component: {fileID: 790766998}
+  - component: {fileID: 790766997}
+  m_Layer: 5
+  m_Name: German
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &790766996
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790766995}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.9, y: 1, z: 0.9}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2025879513}
+  - {fileID: 449459101}
+  m_Father: {fileID: 2108960451}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 207, y: -1420}
+  m_SizeDelta: {x: 414, y: 104}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &790766997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790766995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2025879514}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectGerman
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &790766998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790766995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 7c5922f9fb70b6046851f338315c81ad, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &790766999
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790766995}
+  m_CullTransparentMesh: 1
 --- !u!1 &790789870
 GameObject:
   m_ObjectHideFlags: 0
@@ -211197,6 +211620,85 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 805779032}
+  m_CullTransparentMesh: 1
+--- !u!1 &806745303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 806745304}
+  - component: {fileID: 806745306}
+  - component: {fileID: 806745305}
+  m_Layer: 5
+  m_Name: Lanugage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &806745304
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806745303}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1172577803}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 60}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &806745305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806745303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 22
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 50
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: "\uD55C\uAD6D\uC5B4"
+--- !u!222 &806745306
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806745303}
   m_CullTransparentMesh: 1
 --- !u!1 &806978557
 GameObject:
@@ -231912,7 +232414,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 74344771}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectHindi
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &845764417
 GameObject:
   m_ObjectHideFlags: 0
@@ -236915,6 +237430,18 @@ MonoBehaviour:
     - Serenity
     - Kapanatagan
     - Serenidad
+    - "\u5B81\u9759"
+    - "\u0936\u093E\u0902\u0924\u093F"
+    - "S\xE9r\xE9nit\xE9"
+    - "\u0411\u0435\u0437\u043C\u044F\u0442\u0435\u0436\u043D\u043E\u0441\u0442\u044C"
+    - Serenidade
+    - Sereniteit
+    - "\u9759\u3051\u3055"
+    - "Serenit\xE0"
+    - Huzur
+    - "\u0393\u03B1\u03BB\u03AE\u03BD\u03B7"
+    - Gelassenheit
+    - "\uD3C9\uC628\uD568"
   - singleTextField: {fileID: 1380005593}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236923,6 +237450,18 @@ MonoBehaviour:
     - Noon
     - Tanghali
     - "Mediod\xEDa"
+    - "\u4E2D\u5348"
+    - "\u0926\u094B\u092A\u0939\u0930"
+    - Midi
+    - "\u041F\u043E\u043B\u0434\u0435\u043D\u044C"
+    - Meio-dia
+    - Middag
+    - "\u6B63\u5348"
+    - Mezzogiorno
+    - "\xD6\u011Fle"
+    - "\u039C\u03B5\u03C3\u03B7\u03BC\u03AD\u03C1\u03B9"
+    - Mittag
+    - "\uC815\uC624"
   - singleTextField: {fileID: 241432433}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236931,6 +237470,18 @@ MonoBehaviour:
     - Midnight
     - Hatinggabi
     - Medianoche
+    - "\u5348\u591C"
+    - "\u0906\u0927\u0940 \u0930\u093E\u0924"
+    - Minuit
+    - "\u041F\u043E\u043B\u043D\u043E\u0447\u044C"
+    - Meia-noite
+    - Middernacht
+    - "\u771F\u591C\u4E2D"
+    - Mezzanotte
+    - "Gece yar\u0131s\u0131"
+    - "\u039C\u03B5\u03C3\u03AC\u03BD\u03C5\u03C7\u03C4\u03B1"
+    - Mitternacht
+    - "\uC790\uC815"
   - singleTextField: {fileID: 1334834293}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236939,6 +237490,18 @@ MonoBehaviour:
     - Lucid
     - Malinaw
     - "L\xFAcido"
+    - "\u6E05\u9192\u7684"
+    - "\u0938\u094D\u092A\u0937\u094D\u091F"
+    - Lucide
+    - "\u042F\u0441\u043D\u044B\u0439"
+    - "L\xFAcido"
+    - Helder
+    - "\u660E\u6670\u306A"
+    - Lucido
+    - Berrak
+    - "\u0394\u03B9\u03B1\u03C5\u03B3\u03AE\u03C2"
+    - Klar
+    - "\uBA85\uB8CC\uD55C"
   - singleTextField: {fileID: 266531015}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236947,6 +237510,18 @@ MonoBehaviour:
     - Lotus
     - Lotos
     - Loto
+    - "\u83B2\u82B1"
+    - "\u0915\u092E\u0932"
+    - Lotus
+    - "\u041B\u043E\u0442\u043E\u0441"
+    - "L\xF3tus"
+    - Lotus
+    - "\u84EE"
+    - Loto
+    - Lotus
+    - "\u039B\u03C9\u03C4\u03CC\u03C2"
+    - Lotus
+    - "\uC5F0\uAF43"
   - singleTextField: {fileID: 453570252}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236955,6 +237530,18 @@ MonoBehaviour:
     - Glisten
     - Kumikinang
     - Brillo
+    - "\u95EA\u8000"
+    - "\u091A\u092E\u0915\u0928\u093E"
+    - Scintiller
+    - "\u0411\u043B\u0435\u0441\u0442\u0435\u0442\u044C"
+    - Cintilar
+    - Glinsteren
+    - "\u304D\u3089\u3081\u304F"
+    - Scintillare
+    - "Par\u0131ldamak"
+    - "\u039B\u03AC\u03BC\u03C0\u03C9"
+    - Glitzern
+    - "\uBC18\uC9DD\uC774\uB2E4"
   - singleTextField: {fileID: 2115499852}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236963,6 +237550,18 @@ MonoBehaviour:
     - Gift
     - Regalo
     - Regalo
+    - "\u793C\u7269"
+    - "\u0909\u092A\u0939\u093E\u0930"
+    - Cadeau
+    - "\u041F\u043E\u0434\u0430\u0440\u043E\u043A"
+    - Presente
+    - Cadeau
+    - "\u8D08\u308A\u7269"
+    - Regalo
+    - Hediye
+    - "\u0394\u03CE\u03C1\u03BF"
+    - Geschenk
+    - "\uC120\uBB3C"
   - singleTextField: {fileID: 837695588}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236971,6 +237570,18 @@ MonoBehaviour:
     - Chamomile
     - Mansanilya
     - Manzanilla
+    - "\u6D0B\u7518\u83CA"
+    - "\u0915\u0948\u092E\u094B\u092E\u093E\u0907\u0932"
+    - Camomille
+    - "\u0420\u043E\u043C\u0430\u0448\u043A\u0430"
+    - Camomila
+    - Kamille
+    - "\u30AB\u30E2\u30DF\u30FC\u30EB"
+    - Camomilla
+    - Papatya
+    - "\u03A7\u03B1\u03BC\u03BF\u03BC\u03AE\u03BB\u03B9"
+    - Kamille
+    - "\uCE90\uBAA8\uB9C8\uC77C"
   - singleTextField: {fileID: 10652559}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236979,6 +237590,18 @@ MonoBehaviour:
     - Breeze
     - Simoy
     - Brisa
+    - "\u5FAE\u98CE"
+    - "\u0939\u0932\u094D\u0915\u0940 \u0939\u0935\u093E"
+    - Brise
+    - "\u041B\u0451\u0433\u043A\u0438\u0439 \u0432\u0435\u0442\u0435\u0440\u043E\u043A"
+    - Brisa
+    - Bries
+    - "\u305D\u3088\u98A8"
+    - Brezza
+    - Esinti
+    - "\u0391\u03B5\u03C1\u03AC\u03BA\u03B9"
+    - Brise
+    - "\uC0B0\uB4E4\uBC14\uB78C"
   - singleTextField: {fileID: 496962752}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236987,6 +237610,18 @@ MonoBehaviour:
     - Bloom
     - Pamumulaklak
     - "Floraci\xF3n"
+    - "\u7EFD\u653E"
+    - "\u0916\u093F\u0932\u0928\u093E"
+    - Fleurir
+    - "\u0420\u0430\u0441\u0446\u0432\u0435\u0442\u0430\u0442\u044C"
+    - Florescer
+    - Bloeien
+    - "\u54B2\u304F"
+    - Fiorire
+    - "\xC7i\xE7ek a\xE7mak"
+    - "\u0391\u03BD\u03B8\u03AF\u03B6\u03C9"
+    - "Bl\xFChen"
+    - "\uD53C\uC5B4\uB098\uB2E4"
   - singleTextField: {fileID: 1776524633}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -236995,6 +237630,18 @@ MonoBehaviour:
     - Music Produced By
     - Musika na ginawa ni
     - "M\xFAsica producida por"
+    - "\u97F3\u4E50\u5236\u4F5C\uFF1A"
+    - "\u0938\u0902\u0917\u0940\u0924 \u0928\u093F\u0930\u094D\u092E\u093E\u0924\u093E:"
+    - Musique produite par
+    - "\u041C\u0443\u0437\u044B\u043A\u0430 \u2014 \u043F\u0440\u043E\u0434\u044E\u0441\u0435\u0440"
+    - "M\xFAsica produzida por"
+    - Muziek geproduceerd door
+    - "\u97F3\u697D\u30D7\u30ED\u30C7\u30E5\u30FC\u30B9\uFF1A"
+    - Musica prodotta da
+    - "M\xFCzik prod\xFCksiyonu:"
+    - "\u03A0\u03B1\u03C1\u03B1\u03B3\u03C9\u03B3\u03AE \u03BC\u03BF\u03C5\u03C3\u03B9\u03BA\u03AE\u03C2:"
+    - Musik produziert von
+    - "\uC74C\uC545 \uD504\uB85C\uB4C0\uC11C:"
   - singleTextField: {fileID: 878751869}
     multipleTextFields: []
     textField: {fileID: 0}
@@ -237003,6 +237650,18 @@ MonoBehaviour:
     - Game Produced By
     - Larong ginawa ni
     - Juego Producido Por
+    - "\u6E38\u620F\u5236\u4F5C\uFF1A"
+    - "\u0917\u0947\u092E \u0928\u093F\u0930\u094D\u092E\u093E\u0924\u093E:"
+    - Jeu produit par
+    - "\u041F\u0440\u043E\u0434\u044E\u0441\u0435\u0440 \u0438\u0433\u0440\u044B:"
+    - Jogo produzido por
+    - Game geproduceerd door
+    - "\u30B2\u30FC\u30E0\u30D7\u30ED\u30C7\u30E5\u30FC\u30B9\uFF1A"
+    - Gioco prodotto da
+    - "Oyun yap\u0131mc\u0131s\u0131:"
+    - "\u03A0\u03B1\u03C1\u03B1\u03B3\u03C9\u03B3\u03AE \u03C0\u03B1\u03B9\u03C7\u03BD\u03B9\u03B4\u03B9\u03BF\u03CD:"
+    - Spiel produziert von
+    - "\uAC8C\uC784 \uD504\uB85C\uB4C0\uC11C:"
 --- !u!1 &879838766
 GameObject:
   m_ObjectHideFlags: 0
@@ -245337,9 +245996,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 32
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 32
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -245978,7 +246637,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1246927213}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectRussian
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &934170278
 GameObject:
   m_ObjectHideFlags: 0
@@ -265361,7 +266033,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1440777213}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectPortuguese
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1002641126
 GameObject:
   m_ObjectHideFlags: 0
@@ -281164,6 +281849,81 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1081106811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1081106812}
+  - component: {fileID: 1081106814}
+  - component: {fileID: 1081106813}
+  m_Layer: 5
+  m_Name: Outline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1081106812
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081106811}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1172577803}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 90}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1081106813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081106811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 6d7ceb3c6ea74484ba3c7aa05775fe23, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1081106814
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081106811}
+  m_CullTransparentMesh: 1
 --- !u!1 &1081291567
 GameObject:
   m_ObjectHideFlags: 0
@@ -284454,7 +285214,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: -40, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1104185886
 MonoBehaviour:
@@ -284478,11 +285238,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -301675,7 +302435,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1022567591}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectFrench
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1164677454
 GameObject:
   m_ObjectHideFlags: 0
@@ -302767,6 +303540,141 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1172577802
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1172577803}
+  - component: {fileID: 1172577806}
+  - component: {fileID: 1172577805}
+  - component: {fileID: 1172577804}
+  m_Layer: 5
+  m_Name: Korean
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1172577803
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172577802}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.9, y: 1, z: 0.9}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1081106812}
+  - {fileID: 806745304}
+  m_Father: {fileID: 2108960451}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 207, y: -1524}
+  m_SizeDelta: {x: 414, y: 104}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1172577804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172577802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1081106813}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectKorean
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1172577805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172577802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 7c5922f9fb70b6046851f338315c81ad, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1172577806
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172577802}
+  m_CullTransparentMesh: 1
 --- !u!1 &1172824221
 GameObject:
   m_ObjectHideFlags: 0
@@ -304146,7 +305054,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 449452122}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectDutch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1182127357
 GameObject:
   m_ObjectHideFlags: 0
@@ -324100,7 +325021,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: -40, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1251101816
 MonoBehaviour:
@@ -324124,11 +325045,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -325390,7 +326311,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126.95, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1262699347
@@ -343753,9 +344674,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 25
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 0
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -346324,7 +347245,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.95, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1387985924
@@ -360430,9 +361351,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 25
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -363258,6 +364179,18 @@ MonoBehaviour:
     - Square Surge
     - Parisukat na Alon
     - Oleada Cuadrada
+    - "\u65B9\u5757\u72C2\u6F6E"
+    - "\u0938\u094D\u0915\u094D\u0935\u093E\u092F\u0930 \u0938\u0930\u094D\u091C"
+    - "Vague Carr\xE9e"
+    - "\u041A\u0432\u0430\u0434\u0440\u0430\u0442\u043D\u044B\u0439 \u0432\u0441\u043F\u043B\u0435\u0441\u043A"
+    - Surto Quadrado
+    - Vierkantenstoot
+    - "\u30B9\u30AF\u30A8\u30A2\u30FB\u30B5\u30FC\u30B8"
+    - Surge Quadrato
+    - "Kare Dalgas\u0131"
+    - "\u03A4\u03B5\u03C4\u03C1\u03AC\u03B3\u03C9\u03BD\u03BF \u039A\u03CD\u03BC\u03B1"
+    - Quadratschub
+    - "\uC2A4\uD018\uC5B4 \uC11C\uC9C0"
     prefab: {fileID: 4785753606214677380, guid: 98faf23810f317c438bc7590e1f6fb7f, type: 3}
     UICard: {fileID: 1704772959}
   - name: 2
@@ -363265,6 +364198,20 @@ MonoBehaviour:
     - Lazer Line Dash
     - Linya ng Laser na Dash
     - Carrera Laser
+    - "\u6FC0\u5149\u7EBF\u51B2\u523A"
+    - "\u0932\u0947\u091C\u093C\u0930 \u0932\u093E\u0907\u0928 \u0921\u0948\u0936"
+    - Dash de Ligne Laser
+    - "\u0420\u044B\u0432\u043E\u043A \u043F\u043E \u043B\u0430\u0437\u0435\u0440\u043D\u043E\u0439
+      \u043B\u0438\u043D\u0438\u0438"
+    - Dash da Linha Laser
+    - Laserlijn-dash
+    - "\u30EC\u30FC\u30B6\u30FC\u30E9\u30A4\u30F3\u30FB\u30C0\u30C3\u30B7\u30E5"
+    - Scatto sulla Linea Laser
+    - "Lazer \xC7izgisi Dal\u0131\u015F\u0131"
+    - "\u03A3\u03C0\u03C1\u03B9\u03BD\u03C4 \u03C3\u03C4\u03B7 \u0393\u03C1\u03B1\u03BC\u03BC\u03AE
+      \u039B\u03AD\u03B9\u03B6\u03B5\u03C1"
+    - Laserlinien-Sprint
+    - "\uB808\uC774\uC800 \uB77C\uC778 \uB300\uC2DC"
     prefab: {fileID: 6685243181280969817, guid: b1b9b1b98160a01489f09c89aa4f35dc, type: 3}
     UICard: {fileID: 2046861064}
   - name: 3
@@ -363272,6 +364219,18 @@ MonoBehaviour:
     - Zig Zag Zing
     - Zig Zag na Zing
     - 'Zig Zag Zumbido '
+    - "\u4E4B\u5B57\u95EA\u51FB"
+    - "\u091C\u093C\u093F\u0917 \u091C\u093C\u0948\u0917 \u091C\u093C\u093F\u0902\u0917"
+    - Zigzag Zing
+    - "\u0417\u0438\u0433\u0437\u0430\u0433-\u0437\u0438\u043D\u0433"
+    - Zig Zag Zing
+    - Zigzag Zing
+    - "\u30B8\u30B0\u30B6\u30B0\u30FB\u30B8\u30F3\u30B0"
+    - Zig Zag Zing
+    - Zikzak Zing
+    - "\u0396\u03B9\u03B3\u03BA \u0396\u03B1\u03B3\u03BA \u0396\u03B9\u03BD\u03B3\u03BA"
+    - Zickzack Zing
+    - "\uC9C0\uADF8\uC7AC\uADF8 \uC9D5"
     prefab: {fileID: 9196774260642464143, guid: b9e78edd0f9eab44998ab3bd92b22d23, type: 3}
     UICard: {fileID: 2023809292}
   - name: 4
@@ -363293,6 +364252,18 @@ MonoBehaviour:
     - Loop de Loop
     - Ikot nang Ikot
     - Bucle de Bucle
+    - "\u56DE\u73AF\u5708"
+    - "\u0932\u0942\u092A-\u0921\u0940-\u0932\u0942\u092A"
+    - Loop-the-loop
+    - "\u041C\u0451\u0440\u0442\u0432\u0430\u044F \u043F\u0435\u0442\u043B\u044F"
+    - Loop de Loop
+    - Loop-de-loop
+    - "\u30EB\u30FC\u30D7\u30FB\u30C7\u30FB\u30EB\u30FC\u30D7"
+    - Giro della morte
+    - Loop de Loop
+    - "\u03A3\u03AC\u03BB\u03C4\u03BF \u03B8\u03B1\u03BD\u03AC\u03C4\u03BF\u03C5"
+    - Looping
+    - "\uB8E8\uD504 \uB354 \uB8E8\uD504"
     prefab: {fileID: 6562457894718775288, guid: 58e6224c7b3b1ce4eb15189cddb72e49, type: 3}
     UICard: {fileID: 552625408}
   - name: 7
@@ -363307,6 +364278,19 @@ MonoBehaviour:
     - Rectangle Royale
     - Rektanggulong Maharlika
     - Rectangulo Real
+    - "\u77E9\u5F62\u5927\u4E71\u6597"
+    - "\u0930\u0947\u0915\u094D\u091F\u0948\u0902\u0917\u0932 \u0930\u0949\u092F\u0932"
+    - Royale Rectangle
+    - "\u041F\u0440\u044F\u043C\u043E\u0443\u0433\u043E\u043B\u044C\u043D\u044B\u0439
+      \u0440\u043E\u044F\u043B\u044C"
+    - "Royale do Ret\xE2ngulo"
+    - Rectangle Royale
+    - "\u30EC\u30AF\u30BF\u30F3\u30B0\u30EB\u30FB\u30ED\u30EF\u30A4\u30E4\u30EB"
+    - Rectangle Royale
+    - "Dikd\xF6rtgen Royale"
+    - Rectangle Royale
+    - Rectangle Royale
+    - "\uB808\uD06C\uD0F1\uAE00 \uB85C\uC584"
     prefab: {fileID: 8241116446755579063, guid: 6fbae3ac2bec9734aa0d34ee58d279be, type: 3}
     UICard: {fileID: 1048182229}
   levelPackID: -1
@@ -370191,7 +371175,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: -40, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1492040957
 MonoBehaviour:
@@ -370215,11 +371199,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -395484,7 +396468,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.95, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1541950674
@@ -408503,7 +409487,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1534}
+  m_SizeDelta: {x: 0, y: 1742}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1604853635
 MonoBehaviour:
@@ -414513,7 +415497,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 363430796}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectItalian
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1615721445
 GameObject:
   m_ObjectHideFlags: 0
@@ -445365,9 +446362,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 25
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -454692,7 +455689,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 785112905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectJapanese
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1688842844
 GameObject:
   m_ObjectHideFlags: 0
@@ -482335,7 +483345,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Deutsch
+  m_Text: Nederlands
 --- !u!222 &1779159996
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -498453,7 +499463,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.95, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1823180646
@@ -501709,9 +502719,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
     m_FontSize: 25
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -517693,18 +518703,39 @@ MonoBehaviour:
   - It's been a while!
   - Matagal na mula noong huli!
   - 'Ha pasado un tiempo!  '
+  - "\u597D\u4E45\u4E0D\u89C1\uFF01"
+  - "\u092C\u0939\u0941\u0924 \u0938\u092E\u092F \u0939\u094B \u0917\u092F\u093E!"
+  - "\xC7a fait longtemps !"
+  - "\u0414\u0430\u0432\u043D\u043E \u043D\u0435 \u0432\u0438\u0434\u0435\u043B\u0438\u0441\u044C!"
+  - Faz tempo!
+  - Het is al een tijd geleden!
+  - "\u4E45\u3057\u3076\u308A\uFF01"
+  - "\xC8 da un po\u2019!"
+  - Uzun zaman oldu!
+  - "\u0388\u03C7\u03B5\u03B9 \u03C0\u03B5\u03C1\u03AC\u03C3\u03B5\u03B9 \u03BA\u03B1\u03B9\u03C1\u03CC\u03C2!"
+  - Ist schon eine Weile her!
+  - "\uC624\uB79C\uB9CC\uC774\uC57C!"
   churnNotificationBodyTranslations:
   - Come try a new level pack!
   - 'Halika at subukan ang bagong level pack!  '
   - 'Ven a probar un nuevo paquete de niveles!  '
-  churnNotificationChannelNameTranslations:
-  - Default Channel
-  - Pangunahing Channel
-  - Canal por defecto
-  churnNotificationChannelDescriptions:
-  - Reminder to play
-  - Paalala na maglaro
-  - Recordatorio para jugar
+  - "\u5FEB\u6765\u8BD5\u73A9\u65B0\u7684\u5173\u5361\u5305\uFF01"
+  - "\u0906\u0913 \u0928\u092F\u093E \u0932\u0947\u0935\u0932 \u092A\u0948\u0915
+    \u091F\u094D\u0930\u093E\u092F \u0915\u0930\u094B!"
+  - Viens essayer un nouveau pack de niveaux !
+  - "\u0417\u0430\u0445\u043E\u0434\u0438 \u043F\u043E\u043F\u0440\u043E\u0431\u043E\u0432\u0430\u0442\u044C
+    \u043D\u043E\u0432\u044B\u0439 \u043D\u0430\u0431\u043E\u0440 \u0443\u0440\u043E\u0432\u043D\u0435\u0439!"
+  - Vem testar um novo pacote de fases!
+  - Kom een nieuw levelpakket proberen!
+  - "\u65B0\u3057\u3044\u30EC\u30D9\u30EB\u30D1\u30C3\u30AF\u3001\u904A\u3093\u3067\u307F\u3066\uFF01"
+  - Vieni a provare un nuovo pacchetto di livelli!
+  - "Gel, yeni bir b\xF6l\xFCm paketini dene!"
+  - "\u0388\u03BB\u03B1 \u03BD\u03B1 \u03B4\u03BF\u03BA\u03B9\u03BC\u03AC\u03C3\u03B5\u03B9\u03C2
+    \u03AD\u03BD\u03B1 \u03BD\u03AD\u03BF \u03C0\u03B1\u03BA\u03AD\u03C4\u03BF \u03B5\u03C0\u03B9\u03C0\u03AD\u03B4\u03C9\u03BD!"
+  - Komm und probier ein neues Level-Pack aus!
+  - "\uC0C8 \uB808\uBCA8 \uD329 \uD574\uBCF4\uB7EC \uC640!"
+  churnNotificationChannelNameTranslations: Default Channel
+  churnNotificationChannelDescriptions: Reminder to play
 --- !u!1 &1888350074
 GameObject:
   m_ObjectHideFlags: 0
@@ -521301,7 +522332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126.95, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1915762739
@@ -526494,7 +527525,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126.95, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1918617237
@@ -549386,7 +550417,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1286861132}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 697165255}
+        m_TargetAssemblyTypeName: StudioByStorm.UI.Controllers.LangugageSelectController,
+          Assembly-CSharp
+        m_MethodName: SelectGreek
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1978888013
 GameObject:
   m_ObjectHideFlags: 0
@@ -576087,6 +577131,81 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2025879512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025879513}
+  - component: {fileID: 2025879515}
+  - component: {fileID: 2025879514}
+  m_Layer: 5
+  m_Name: Outline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2025879513
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025879512}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 790766996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 90}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2025879514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025879512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 6d7ceb3c6ea74484ba3c7aa05775fe23, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2025879515
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025879512}
+  m_CullTransparentMesh: 1
 --- !u!1 &2025995917
 GameObject:
   m_ObjectHideFlags: 0
@@ -596439,13 +597558,15 @@ RectTransform:
   - {fileID: 1615158376}
   - {fileID: 473769117}
   - {fileID: 1978446065}
+  - {fileID: 790766996}
+  - {fileID: 1172577803}
   - {fileID: 202812947}
   m_Father: {fileID: 1604853634}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 5, y: -75}
-  m_SizeDelta: {x: 414, y: 1384}
+  m_SizeDelta: {x: 414, y: 1592}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2108960452
 MonoBehaviour:
@@ -601784,7 +602905,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: -40, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2143554111
 MonoBehaviour:
@@ -601808,11 +602929,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1

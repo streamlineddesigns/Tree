@@ -39,6 +39,66 @@ namespace StudioByStorm.UI.Controllers {
             SelectLanguagePack(LanguagePackName.Spanish);
         }
 
+        public void SelectMandarin()
+        {
+            SelectLanguagePack(LanguagePackName.Mandarin);
+        }
+
+        public void SelectHindi()
+        {
+            SelectLanguagePack(LanguagePackName.Hindi);
+        }
+
+        public void SelectFrench()
+        {
+            SelectLanguagePack(LanguagePackName.French);
+        }
+
+        public void SelectRussian()
+        {
+            SelectLanguagePack(LanguagePackName.Russian);
+        }
+
+        public void SelectPortuguese()
+        {
+            SelectLanguagePack(LanguagePackName.Portuguese);
+        }
+
+        public void SelectDutch()
+        {
+            SelectLanguagePack(LanguagePackName.Dutch);
+        }
+
+        public void SelectJapanese()
+        {
+            SelectLanguagePack(LanguagePackName.Japanese);
+        }
+
+        public void SelectItalian()
+        {
+            SelectLanguagePack(LanguagePackName.Italian);
+        }
+
+        public void SelectTurkish()
+        {
+            SelectLanguagePack(LanguagePackName.Turkish);
+        }
+
+        public void SelectGreek()
+        {
+            SelectLanguagePack(LanguagePackName.Greek);
+        }
+
+        public void SelectGerman()
+        {
+            SelectLanguagePack(LanguagePackName.German);
+        }
+
+        public void SelectKorean()
+        {
+            SelectLanguagePack(LanguagePackName.Korean);
+        }
+
         private void SelectLanguagePack(LanguagePackName languagePackName)
         {
             GameManager.Singleton.ProgressManager.UpdatePlayerLanguage((int) languagePackName);

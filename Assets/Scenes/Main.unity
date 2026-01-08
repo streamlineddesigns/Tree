@@ -2880,6 +2880,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19692187}
   m_CullTransparentMesh: 0
+--- !u!1 &20185498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 20185499}
+  - component: {fileID: 20185501}
+  - component: {fileID: 20185500}
+  m_Layer: 5
+  m_Name: PP Link Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &20185499
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20185498}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 207619449}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &20185500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20185498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0.48235294, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 20
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Privacy Policy
+--- !u!222 &20185501
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20185498}
+  m_CullTransparentMesh: 1
 --- !u!1 &20586072
 GameObject:
   m_ObjectHideFlags: 0
@@ -33620,11 +33699,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 718794267}
+  - {fileID: 20185499}
   m_Father: {fileID: 1276203775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -345}
+  m_AnchoredPosition: {x: 190, y: -350}
   m_SizeDelta: {x: 280, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &207619450
@@ -53004,12 +53084,12 @@ GameObject:
   - component: {fileID: 268380959}
   - component: {fileID: 268380958}
   m_Layer: 5
-  m_Name: Enter Age Text
+  m_Name: Enter Age TMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &268380957
 RectTransform:
   m_ObjectHideFlags: 0
@@ -70448,6 +70528,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1479526344}
+  - {fileID: 916036670}
   m_Father: {fileID: 1072638260}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -91482,11 +91563,12 @@ RectTransform:
   - {fileID: 872686906}
   - {fileID: 969064680}
   - {fileID: 268380957}
+  - {fileID: 1034059741}
   m_Father: {fileID: 1276203775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -235}
+  m_AnchoredPosition: {x: 190, y: -240}
   m_SizeDelta: {x: 280, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &476354595
@@ -178364,17 +178446,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textData:
-  - singleTextField: {fileID: 0}
+  - singleTextField: {fileID: 1723434384}
     multipleTextFields: []
-    textField: {fileID: 1884099474}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - Welcome!
     - Tuloy!
     - Bienvenido!
-  - singleTextField: {fileID: 0}
+    - "\u6B22\u8FCE\uFF01"
+    - "\u0938\u094D\u0935\u093E\u0917\u0924 \u0939\u0948!"
+    - Bienvenue !
+    - "\u0414\u043E\u0431\u0440\u043E \u043F\u043E\u0436\u0430\u043B\u043E\u0432\u0430\u0442\u044C!"
+    - Bem-vindo!
+    - Welkom!
+    - "\u3088\u3046\u3053\u305D\uFF01"
+    - Benvenuto!
+    - "Ho\u015F geldin!"
+    - "\u039A\u03B1\u03BB\u03CE\u03C2 \u03AE\u03C1\u03B8\u03B5\u03C2!"
+    - Willkommen!
+    - "\uD658\uC601\uD574!"
+  - singleTextField: {fileID: 1193305123}
     multipleTextFields: []
-    textField: {fileID: 930510460}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - By proceeding, you confirm that you are at least 16 years old and agree to
@@ -178383,38 +178477,123 @@ MonoBehaviour:
       at sumasang-ayon ka sa Mga Tuntunin ng Serbisyo at Patakaran sa Privacy.
     - 'Al continuar, confirmas que tienes al menos 16 anos y aceptas los Terminos
       de Servicio y la Politica de Privacidad. '
-  - singleTextField: {fileID: 0}
+    - "\u7EE7\u7EED\u5373\u8868\u793A\u4F60\u786E\u8BA4\u5DF2\u5E74\u6EE116\u5C81\uFF0C\u5E76\u540C\u610F\u300A\u670D\u52A1\u6761\u6B3E\u300B\u548C\u300A\u9690\u79C1\u653F\u7B56\u300B\u3002"
+    - "\u0906\u0917\u0947 \u092C\u0922\u093C\u0928\u0947 \u092A\u0930, \u0906\u092A
+      \u092A\u0941\u0937\u094D\u091F\u093F \u0915\u0930\u0924\u0947 \u0939\u0948\u0902
+      \u0915\u093F \u0906\u092A\u0915\u0940 \u0909\u092E\u094D\u0930 \u0915\u092E
+      \u0938\u0947 \u0915\u092E 16 \u0935\u0930\u094D\u0937 \u0939\u0948 \u0914\u0930
+      \u0906\u092A \u0938\u0947\u0935\u093E \u0915\u0940 \u0936\u0930\u094D\u0924\u094B\u0902
+      \u0914\u0930 \u0917\u094B\u092A\u0928\u0940\u092F\u0924\u093E \u0928\u0940\u0924\u093F
+      \u0938\u0947 \u0938\u0939\u092E\u0924 \u0939\u0948\u0902\u0964"
+    - "En continuant, vous confirmez avoir au moins 16 ans et accepter les Conditions
+      d\u2019utilisation et la Politique de confidentialit\xE9. "
+    - "\u041F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u044F, \u0432\u044B \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442\u0435,
+      \u0447\u0442\u043E \u0432\u0430\u043C \u0438\u0441\u043F\u043E\u043B\u043D\u0438\u043B\u043E\u0441\u044C
+      16 \u043B\u0435\u0442, \u0438 \u0441\u043E\u0433\u043B\u0430\u0448\u0430\u0435\u0442\u0435\u0441\u044C
+      \u0441 \u0423\u0441\u043B\u043E\u0432\u0438\u044F\u043C\u0438 \u043E\u0431\u0441\u043B\u0443\u0436\u0438\u0432\u0430\u043D\u0438\u044F
+      \u0438 \u041F\u043E\u043B\u0438\u0442\u0438\u043A\u043E\u0439 \u043A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438. "
+    - "Ao prosseguir, voc\xEA confirma que tem pelo menos 16 anos e concorda com
+      os Termos de Servi\xE7o e a Pol\xEDtica de Privacidade. "
+    - 'Door verder te gaan, bevestig je dat je minimaal 16 jaar oud bent en ga je
+      akkoord met de Servicevoorwaarden en het Privacybeleid. '
+    - "\u7D9A\u884C\u3059\u308B\u3053\u3068\u3067\u3001\u3042\u306A\u305F\u306F16\u6B73\u4EE5\u4E0A\u3067\u3042\u308B\u3053\u3068\u3092\u78BA\u8A8D\u3057\u3001\u5229\u7528\u898F\u7D04\u304A\u3088\u3073\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC\u306B\u540C\u610F\u3057\u305F\u3082\u306E\u3068\u307F\u306A\u3055\u308C\u307E\u3059\u3002"
+    - "Procedendo, confermi di avere almeno 16 anni e di accettare i Termini di servizio
+      e l\u2019Informativa sulla privacy. "
+    - "Devam ederek, en az 16 ya\u015F\u0131nda oldu\u011Funuzu do\u011Frular ve
+      Hizmet \u015Eartlar\u0131 ile Gizlilik Politikas\u0131n\u0131 kabul edersiniz. "
+    - "\u03A3\u03C5\u03BD\u03B5\u03C7\u03AF\u03B6\u03BF\u03BD\u03C4\u03B1\u03C2,
+      \u03B5\u03C0\u03B9\u03B2\u03B5\u03B2\u03B1\u03B9\u03CE\u03BD\u03B5\u03C4\u03B5
+      \u03CC\u03C4\u03B9 \u03B5\u03AF\u03C3\u03C4\u03B5 \u03C4\u03BF\u03C5\u03BB\u03AC\u03C7\u03B9\u03C3\u03C4\u03BF\u03BD
+      16 \u03B5\u03C4\u03CE\u03BD \u03BA\u03B1\u03B9 \u03C3\u03C5\u03BC\u03C6\u03C9\u03BD\u03B5\u03AF\u03C4\u03B5
+      \u03BC\u03B5 \u03C4\u03BF\u03C5\u03C2 \u038C\u03C1\u03BF\u03C5\u03C2 \u03A0\u03B1\u03C1\u03BF\u03C7\u03AE\u03C2
+      \u03A5\u03C0\u03B7\u03C1\u03B5\u03C3\u03B9\u03CE\u03BD \u03BA\u03B1\u03B9 \u03C4\u03B7\u03BD
+      \u03A0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AE \u0391\u03C0\u03BF\u03C1\u03C1\u03AE\u03C4\u03BF\u03C5. "
+    - "Wenn du fortf\xE4hrst, best\xE4tigst du, dass du mindestens 16 Jahre alt bist,
+      und stimmst den Nutzungsbedingungen und der Datenschutzrichtlinie zu. "
+    - "\uACC4\uC18D \uC9C4\uD589\uD558\uBA74 \uB9CC 16\uC138 \uC774\uC0C1\uC784\uC744
+      \uD655\uC778\uD558\uACE0 \uC11C\uBE44\uC2A4 \uC774\uC6A9\uC57D\uAD00 \uBC0F
+      \uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68\uC5D0 \uB3D9\uC758\uD558\uB294
+      \uAC83\uC73C\uB85C \uAC04\uC8FC\uB429\uB2C8\uB2E4."
+  - singleTextField: {fileID: 1034059742}
     multipleTextFields: []
-    textField: {fileID: 268380958}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - Enter Age
     - Ilagay ang Edad
     - Ingresar Edad
-  - singleTextField: {fileID: 0}
+    - "\u8F93\u5165\u5E74\u9F84"
+    - "\u0909\u092E\u094D\u0930 \u0926\u0930\u094D\u091C \u0915\u0930\u0947\u0902"
+    - "Saisir l\u2019\xE2ge"
+    - "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u043E\u0437\u0440\u0430\u0441\u0442"
+    - Informe a idade
+    - Leeftijd invoeren
+    - "\u5E74\u9F62\u3092\u5165\u529B"
+    - "Inserisci l\u2019et\xE0"
+    - "Ya\u015F\u0131n\u0131 gir"
+    - "\u0395\u03B9\u03C3\u03B1\u03B3\u03AC\u03B3\u03B5\u03C4\u03B5 \u03B7\u03BB\u03B9\u03BA\u03AF\u03B1"
+    - Alter eingeben
+    - "\uB098\uC774 \uC785\uB825"
+  - singleTextField: {fileID: 878342848}
     multipleTextFields: []
-    textField: {fileID: 776175102}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - Terms of Service
     - Mga Tuntunin ng Serbisyo
     - Terminos de Servicio
-  - singleTextField: {fileID: 0}
+    - "\u670D\u52A1\u6761\u6B3E"
+    - "\u0938\u0947\u0935\u093E \u0915\u0940 \u0936\u0930\u094D\u0924\u0947\u0902"
+    - "Conditions d\u2019utilisation"
+    - "\u0423\u0441\u043B\u043E\u0432\u0438\u044F \u043E\u0431\u0441\u043B\u0443\u0436\u0438\u0432\u0430\u043D\u0438\u044F"
+    - "Termos de Servi\xE7o"
+    - Servicevoorwaarden
+    - "\u5229\u7528\u898F\u7D04"
+    - Termini di servizio
+    - "Hizmet \u015Eartlar\u0131"
+    - "\u038C\u03C1\u03BF\u03B9 \u03A0\u03B1\u03C1\u03BF\u03C7\u03AE\u03C2 \u03A5\u03C0\u03B7\u03C1\u03B5\u03C3\u03B9\u03CE\u03BD"
+    - Nutzungsbedingungen
+    - "\uC11C\uBE44\uC2A4 \uC774\uC6A9\uC57D\uAD00"
+  - singleTextField: {fileID: 20185500}
     multipleTextFields: []
-    textField: {fileID: 718794268}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - Privacy Policy
     - Patakaran sa Privacy
     - Politica de Privacidad
-  - singleTextField: {fileID: 0}
+    - "\u9690\u79C1\u653F\u7B56"
+    - "\u0917\u094B\u092A\u0928\u0940\u092F\u0924\u093E \u0928\u0940\u0924\u093F"
+    - "Politique de confidentialit\xE9"
+    - "\u041F\u043E\u043B\u0438\u0442\u0438\u043A\u0430 \u043A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438"
+    - "Pol\xEDtica de Privacidade"
+    - Privacybeleid
+    - "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC"
+    - Informativa sulla privacy
+    - "Gizlilik Politikas\u0131"
+    - "\u03A0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AE \u0391\u03C0\u03BF\u03C1\u03C1\u03AE\u03C4\u03BF\u03C5"
+    - Datenschutzrichtlinie
+    - "\uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68"
+  - singleTextField: {fileID: 916036671}
     multipleTextFields: []
-    textField: {fileID: 1479526345}
+    textField: {fileID: 0}
     textFields: []
     translations:
     - Accept
     - Tanggapin
     - Aceptar
+    - "\u540C\u610F"
+    - "\u0938\u094D\u0935\u0940\u0915\u093E\u0930 \u0915\u0930\u0947\u0902"
+    - Accepter
+    - "\u041F\u0440\u0438\u043D\u044F\u0442\u044C"
+    - Aceitar
+    - Accepteren
+    - "\u540C\u610F\u3059\u308B"
+    - Accetta
+    - Kabul et
+    - "\u0391\u03C0\u03BF\u03B4\u03BF\u03C7\u03AE"
+    - Akzeptieren
+    - "\uB3D9\uC758"
 --- !u!1 &712844705
 GameObject:
   m_ObjectHideFlags: 0
@@ -180019,12 +180198,12 @@ GameObject:
   - component: {fileID: 718794269}
   - component: {fileID: 718794268}
   m_Layer: 5
-  m_Name: PP Link Text
+  m_Name: PP Link TMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &718794267
 RectTransform:
   m_ObjectHideFlags: 0
@@ -193110,12 +193289,12 @@ GameObject:
   - component: {fileID: 776175103}
   - component: {fileID: 776175102}
   m_Layer: 5
-  m_Name: TOS Link Text
+  m_Name: TOS Link TMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &776175101
 RectTransform:
   m_ObjectHideFlags: 0
@@ -237459,6 +237638,85 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &878342846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 878342847}
+  - component: {fileID: 878342849}
+  - component: {fileID: 878342848}
+  m_Layer: 5
+  m_Name: TOS Link Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &878342847
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878342846}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1755541431}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &878342848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878342846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0.48235294, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Terms of Service
+--- !u!222 &878342849
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878342846}
+  m_CullTransparentMesh: 1
 --- !u!1 &878629153
 GameObject:
   m_ObjectHideFlags: 0
@@ -244154,6 +244412,85 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &916036669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 916036670}
+  - component: {fileID: 916036672}
+  - component: {fileID: 916036671}
+  m_Layer: 5
+  m_Name: AcceptText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &916036670
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916036669}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 365357281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &916036671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916036669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 36
+    m_FontStyle: 1
+    m_BestFit: 1
+    m_MinSize: 3
+    m_MaxSize: 36
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Accept
+--- !u!222 &916036672
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916036669}
+  m_CullTransparentMesh: 1
 --- !u!1 &916204057
 GameObject:
   m_ObjectHideFlags: 0
@@ -245958,12 +246295,12 @@ GameObject:
   - component: {fileID: 930510461}
   - component: {fileID: 930510460}
   m_Layer: 5
-  m_Name: DiscalimerText
+  m_Name: DiscalimerTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &930510459
 RectTransform:
   m_ObjectHideFlags: 0
@@ -270018,6 +270355,85 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1034059740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1034059741}
+  - component: {fileID: 1034059743}
+  - component: {fileID: 1034059742}
+  m_Layer: 5
+  m_Name: Enter Age Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1034059741
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034059740}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 476354594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: 200, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1034059742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034059740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 20
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Enter Age
+--- !u!222 &1034059743
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034059740}
+  m_CullTransparentMesh: 1
 --- !u!1 &1034980710
 GameObject:
   m_ObjectHideFlags: 0
@@ -280884,7 +281300,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -420}
+  m_AnchoredPosition: {x: 190, y: -425}
   m_SizeDelta: {x: 280, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1072638261
@@ -311864,6 +312280,86 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1193305121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1193305122}
+  - component: {fileID: 1193305124}
+  - component: {fileID: 1193305123}
+  m_Layer: 5
+  m_Name: DiscalimerText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1193305122
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193305121}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1596401004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1193305123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193305121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 15
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 1
+    m_MaxSize: 15
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: By proceeding, you confirm that you are at least 16 years old and agree
+    to the Terms of Service and Privacy Policy.
+--- !u!222 &1193305124
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193305121}
+  m_CullTransparentMesh: 1
 --- !u!1 &1193601656
 GameObject:
   m_ObjectHideFlags: 0
@@ -314984,12 +315480,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1884099473}
+  - {fileID: 1723434383}
   m_Father: {fileID: 1276203775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -70}
-  m_SizeDelta: {x: 280, y: 40}
+  m_AnchoredPosition: {x: 190, y: -70}
+  m_SizeDelta: {x: 280, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1213216810
 MonoBehaviour:
@@ -365160,12 +365657,12 @@ GameObject:
   - component: {fileID: 1479526346}
   - component: {fileID: 1479526345}
   m_Layer: 5
-  m_Name: AcceptText
+  m_Name: AcceptTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1479526344
 RectTransform:
   m_ObjectHideFlags: 0
@@ -408979,11 +409476,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 930510459}
+  - {fileID: 1193305122}
   m_Father: {fileID: 1276203775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -137.5}
+  m_AnchoredPosition: {x: 190, y: -142.5}
   m_SizeDelta: {x: 300, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1596401005
@@ -465461,6 +465959,85 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1723434382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1723434383}
+  - component: {fileID: 1723434385}
+  - component: {fileID: 1723434384}
+  m_Layer: 5
+  m_Name: WelcomeHeaderText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1723434383
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723434382}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1213216809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1723434384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723434382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: da9a51ce28f0d7443a5bcbdbe04c4f4b, type: 3}
+    m_FontSize: 44
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 4
+    m_MaxSize: 44
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Welcome!
+--- !u!222 &1723434385
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723434382}
+  m_CullTransparentMesh: 1
 --- !u!1 &1723771934
 GameObject:
   m_ObjectHideFlags: 0
@@ -475320,11 +475897,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 776175101}
+  - {fileID: 878342847}
   m_Father: {fileID: 1276203775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 182.3927, y: -310}
+  m_AnchoredPosition: {x: 190, y: -315}
   m_SizeDelta: {x: 280, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1755541432
@@ -513599,12 +514177,12 @@ GameObject:
   - component: {fileID: 1884099475}
   - component: {fileID: 1884099474}
   m_Layer: 5
-  m_Name: WelcomeHeaderText
+  m_Name: WelcomeHeaderTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1884099473
 RectTransform:
   m_ObjectHideFlags: 0

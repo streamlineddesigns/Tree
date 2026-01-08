@@ -8,6 +8,8 @@ namespace StudioByStorm.UI.Controllers {
     
     public class LangugageSelectController : Controller
     {
+        public GameObject header;
+
         protected void Start()
         {
             StartCoroutine(DelayedStart());
@@ -20,8 +22,15 @@ namespace StudioByStorm.UI.Controllers {
 
             //players never seen this screen before
             if (playerLanguage == -1) {
+                header.SetActive(false);
                 GameManager.Singleton.UIController.ShowView(ViewName);
             }
+        }
+
+        public void Open()
+        {
+            header.SetActive(true);
+            GameManager.Singleton.UIController.ShowView(ViewName);
         }
 
         public void SelectEnglish()
@@ -101,6 +110,7 @@ namespace StudioByStorm.UI.Controllers {
 
         private void SelectLanguagePack(LanguagePackName languagePackName)
         {
+            GameManager.Language = (int) languagePackName;
             GameManager.Singleton.ProgressManager.UpdatePlayerLanguage((int) languagePackName);
             GameManager.Singleton.ProgressManager.Save();
             //########################################################################
@@ -110,9 +120,9 @@ namespace StudioByStorm.UI.Controllers {
             View StartView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.StartView);
             StartView.gameObject.SetActive(false);
             StartView.gameObject.SetActive(true);
-            //########################################################################
+            //######################################################################## 
 
-            GameManager.Singleton.UIController.Close(ViewName); 
+            GameManager.Singleton.UIController.Back();
 
             //if its the first time we've ever opened this
             if (FTUEManager.singleton.isFirstOpen) {

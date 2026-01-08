@@ -26,7 +26,7 @@ namespace StudioByStorm.UI.Controllers {
         public void Show()
         {
             //requesting to see a level pack
-            if (levelPackName != LevelPackSelectController.currentLevelPackName.ToString()) {
+            if (true/*levelPackName != LevelPackSelectController.currentLevelPackName.ToString()*/) {
                 for (int i = 0; i < ViewportContentSpawnLocation.transform.childCount; i++) {
                     Destroy(ViewportContentSpawnLocation.transform.GetChild(i).gameObject);
                 }
@@ -34,9 +34,9 @@ namespace StudioByStorm.UI.Controllers {
                 StartCoroutine(DelayedShow());
 
             //requesting to see the same level pack multiple times in a row
-            } else if (levelPackName == LevelPackSelectController.currentLevelPackName.ToString()) {
+            }/* else if (levelPackName == LevelPackSelectController.currentLevelPackName.ToString()) {
                 GameManager.Singleton.UIController.ShowView(ViewName.LevelSelectView);
-            }
+            }*/
 
             levelPackName = LevelPackSelectController.currentLevelPackAlias;
             //headingText.text = levelPackName;

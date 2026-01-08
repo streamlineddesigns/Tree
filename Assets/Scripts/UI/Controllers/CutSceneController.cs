@@ -59,7 +59,7 @@ namespace StudioByStorm.UI.Controllers {
             yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].messageTranslations[GameManager.Language]));
             SetTextToFullyOpaque(messageText);
 
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(2.0f);
             continueButton.SetActive(true);
         }
 
@@ -78,7 +78,7 @@ namespace StudioByStorm.UI.Controllers {
                 Color targetColor = TMP.color;
                 targetColor.a = (i * 1.0f / charArray.Length);
                 TMP.color = targetColor;
-                yield return new WaitForSeconds(0.01f);
+                //yield return new WaitForSeconds(0.01f);
             }
 
             yield return null;

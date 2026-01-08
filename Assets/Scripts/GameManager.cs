@@ -52,10 +52,18 @@ namespace StudioByStorm {
                 PlayerController = player.GetComponent<PlayerController>();
                 AdjacencyList = new AdjacencyList();
                 ProgressManager = new ProgressManager();
+                StartCoroutine(SetLanguage());
             } else {
                 Destroy(this);
             }
         }
+
+        protected IEnumerator SetLanguage()
+        {
+            yield return new WaitUntil(() => ProgressManager.GetPlayerLanguage() != -1);
+            Language = ProgressManager.GetPlayerLanguage();
+        }
+
                         
         protected void Update()
         {

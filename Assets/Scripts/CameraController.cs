@@ -160,7 +160,7 @@ namespace StudioByStorm {
                 
             } else {
                 //slingshot mechanic only
-                Camera.DOOrthoSize(30, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
+                Camera.DOOrthoSize(35, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
                     isReady = true;
                 });
             }

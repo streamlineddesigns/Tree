@@ -61,7 +61,7 @@ namespace StudioByStorm.PCG {
             int maxObstacleIndex = targetObstacleIndex + 5;
         
             //IN range is simply index >= min && index <= max and then we shuffle
-            List<ObstacleData> inRangePossibleObstacles = ObstacleDataRepository.data.Where((x, index) => (index >= minObstacleIndex && index <= maxObstacleIndex)).ToList();
+            List<ObstacleData> inRangePossibleObstacles = ObstacleDataRepository.data;//ObstacleDataRepository.data.Where((x, index) => (index >= minObstacleIndex && index <= maxObstacleIndex)).ToList();
             Shuffle inRangeShuffle = new Shuffle();
             inRangePossibleObstacles = inRangeShuffle.FisherYates(inRangePossibleObstacles);
 
@@ -72,7 +72,8 @@ namespace StudioByStorm.PCG {
 
             //target obstacle count is our level percent interpolated based on the the min and max obstacles in a level an our easing fucntion
             float percentOffset = Mathf.Min((0.035f + levelPercent), 100.0f);
-            int targetObstacleCount = (int) DOVirtual.EasedValue(0.0f, maxObstaclesInALevel, percentOffset, obstacleCountEasing);
+            //select 10 extras in case some aren't able to be used
+            int targetObstacleCount = GraphConstructionManager.GlobalLevelData.safePath.Count + 10;//GraphConstructionManager.GlobalLevelData.safePath.Count - 1;// (int) DOVirtual.EasedValue(0.0f, maxObstaclesInALevel, percentOffset, obstacleCountEasing);
 
             List<ObstacleData> selectedObstacleList = new List<ObstacleData>();
 

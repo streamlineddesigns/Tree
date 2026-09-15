@@ -9,6 +9,8 @@ namespace StudioByStorm.Data.LevelPacks {
     public class LevelPack : MonoBehaviour
     {
         public Chapters chapters;
+        public NodeColor[] colors;
+        public ControlType ControlType;
     }
 
 }

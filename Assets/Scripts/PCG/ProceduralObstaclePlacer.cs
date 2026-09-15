@@ -35,14 +35,16 @@ namespace StudioByStorm.PCG {
             UnloadObstacles();
 
             //get the grey nodes ids
+            //actually just get all ids except the first in the safe path
             greyNodeIDs = GraphConstructionManager.nodeColors.Select((n, index) => new { NodeColor = n, Index = index })
-                                                             .Where(x => x.NodeColor == NodeColor.GrayScale)
+                                                             //.Where(x => x.NodeColor == NodeColor.GrayScale)
+                                                             .Where(x => x.Index != GraphConstructionManager.GlobalLevelData.safePath[0])
                                                              .Select(x => x.Index)
                                                              .ToList();
 
             //shuffle the grey nodes
-            Shuffle shuffle = new Shuffle();
-            greyNodeIDs = shuffle.FisherYates(greyNodeIDs);
+            //Shuffle shuffle = new Shuffle();
+            //greyNodeIDs = shuffle.FisherYates(greyNodeIDs);
 
             //initialize list for nodes that end up being used by obstacles
             usedGreyNodeIDs = new List<int>();
@@ -97,9 +99,9 @@ namespace StudioByStorm.PCG {
             int greyNodeIndex = -1;
 
             //look for a grey node that we can place at
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
                 //get the current index
-                int currentGreyNodeIndex = greyNodeIDs[i];
+                int currentGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i];
                 //if it's available, use it
                 if (! usedGreyNodeIDs.Contains(currentGreyNodeIndex)) {
                     usedGreyNodeIDs.Add(currentGreyNodeIndex);
@@ -111,7 +113,7 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (greyNodeIndex != -1) {
                 //scale the position based on the original node position
-                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 7.0f;
+                Vector3 scaled = GraphConstructionManager.nodePositions[greyNodeIndex] * 12.0f;
                 //create our VectorData from it
                 VectorData pos = new VectorData(scaled);
                 //use random rotation
@@ -134,18 +136,18 @@ namespace StudioByStorm.PCG {
             int firstFoundGreyNodeIndex = -1;
             int secondFoundGreyNodeIndex = -1;
 
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
 
-                int firstGreyNodeIndex = greyNodeIDs[i]; 
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
                 Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
 
-                for (int j = 0; j < greyNodeIDs.Count; j++) {
+                for (int j = 1; j < GraphConstructionManager.GlobalLevelData.safePath.Count; j++) {
 
-                    int secondGreyNodeIndex = greyNodeIDs[j]; 
+                    int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[j]; 
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself
-                    if (i == j) {
+                    if (i == j || j != (i+1)) {
                         continue;
                     }
 
@@ -171,11 +173,11 @@ namespace StudioByStorm.PCG {
 
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 7.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 7.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
 
                 //get direction
-                Vector3 nodeDir = (firstScaled - secondScaled).normalized;
+                Vector3 nodeDir = (secondScaled - firstScaled).normalized;
                 Vector3 perpVec = Vector3.Cross(nodeDir, Vector3.forward);
                 float angle = Mathf.Atan2(perpVec.y, perpVec.x) * Mathf.Rad2Deg;
                 nodeDir = new Vector3(0, 0, angle);
@@ -250,18 +252,18 @@ namespace StudioByStorm.PCG {
             int firstFoundGreyNodeIndex = -1;
             int secondFoundGreyNodeIndex = -1;
 
-            for (int i = 0; i < greyNodeIDs.Count; i++) {
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
 
-                int firstGreyNodeIndex = greyNodeIDs[i]; 
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
                 Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
 
-                for (int j = 0; j < greyNodeIDs.Count; j++) {
+                for (int j = 1; j < GraphConstructionManager.GlobalLevelData.safePath.Count; j++) {
 
-                    int secondGreyNodeIndex = greyNodeIDs[j]; 
+                    int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[j]; 
                     Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
 
                     //dont' compare node to itself
-                    if (i == j) {
+                    if (i == j || j != (i+1)) {
                         continue;
                     }
 
@@ -288,8 +290,8 @@ namespace StudioByStorm.PCG {
             //if we found a spot to place the obstacle
             if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
                 //get node positions
-                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 7.0f;
-                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 7.0f;
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
 
                 //get direction
                 Vector3 nodeDir = (firstScaled - secondScaled).normalized;
@@ -320,7 +322,107 @@ namespace StudioByStorm.PCG {
 
         protected void OnNodeObstacleTypePlacement(int obstacleNameIndex)
         {
+            int firstFoundGreyNodeIndex = -1;
+            int secondFoundGreyNodeIndex = -1;
+            int thirdFoundGreyNodeIndex = -1;
 
+            for (int i = 1; i < GraphConstructionManager.GlobalLevelData.safePath.Count; i++) {
+
+                int firstGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i]; 
+                Vector3 firstGreyNodePosition = GraphConstructionManager.nodePositions[firstGreyNodeIndex];
+
+
+                //use previous node ie one before
+                int secondGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i - 1]; 
+                Vector3 secondGreyNodePosition = GraphConstructionManager.nodePositions[secondGreyNodeIndex];
+
+                bool hasThirdNode = (i+1) < GraphConstructionManager.GlobalLevelData.safePath.Count;
+
+                bool isDirectionOkay = true;
+
+                if (!hasThirdNode) {
+                    isDirectionOkay = true;
+                //check next node too
+                } else {
+                    int thirdGreyNodeIndex = GraphConstructionManager.GlobalLevelData.safePath[i + 1]; 
+
+                    //get node positions
+                    Vector3 firstScaled = GraphConstructionManager.nodePositions[firstGreyNodeIndex] * 12.0f;
+                    Vector3 secondScaled = GraphConstructionManager.nodePositions[secondGreyNodeIndex] * 12.0f;
+                    Vector3 thirdScaled = GraphConstructionManager.nodePositions[thirdGreyNodeIndex] * 12.0f;
+
+                    //get direction between 1st and 2nd. First is current, second is previous
+                    Vector3 firstNodeDir = (firstScaled - secondScaled).normalized;
+                    //get direction between 3rd and 1st. Third is next current, and then first would be previous relative to that
+                    Vector3 thirdNodeDir = (thirdScaled - firstScaled).normalized;
+                    
+                    if (firstNodeDir == thirdNodeDir) {
+                        isDirectionOkay = true;
+                    } else {
+                        isDirectionOkay = false;
+                    }
+                }
+
+                //check to see if its colored
+                NodeColor firstNodeColor = GraphConstructionManager.nodeColors[firstGreyNodeIndex];
+                bool isColored = (firstNodeColor != NodeColor.GrayScale);
+
+                //check to see if previous color is the same color
+                bool isPreviousParentSameColor = false;
+                
+                if (isColored) {
+                    if (i == 1) {
+                        isPreviousParentSameColor = true;
+                    } else {
+                        int startIndex = i-1;
+                        for (int k = startIndex ; k > 0; k--) {
+                            NodeColor currentNodeColor = GraphConstructionManager.nodeColors[k];
+                            bool isCurrentNodeColored = (currentNodeColor != NodeColor.GrayScale);
+                            //breakout once previous color is found
+                            if (isCurrentNodeColored) {
+                                isPreviousParentSameColor = (currentNodeColor == firstNodeColor);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //color coordination ie navigation solution to coloring issues with on node obstacles
+                //ie used to cause color change then instant collision
+                bool isColorCoordinationOkay = (!isColored || (isColored && isPreviousParentSameColor));
+
+                //if neither of the node indexs are being used, and the distance between the nodes is less than our threshold
+                if (! usedGreyNodeIDs.Contains(firstGreyNodeIndex) && isDirectionOkay && isColorCoordinationOkay) {
+                    //keep track of used nodes
+                    usedGreyNodeIDs.Add(firstGreyNodeIndex);
+                    firstFoundGreyNodeIndex = firstGreyNodeIndex;
+                    secondFoundGreyNodeIndex = secondGreyNodeIndex;
+                    break;
+                }
+            }
+            
+            //if we found a spot to place the obstacle
+            if (firstFoundGreyNodeIndex != -1 && secondFoundGreyNodeIndex != -1) {
+                //get node positions
+                Vector3 firstScaled = GraphConstructionManager.nodePositions[firstFoundGreyNodeIndex] * 12.0f;
+                Vector3 secondScaled = GraphConstructionManager.nodePositions[secondFoundGreyNodeIndex] * 12.0f;
+
+                //get direction
+                Vector3 nodeDir = (firstScaled - secondScaled).normalized;
+                Vector3 perpVec = Vector3.Cross(nodeDir, Vector3.forward);
+                float angle = Mathf.Atan2(perpVec.y, perpVec.x) * Mathf.Rad2Deg;
+                nodeDir = new Vector3(0, 0, angle);
+
+                //use node position as centroid
+                Vector3 nodesCentroid = new Vector3(firstScaled.x, firstScaled.y, 0.0f);
+
+                //set obstacle position
+                VectorData pos = new VectorData(nodesCentroid);
+                VectorData rot = new VectorData(nodeDir);
+                GraphConstructionManager.GlobalLevelData.obstaclePositions.Add(pos);
+                GraphConstructionManager.GlobalLevelData.obstacleRotations.Add(rot);
+                GraphConstructionManager.GlobalLevelData.obstacleNodeIDs.Add(new List<int>(){firstFoundGreyNodeIndex});
+                placedObstacleNames.Add(GraphConstructionManager.GlobalLevelData.obstacleNames[obstacleNameIndex]);
+            }
         }
 
         protected void UnloadObstacles()

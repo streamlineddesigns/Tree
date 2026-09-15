@@ -118,19 +118,21 @@ namespace StudioByStorm.Helpers {
 
         IEnumerator PrintText(string textToPrint)
         {
-            BottomText.text = "";
-            textToPrint = textToPrint.Replace("<br>", Environment.NewLine);
+            if (BottomText!=null) {
+                BottomText.text = "";
+                textToPrint = textToPrint.Replace("<br>", Environment.NewLine);
 
-            //get characters from current chapter heading
-            char[] charArray = textToPrint.ToCharArray();
-            List<char> charList = new List<char>();
-            //iterate over characters and show them one at a time
-            for (int i = 0; i < charArray.Length; i++) {
-                AudioManager.Singleton.Play(SoundType.Typing);
-                charList.Add(charArray[i]);
-                char[] currentCharacters = charList.ToArray();
-                BottomText.text = new string(currentCharacters);
-                yield return new WaitForSeconds(0.075f);
+                //get characters from current chapter heading
+                char[] charArray = textToPrint.ToCharArray();
+                List<char> charList = new List<char>();
+                //iterate over characters and show them one at a time
+                for (int i = 0; i < charArray.Length; i++) {
+                    AudioManager.Singleton.Play(SoundType.Typing);
+                    charList.Add(charArray[i]);
+                    char[] currentCharacters = charList.ToArray();
+                    BottomText.text = new string(currentCharacters);
+                    yield return new WaitForSeconds(0.075f);
+                }
             }
         }
 

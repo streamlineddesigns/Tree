@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
+using UnityEngine.UI;
 using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI.Controllers {
 
     public class LevelLostController : Controller
     {
-        public TMP_Text headingText;
-        public TMP_Text levelText;
+        public Text headingText;
+        public Text levelText;
 
         protected void OnEnable()
         {
@@ -36,6 +36,8 @@ namespace StudioByStorm.UI.Controllers {
 
         public void HomeButtonClick()
         {
+            LevelPackSelectController.bNeedsToCountStars = true;
+            
             AudioManager.Singleton.Play(SoundType.ButtonPress);
 
             Time.timeScale = 1.0f;

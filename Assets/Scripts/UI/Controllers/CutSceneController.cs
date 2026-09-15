@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using StudioByStorm.Data.LevelChapters;
 
 namespace StudioByStorm.UI.Controllers {
@@ -12,8 +12,8 @@ namespace StudioByStorm.UI.Controllers {
     {
         public int currentCutSceneID;
         public int currentChapterID;
-        public TMP_Text headingText;
-        public TMP_Text messageText;
+        public Text headingText;
+        public Text messageText;
         public GameObject continueButton;
 
         public void ShowCutScene(int cutSceneID, int chapterID)
@@ -59,10 +59,11 @@ namespace StudioByStorm.UI.Controllers {
             yield return StartCoroutine(PrintText(messageText, currentChapter.cutScenes[currentCutSceneID].messageTranslations[GameManager.Language]));
             SetTextToFullyOpaque(messageText);
 
+            yield return new WaitForSeconds(2.0f);
             continueButton.SetActive(true);
         }
 
-        IEnumerator PrintText(TMP_Text TMP, string textToPrint)
+        IEnumerator PrintText(Text TMP, string textToPrint)
         {
             textToPrint = textToPrint.Replace("<br>", Environment.NewLine);
 
@@ -77,13 +78,13 @@ namespace StudioByStorm.UI.Controllers {
                 Color targetColor = TMP.color;
                 targetColor.a = (i * 1.0f / charArray.Length);
                 TMP.color = targetColor;
-                //yield return new WaitForSeconds(0.075f);
+                //yield return new WaitForSeconds(0.01f);
             }
 
             yield return null;
         }
 
-        protected void SetTextToFullyOpaque(TMP_Text TMP)
+        protected void SetTextToFullyOpaque(Text TMP)
         {
             Color targetColor = TMP.color;
             targetColor.a = 255;

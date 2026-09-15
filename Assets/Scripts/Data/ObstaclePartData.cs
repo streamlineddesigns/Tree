@@ -11,9 +11,9 @@ namespace StudioByStorm.Data {
     public class ObstaclePartData
     {
         //ColorType : Max length/distance/perimeter between consecutive ObstacleParts of the same ColorType
-        public Dictionary<ColorType, float> maxColorDistance = new Dictionary<ColorType, float>();
+        public Dictionary<NodeColor, float> maxColorDistance = new Dictionary<NodeColor, float>();
         //ColorType : Max count of consecutive ObstacleParts of the same ColorType
-        public Dictionary<ColorType, int> maxConsecutiveColorTypeCount = new Dictionary<ColorType, int>();
+        public Dictionary<NodeColor, int> maxConsecutiveColorTypeCount = new Dictionary<NodeColor, int>();
     }
 
 }

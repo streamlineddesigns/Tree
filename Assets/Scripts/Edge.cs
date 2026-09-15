@@ -24,16 +24,23 @@ namespace StudioByStorm {
         public LineRenderer lineRendererFX;
         public bool isOutOfBounds;
         public bool areLinksDisabled = false;
+        private bool isLineRendererFollowingPlayer;
+        private float EdgeDistanceThreshold;
 
         void Start()
         {
             GameManager.Singleton.EdgeRegistry.Add(parentID, this);
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            EdgeDistanceThreshold = actionController.EdgeDistanceThreshold;
         }
 
         void OnEnable()
         {
             EdgeColor = (parentNode != null) ? parentNode.NodeColor : GameManager.Singleton.NodeRegistry.TryGetValue(parentID).NodeColor;
             int colorIndex = (int) EdgeColor;
+
+            //set hook to corresponding color
+            hookSpriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
 
             for (int i = 0; i < LinkSpriteRenderers.Length; i++) {
                 LinkSpriteRenderers[i].material = GameManager.Singleton.ColorModel.litMaterial;
@@ -51,11 +58,53 @@ namespace StudioByStorm {
 
             lineRendererFX.enabled = false;
 
-            fabrikOn(true);
+            fabrikOn(false, false);
+            isLineRendererFollowingPlayer = true;
+            //FabrikSolver2D.gameObject.SetActive(false);
 
             isOutOfBounds = false;
             InBoundsIndicator();
             areLinksDisabled = false;
+
+            DisplayLineRendererOnPlayer(0.1f);
+        }
+
+        void Update()
+        {
+            if (isLineRendererFollowingPlayer) {
+
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                    lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
+                } else {
+                    SlingshotLineRendererRoutine();
+                }
+                
+                
+            }
+        }
+
+        private void SlingshotLineRendererRoutine()
+        {
+            float distance = ML.Math.GetDistance(gameObject.transform.position, GameManager.Singleton.PlayerController.gameObject.transform.position);
+            if (distance > EdgeDistanceThreshold) {
+                Vector3 dir = (GameManager.Singleton.PlayerController.gameObject.transform.position - gameObject.transform.position).normalized;
+                Vector3 targetPosition = gameObject.transform.position + (dir * EdgeDistanceThreshold);
+                lineRendererFX.SetPosition(1, targetPosition);
+            } else {
+                lineRendererFX.SetPosition(1, GameManager.Singleton.PlayerController.gameObject.transform.position);
+            }
+        }
+
+        public void DisplayLineRendererOnPlayer(float size = 0.1f)
+        {
+            Vector3 parentPosition = gameObject.transform.position;
+            Vector3 childPosition = GameManager.Singleton.PlayerController.gameObject.transform.position;
+
+            lineRendererFX.enabled = true;
+            lineRendererFX.SetPosition(0, parentPosition);
+            lineRendererFX.SetPosition(1, childPosition);
+            lineRendererFX.SetWidth(size, size);
+            lineRendererFX.SetColors(GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor], GameManager.Singleton.ColorModel.darkColor[(int) EdgeColor]);
         }
 
         public void DisplayLineRendererFX(float size = 0.1f)
@@ -143,10 +192,19 @@ namespace StudioByStorm {
 
         public void turnFabrikOff()
         {
+            isLineRendererFollowingPlayer = false;
             Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(childID);
             if (childNode != null) {
-                StartCoroutine(DelayedFabrikShutDown());
+                lineRendererFX.SetPosition(1, childNode.gameObject.transform.position);
+                //StartCoroutine(DelayedFabrikShutDown());
             }
+        }
+
+        public void AnimateFabrikShutdown()
+        {
+            fabrikOn(true, true);
+            isLineRendererFollowingPlayer = false;
+            StartCoroutine(DelayedFabrikShutDown());
         }
 
         protected IEnumerator DelayedFabrikShutDown()
@@ -168,14 +226,19 @@ namespace StudioByStorm {
             //then move the empty target to that scaled target position for a smoother looking animation
             emptyTarget.transform.DOMove(scaledTargetPosition, 0.3f).SetEase(Ease.InQuad);
 
+            //Debug.LogError("distance: " + distance);
             //while that's happening, disable some of the end links, so they don't extend passed child node
-            if (distance >= 9.0f) {
+            if (distance >= 10.0f) {
+                StartCoroutine(DisableLinks(0));
+            } else if (distance >= 9.0f) {
                 StartCoroutine(DisableLinks(1));
             } else if (distance >= 7.5f) {    
                 StartCoroutine(DisableLinks(2));
             } else {
                 StartCoroutine(DisableLinks(3));
             }
+
+            hookSpriteRenderer.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(0.325f);
 
@@ -190,7 +253,7 @@ namespace StudioByStorm {
             //FabrikSolver2D.GetChain(FabrikSolver2D.chainCount).target = nearestNode.gameObject.transform;
             //yield return new WaitForSeconds(1.0f);
 
-            fabrikOn(false);
+            fabrikOn(false, true);
         }
 
         IEnumerator DisableLinks(int count)
@@ -208,10 +271,11 @@ namespace StudioByStorm {
             areLinksDisabled = true;
         }
 
-        protected void fabrikOn(bool isOn)
+        protected void fabrikOn(bool isOn, bool isVisualOn)
         {
             FabrikSolver2D.enabled = isOn;
             IKManager2D.enabled = isOn;
+            FabrikSolver2D.gameObject.SetActive(isVisualOn);
         }
 
         

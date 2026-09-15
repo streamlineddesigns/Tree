@@ -24,6 +24,8 @@ namespace StudioByStorm {
         public GameObject coloredRing;
         public Edge currentEdge;
         public bool isNodeCellular = false;
+        public CircleCollider2D nodeCircleCollider2D;
+        public CircleCollider2D darkSurfaceCircleCollider2D;
         protected NodeType OriginalNodeType;
         protected NodeColor OriginalNodeColor;
 
@@ -126,7 +128,7 @@ namespace StudioByStorm {
 
             //add a color ring for the parent nodes
             if (OriginalNodeType == NodeType.Parent && coloredRing == null && GameManager.Singleton.ColorModel.coloredRings[(int) NodeColor] != null) {
-                /*if (isNodeCellular)*/ AddColorRing();
+                if (isNodeCellular) AddColorRing();
                 //ActivateHairs();
             } else if (coloredRing != null && OriginalNodeType == NodeType.Parent) {
                 coloredRing.SetActive(true);
@@ -193,6 +195,12 @@ namespace StudioByStorm {
                 Hairs[i].DOFade(0, 1.0f).SetEase(Ease.InSine);
             }
             DarkSurface.GetComponent<SpriteRenderer>().DOFade(1, 1.0f).SetEase(Ease.InSine);
+        }
+
+        public void UseSlingShotSizedCollider()
+        {
+            nodeCircleCollider2D.radius = 1.2f;
+            darkSurfaceCircleCollider2D.radius = 0.5f;
         }
     }
 

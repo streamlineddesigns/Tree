@@ -108,34 +108,6 @@ namespace StudioByStorm.ML.Clustering {
 
             return nearestNeighbors;
         }
-
-        public static List<HashData> GetKNearestNeighbors(Vector2 position, List<HashData> neighbors, int k)
-        {
-            Dictionary<int, float> Distances = new Dictionary<int, float>();
-            List<int> nearestNeighborIndexs = new List<int>();
-            List<HashData> nearestNeighbors = new List<HashData>();
-
-            if (neighbors == null) {
-                return null;
-            }
-
-            for (int i = 0; i < neighbors.Count; i++) {
-
-                Distances.Add(i, Math.GetDistance(position, neighbors[i].GetPosition()));
-            }
-
-            nearestNeighborIndexs = Distances.OrderBy(x => x.Value).Select(x => x.Key).Take(k).ToList();
-
-            for (int j = 0; j < nearestNeighborIndexs.Count; j++) {
-
-                int index = nearestNeighborIndexs[j];
-                nearestNeighbors.Add(neighbors[index]);   
-
-            }
-
-
-            return nearestNeighbors;
-        }
     }
     
 }

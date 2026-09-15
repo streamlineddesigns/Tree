@@ -19,6 +19,8 @@ namespace StudioByStorm.Gravity.Player {
 
     public class PlayerController : MonoBehaviour
     {
+        public NodeColor NodeColor;
+        public ControlType controlType;
         public float _movementForce = 0.1f;
         public float mockNodeRadius = 0.6f;
         public GameObject JumpIndicator;
@@ -51,13 +53,18 @@ namespace StudioByStorm.Gravity.Player {
         [SerializeField] public Sprite moltenSprite;
         [SerializeField] public float spoolUpTimer;
         [SerializeField] private PlayerPositionHelper PlayerPositionHelper;
-
+        [SerializeField] private GameObject slingshotJoyStick;
         [SerializeField] public Material glowMaterial;
         [SerializeField] private Material lightMaterial;
         [SerializeField] public Material darkMaterial;
         [SerializeField] public Color lightColor;
         [SerializeField] public Color darkColor;
-        [SerializeField] private Color hitObstacleColor;
+        [SerializeField] private Color _hitObstacleColor;
+        public Color hitObstacleColor {
+            get {
+                return _hitObstacleColor;
+            }
+        }
         [SerializeField] private GameObject light2D;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private bool isLightColor;
@@ -95,7 +102,14 @@ namespace StudioByStorm.Gravity.Player {
         private bool didJump = false;
         private float jumpForce = 7f;
         private float powerJumpForce = 13f;
-
+        private float altJumpForce = 11f;
+        private Vector2 jumpDirection;
+        public Vector2 directionFacing {
+            get {
+                return jumpDirection;
+            }
+        }
+        public Vector2 parentChildCentroid;
         private Vector2 dashDirection = Vector2.zero;
         private float spaceDashForce = 9f;
         private Vector2 minimumSpaceVelocity = new Vector2(0.25f, 0.25f);
@@ -114,7 +128,12 @@ namespace StudioByStorm.Gravity.Player {
         private bool isJoystickUp = true;
         private Vector2 joystickDownPoint;
         private Vector2 joystickUpPoint;
-        private int playerHeartsCount = 3;
+        private int _playerHeartsCount = 3;
+        public int playerHeartsCount {
+            get {
+                return _playerHeartsCount;
+            }
+        }
         private bool isLevelLost = false;
 
         private int playerNodeID = -1;
@@ -137,6 +156,19 @@ namespace StudioByStorm.Gravity.Player {
             }
         }
         private float _projectileFireRate = 0.5f;
+
+        private bool bAnimate;
+        private bool canUseControlTypes;
+        private Color colorHit;
+        private bool bFirstJumpMadeByUser;
+        private int lastSafeNodeIDCheckpoint;
+        public int nextNodeSafePathID {
+            get {
+                return _nextNodeSafePathID;
+            }
+        }
+        private int _nextNodeSafePathID;
+        private bool bFirstJumpAfterCheckpoint = false;
         
         void Awake()
         {
@@ -157,17 +189,29 @@ namespace StudioByStorm.Gravity.Player {
 
         void OnEnable()
         {
+            //if loop, it needs a different altjump
+            if (LevelManager.currentLevelPackName != LevelPackName.Line) {
+                altJumpForce = 11.5f;
+                //Debug.Log("altJumpForce: " + altJumpForce);
+            }
+
+            lastSafeNodeIDCheckpoint = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
+            _nextNodeSafePathID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
             AC = (AC == null) ? GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController : AC;
             GameEventPublisher.OnJoystickDirectionChange += OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange += OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
             FTUECheck();
             StartCoroutine(SpawnTrailFXUpdateLoop());
+
+            StartCoroutine(LandingRoutine());
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnJoystickDirectionChange -= OnJoystickDirectionChange;
             GameEventPublisher.OnStateChange -= OnStateChange;
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
         }
 
         public void OnStateChange(GameState state)
@@ -183,6 +227,146 @@ namespace StudioByStorm.Gravity.Player {
 
                 case GameState.LevelLost :                    
                     break;
+            }
+        }
+
+        IEnumerator LandingRoutine()
+        {
+            //clean up isLanding state
+            yield return new WaitUntil(()=> (Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, gameObject.transform.position) < 2.0f));
+
+            _isLanding = false;
+            SetRigidBodyType(RigidbodyType2D.Dynamic);
+
+            GameObject SuperHeroImpact = GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor];
+            SuperHeroImpact.transform.position = gameObject.transform.position;
+            SuperHeroImpact.SetActive(true);
+        
+            yield return new WaitForSeconds(0.75f);
+
+            SuperHeroImpact.SetActive(false);
+        }
+
+        protected void OnPlayerNodeChange(int nodeID)
+        {
+            if (nodeID == GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0]) {
+                canUseControlTypes = true;
+            }
+
+            if (! canUseControlTypes) {
+                return;
+            }
+
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(nodeID);
+
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+
+            if (actionController.ActionModel.CurrentEdge != null) {
+                int colorIndex = (int) actionController.ActionModel.CurrentEdge.EdgeColor;
+                spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+
+            } else if (currentNode.NodeType != NodeType.Disjoint) {
+                NodeColor = currentNode.NodeColor;
+                int colorIndex = (int) NodeColor;
+                spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+            }
+
+            int safePathCount = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.Count;
+            int nodeSafePathIndex = GameManager.Singleton.LevelManager.CurrentLevelData.safePath.IndexOf(playerNodeID);
+            int nextNodeSafePathIndex = nodeSafePathIndex + 1;
+            Vector2 parentPosition = Vector2.zero;
+            Vector2 childPosition = Vector2.zero;
+
+            if (currentNode.ID != _nextNodeSafePathID) {
+                return;
+            }
+
+            //update this as a checkpoint
+            lastSafeNodeIDCheckpoint = currentNode.ID;
+
+            //update the next node id in the safe path
+            _nextNodeSafePathID = (nextNodeSafePathIndex <= safePathCount - 1) ? GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex] : _nextNodeSafePathID;
+                
+            if (nextNodeSafePathIndex <= safePathCount - 1) {
+                int parentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nodeSafePathIndex];
+                int childNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[nextNodeSafePathIndex];
+                parentPosition = GameManager.Singleton.NodeRegistry.TryGetValue(parentNodeID).gameObject.transform.position;
+                childPosition = GameManager.Singleton.NodeRegistry.TryGetValue(childNodeID).gameObject.transform.position;
+                parentChildCentroid = new Vector2(((parentPosition.x + childPosition.x)/2.0f), ((parentPosition.y + childPosition.y)/2.0f));
+
+                if (controlType == ControlType.Tap) jumpDirection = (childPosition - parentPosition).normalized;
+
+                if (controlType == ControlType.Tap) {
+                    StartCoroutine(DelayedJumpIndicatorActivation(nodeID, playerNodeID));
+                }
+                
+                if (controlType == ControlType.Animate) {
+                    Vector2 cachedJumpDirection = (childPosition - parentPosition).normalized;
+                    StartCoroutine(DelayedAnimateActivation(nodeID, playerNodeID, cachedJumpDirection));
+                }
+
+                if (controlType == ControlType.Jump) {
+                    Vector2 cachedJumpDirection = (childPosition - parentPosition).normalized;
+                    StartCoroutine(DelayedJumpActivation(nodeID, playerNodeID, cachedJumpDirection));
+                }
+
+                var angle = Mathf.Atan2(jumpDirection.y, jumpDirection.x) * Mathf.Rad2Deg;
+                GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+            }
+        }
+
+        IEnumerator DelayedJumpIndicatorActivation(int currentNodeID, int currentParentNodeID)
+        {
+            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+
+            if (currentNodeID == currentParentNodeID) {
+                JumpIndicator.transform.position = GameManager.Singleton.NodeRegistry.TryGetValue(currentParentNodeID).gameObject.transform.position;
+                var angle = Mathf.Atan2(-jumpDirection.y, -jumpDirection.x) * Mathf.Rad2Deg;
+                JumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+                JumpIndicator.SetActive(true);
+            }
+        }
+
+        IEnumerator DelayedAnimateActivation(int currentNodeID, int currentParentNodeID, Vector2 cachedJumpDirection)
+        {
+            yield return new WaitUntil(() => rigidbody.velocity == Vector2.zero);
+
+            SquashAndStretchAnimation();
+
+            yield return new WaitForSeconds(1.25f);
+
+            if (currentNodeID == currentParentNodeID) {
+                jumpDirection = cachedJumpDirection;
+                bAnimate = true;
+            }
+        }
+
+        IEnumerator DelayedJumpActivation(int currentNodeID, int currentParentNodeID, Vector2 cachedJumpDirection)
+        {
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID); 
+
+            yield return new WaitUntil(() => ML.Math.GetDistance(gameObject.transform.position, currentNode.gameObject.transform.position) <= 0.5f);
+            
+            transform.position = currentNode.gameObject.transform.position;
+
+            if (currentNodeID == GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0]) {
+                rigidbody.velocity = Vector2.zero;
+            }
+
+            var angle = Mathf.Atan2(jumpDirection.y, jumpDirection.x) * Mathf.Rad2Deg;
+            GameManager.Singleton.PlayerController.sprite.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
+
+            if (currentNodeID == playerNodeID) {
+                jumpDirection = cachedJumpDirection;
+                if (bFirstJumpMadeByUser) {
+                    if (surface == null) {
+                        surface = currentNode.DarkSurface.GetComponent<Surface>();
+                    }
+                    surface.gameObject.GetComponent<Collider2D>().enabled = false;
+                    rigidbody.velocity = jumpDirection * jumpForce;
+                }
             }
         }
 
@@ -237,12 +421,16 @@ namespace StudioByStorm.Gravity.Player {
             }*/
 
             //if enforcing light color
-            isLightColor = true;
+            //isLightColor = true;
             light2D.SetActive(true);
-            spriteRenderer.color = lightColor;
-            spriteRenderer.material = lightMaterial;
-            currentColor = lightColor;
+            //spriteRenderer.color = lightColor;
+            //spriteRenderer.material = darkMaterial;
+            //currentColor = lightColor;
             currentMaterial = lightMaterial;
+            
+            int currentNodeID = GameManager.Singleton.LevelManager.CurrentLevelData.safePath[0];
+            Node currentNode = GameManager.Singleton.NodeRegistry.TryGetValue(currentNodeID);
+            NodeColor = currentNode.NodeColor;
         }
 
         public bool isPlayerGrounded() 
@@ -318,9 +506,13 @@ namespace StudioByStorm.Gravity.Player {
             while(true) {
                 if (!lerping && (previousTrailFX == null || Vector2.Distance(previousTrailFX.transform.position, transform.position) > 0.75f)) {
                     PlayerTrailFX currentTrailFX = GameManager.Singleton.FXManager.PlayerTrailPool.Get().GetComponent<PlayerTrailFX>();
-                    Color colorHit = (isLightColor) ? lightColor : darkColor;
-                    colorHit.a = 0.75f;
-                    currentTrailFX.SetColor(colorHit);
+                    
+                    int colorIndex = (int) NodeColor;
+                    Color trailColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                    
+
+                    trailColor.a = 0.75f;
+                    currentTrailFX.SetColor(trailColor);
                     currentTrailFX.transform.position = transform.position;
                     currentTrailFX.gameObject.SetActive(true);
 
@@ -334,6 +526,40 @@ namespace StudioByStorm.Gravity.Player {
         {
             movementForce = _movementForce;
             StateCleanUp();
+
+            if (controlType == ControlType.Tap && GameManager.Singleton.CameraController.isReady && Input.GetMouseButtonDown(0) && isOnSurface) {
+                JumpOverride(jumpDirection * 2.0f);
+                JumpIndicator.SetActive(false);
+                AudioManager.Singleton.Play(SoundType.Jump);
+            }
+
+            if (controlType == ControlType.Slingshot && !slingshotJoyStick.activeSelf) {
+                slingshotJoyStick.SetActive(true);
+            }
+
+            if (GameManager.Singleton.CameraController.isReady && canUseControlTypes && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady && bAnimate && rigidbody.bodyType != RigidbodyType2D.Static) {
+                rigidbody.velocity = jumpDirection * 3.0f;
+            }
+
+            if (Input.GetMouseButtonDown(0) && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady) {
+                GameManager.Singleton.LevelManager.StartPlayingAnimations();
+            }
+
+            if (Input.GetMouseButtonUp(0) && controlType == ControlType.Animate && GameManager.Singleton.CameraController.isReady) {
+                GameManager.Singleton.LevelManager.StopPlayingAnimations();
+            }
+
+            if (canUseControlTypes && controlType == ControlType.Jump && GameManager.Singleton.CameraController.isReady && (Input.GetKey(KeyCode.Space) || Input.GetMouseButtonDown(0)) && rigidbody.bodyType != RigidbodyType2D.Static) {
+                rigidbody.velocity = jumpDirection * powerJumpForce;
+                if (!bFirstJumpMadeByUser) {
+                    bFirstJumpMadeByUser = true;
+                }
+                bFirstJumpAfterCheckpoint = true;
+                AudioManager.Singleton.Play(SoundType.Jump);
+                //rigidbody.AddForce(jumpDirection * powerJumpForce, ForceMode2D.Impulse);
+            }
+
+            
         }
 
         void FixedUpdate()
@@ -342,18 +568,22 @@ namespace StudioByStorm.Gravity.Player {
                 return;
             }
 
+            if (bFirstJumpMadeByUser && bFirstJumpAfterCheckpoint && canUseControlTypes && !isOnSurface && controlType == ControlType.Jump && rigidbody.bodyType != RigidbodyType2D.Static) {
+                ApplyJumpGravity();
+            }
+
             if (isOnSurface || isInAtmosphere)
             {
-                if (gravityDirection != Vector2.zero && !isOnSurface) {
+                if (gravityDirection != Vector2.zero && !isOnSurface && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                     ApplyGravity();
                 }
-                
+
                 /*if (movementDirection != Vector2.zero) {
                     Move();
                 }*/
             }
 
-            if (! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete) {
+            if (!_isLanding && !canDash && ! isInAtmosphere && !isOnSurface && isGravityAvailable && !isLevelComplete && controlType != ControlType.Animate && controlType != ControlType.Jump) {
                 ApplyGravityFailSafe();
             }
 
@@ -417,11 +647,11 @@ namespace StudioByStorm.Gravity.Player {
         {
             //play the hit animation
             if (! isHitObstacle) {
+                rigidbody.velocity = Vector2.zero;
+                
                 AudioManager.Singleton.Play(SoundType.WrongObstacleHit);
                 MMVibrationManager.Haptic(HapticTypes.SoftImpact);
                 GameEventPublisher.PublishPlayerHitWrongObstacle();
-
-                Color colorHit = (isLightColor) ? lightColor : darkColor;
                 WrongObstacleHitFX wrongObstacleHitFX = GameManager.Singleton.FXManager.WrongObstacleHitPool.Get().GetComponent<WrongObstacleHitFX>();
                 wrongObstacleHitFX.SetColor(colorHit);
                 wrongObstacleHitFX.gameObject.transform.position = transform.position;
@@ -431,14 +661,14 @@ namespace StudioByStorm.Gravity.Player {
                 HitObstacleAnimation();
 
                 //check if the player still has hearts left after this
-                if ((playerHeartsCount - 1) > 0) {
+                if ((_playerHeartsCount - 1) > 0) {
                     GameManager.Singleton.CameraController.Shake(0.15f, 0.15f);
-                    playerHeartsCount--;
+                    _playerHeartsCount--;
                     UpdatePlayerHearts();
 
                 } else if (! isLevelLost) {
                     GameManager.Singleton.CameraController.Shake(0.225f, 0.225f);
-                    playerHeartsCount--;
+                    _playerHeartsCount--;
                     UpdatePlayerHearts();
                     StartCoroutine(LevelLostAnimation());
                 }
@@ -461,6 +691,14 @@ namespace StudioByStorm.Gravity.Player {
                                     isHitAnimationPlaying = false;
                                     spriteRenderer.material = currentMaterial;
                                     isHitObstacle = false;
+
+                                    //fixes the bug where color changes while OnNodeChange occurs
+                                    ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+                                    if (actionController.ActionModel.CurrentEdge != null) {
+                                        int colorIndex = (int) actionController.ActionModel.CurrentEdge.EdgeColor;
+                                        spriteRenderer.color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                                        currentColor = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                                    }
                                 });
         }
 
@@ -469,7 +707,7 @@ namespace StudioByStorm.Gravity.Player {
             PlayerHeartsView playerHeartsView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.PlayerHeartsView) as PlayerHeartsView;
 
             if (isInit) {
-                playerHeartsView.SetPlayerHearts(playerHeartsCount);
+                playerHeartsView.SetPlayerHearts(_playerHeartsCount);
             } else {
                 playerHeartsView.LoseHeart();
             }
@@ -499,6 +737,10 @@ namespace StudioByStorm.Gravity.Player {
             isPositionHelperPlayingBack = true;
             yield return StartCoroutine(PlayerPositionHelper.WaitUntilFinished());
             isPositionHelperPlayingBack = false;
+
+            if (controlType == ControlType.Tap) {
+                JumpIndicator.SetActive(true);
+            }
         }
 
         void OnTriggerEnter2D(Collider2D collider)
@@ -532,7 +774,14 @@ namespace StudioByStorm.Gravity.Player {
                 PlayerPositionHelper.SetRecording(false);
 
                 movementDirection = previousMovementDirection;
-                Move(true);    
+                if (controlType != ControlType.Jump) {
+                    Move(true);   
+                } else {
+                    //for the first node while using jump movement ie pre canUseControlTypes
+                    if (!canUseControlTypes) {
+                        Move(true);   
+                    }
+                } 
                 
                 if (ActionController.ActionModel.CurrentEdge != null && ActionController.ActionModel.CurrentEdge.isOutOfBounds) {
                     StartCoroutine(ActionController.ActionModel.CurrentEdge.StretchTowardsPlayerAnimation());
@@ -552,16 +801,20 @@ namespace StudioByStorm.Gravity.Player {
                 //get the obstacle part
                 ObstaclePart obstaclePart = collider.GetComponent<ObstaclePart>();
                 ColorType obstacleColorType = obstaclePart.colorType;
+                NodeColor obstaclePartColor = obstaclePart.NodeColor;
+
+                int whiteColorIndex = (int) NodeColor.White;
+                int colorIndex = (int) obstaclePartColor;
+                colorHit = (obstaclePart.isCameraHitBox) ? GameManager.Singleton.ColorModel.lightColor[whiteColorIndex] : GameManager.Singleton.ColorModel.lightColor[colorIndex];
+                colorHit.a = 0.5f;
+
                 //if the player is the the light color and so is the obstacle.. or if we're not enforcing light color and they are dark and so is the obstacle
-                if ((isLightColor && obstacleColorType == ColorType.Light) 
-                     || (!isEnforcingLightColor && (!isLightColor && obstacleColorType == ColorType.Dark))) {
+                if (obstaclePartColor == NodeColor) {
                         
                     if (! lerping) {
                         GameEventPublisher.PublishPlayerHitCorrectObstacle();
                         AudioManager.Singleton.Play(SoundType.CorrectObstacleHit);
-
-                        Color colorHit = (isLightColor) ? lightColor : darkColor;
-                        colorHit.a = 0.5f;
+                        
                         CorrectObstacleHitFX correctObstacleHitFX = GameManager.Singleton.FXManager.CorrectObstacleHitPool.Get().GetComponent<CorrectObstacleHitFX>();
                         correctObstacleHitFX.SetColor(colorHit);
                         correctObstacleHitFX.gameObject.transform.position = transform.position;
@@ -570,17 +823,26 @@ namespace StudioByStorm.Gravity.Player {
 
                 //otherwise
                 } else {
+
+
                     //make sure we didn't hit an obstacle while traveling because that doesn't count
-                    if (obstaclePart.isBoid || (! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
+                    if (obstaclePart.isBoid || (!isPositionHelperPlayingBack && ! lerping && !_isLanding && gameObject.transform.localScale.x == originalScale && gameObject.transform.localScale.y == originalScale)) {
 
                         //use position helper to playback to safe point as long as player isn't in atmosphere or surface
-                        if (!isLevelLost && ! isInAtmosphere && ! isOnSurface) {
+                        if (!isLevelLost && ! isInAtmosphere && ! isOnSurface && controlType != ControlType.Jump) {
                             PlayerPositionHelper.PlayBack();
                             StartCoroutine(WaitForPositionHelper());
                         }
                         
                         if (! isHitObstacle) {
                             HitObstacle();
+                        }
+
+                        if (obstaclePart.isCameraHitBox) {
+                            Node nodeCheckpointGO = GameManager.Singleton.NodeRegistry.TryGetValue(lastSafeNodeIDCheckpoint);
+                            rigidbody.velocity = Vector2.zero;
+                            gameObject.transform.position = nodeCheckpointGO.gameObject.transform.position;
+                            bFirstJumpAfterCheckpoint = false;
                         }
                         
                     }
@@ -722,10 +984,40 @@ namespace StudioByStorm.Gravity.Player {
             }
 
             if (Mathf.Abs(rigidbody.velocity.x) <= minimumSpaceVelocity.x && Mathf.Abs(rigidbody.velocity.y) <= minimumSpaceVelocity.y) {
-                //gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
-                //rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
-                Move();
+                gravityDirection = (GameManager.Singleton.nearbyNode.GetPosition() - (Vector2) transform.position).normalized;
+                rigidbody.AddForce(gravityDirection * (gravityForce/2 * Time.fixedDeltaTime), ForceMode2D.Impulse);
+                //Move();
             }
+        }
+
+        protected void ApplyJumpGravity()
+        {
+            /*
+             * Overriding gravity completely for new movement testing
+             */
+            gravityDirection = (-jumpDirection).normalized;
+
+            //transform.up = - gravityDirection;
+            
+            float velocityDistanceToSlowingDown = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (altJumpForce * 0.425f)));
+            float velocityDistanceToJumpForce = ML.Math.GetDistance(rigidbody.velocity, (jumpDirection * (altJumpForce)));
+
+            //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 10.0f;
+
+            //falling
+            if (velocityDistanceToSlowingDown < velocityDistanceToJumpForce) {
+                //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
+                //rigidbody.velocity -= (jumpDirection * Time.fixedDeltaTime) * 50.0f;
+                rigidbody.AddForce(-jumpDirection * altJumpForce * 3.25f, ForceMode2D.Force);
+            //jumping
+            } else {
+                //rigidbody.AddForce(gravityDirection * (1000 * Time.fixedDeltaTime));
+                rigidbody.AddForce(-jumpDirection * altJumpForce * 1.5f, ForceMode2D.Force);
+            }
+
+            /*if (rigidbody.velocity.magnitude >= (jumpDirection * jumpForce).magnitude) {
+                rigidbody.velocity = (jumpDirection * jumpForce);
+            }*/
         }
 
         protected void ApplyGravity()
@@ -757,6 +1049,8 @@ namespace StudioByStorm.Gravity.Player {
             transform.position = nearbyNodePosition;
             
             AudioManager.Singleton.Play(SoundType.CellLand);
+
+            bAnimate = false;
         }
 
         protected void ResetMovement()
@@ -927,18 +1221,6 @@ namespace StudioByStorm.Gravity.Player {
             } else if (! isInAtmosphere && ! isOnSurface) {
                 canDash = true;
                 didJump = false;
-            }
-
-            //clean up isLanding state
-            if (_isLanding && 
-                Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, gameObject.transform.position) < 2.0f && 
-                rigidbody.bodyType == RigidbodyType2D.Kinematic) 
-            {
-
-                _isLanding = false;
-                SetRigidBodyType(RigidbodyType2D.Dynamic);
-                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].transform.position = gameObject.transform.position;
-                GameManager.Singleton.FXManager.SuperHeroLandingImpacts[GameManager.Singleton.nearbyNode.GetData<Node>().NodeColor].SetActive(true);
             }
         }
     }

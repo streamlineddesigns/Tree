@@ -40,6 +40,8 @@ namespace StudioByStorm.Graph {
         public AdjacencyList AdjacencyList = new AdjacencyList();
         protected bool playerSetPositionSwitch = false;
         public Vector3 playerPosition;
+        //cached previous level positions to use as a "template"
+        private static List<Vector3> previousPositionsAsTemplate = new List<Vector3>();
 
         protected void Awake()
         {
@@ -149,10 +151,42 @@ namespace StudioByStorm.Graph {
         protected void OnTap(TKTapRecognizer r) 
         {
             setTappedGameObject(r.startTouchLocation());
+            //cache current positions as previous for next level creation
+            if (tappedGameObject != null && tappedGameObject.tag == "Cell") previousPositionsAsTemplate.Add(r.startTouchLocation());
             editTappedGameObject();
 
             if (tappedGameObject != null && playerSetPositionSwitch) {
-                playerPosition = tappedGameObject.transform.position * 7.0f;
+                playerPosition = tappedGameObject.transform.position * 12.0f;
+                GlobalLevelData.PlayerStartPosition = playerPosition;
+                UserPositionGameObject.transform.position = tappedGameObject.transform.position;
+                UserPositionGameObject.SetActive(true);
+                playerSetPositionSwitch = false;
+            }
+        }
+
+        public void ResetPreviousPositions()
+        {
+            previousPositionsAsTemplate = new List<Vector3>();
+        }
+
+        //used to load previous level data
+        public void LoadPreviousPositions()
+        {
+            for (int i = 0; i < previousPositionsAsTemplate.Count; i++) {
+                OnTap(previousPositionsAsTemplate[i]);
+            }
+        }
+
+        protected void OnTap(Vector3 position)
+        {
+            Debug.Log("Manual OnTap");
+
+            setTappedGameObject(position);
+            tappedGameObject.tag = "Cell";
+            editTappedGameObject();
+
+            if (tappedGameObject != null && playerSetPositionSwitch) {
+                playerPosition = tappedGameObject.transform.position * 12.0f;
                 GlobalLevelData.PlayerStartPosition = playerPosition;
                 UserPositionGameObject.transform.position = tappedGameObject.transform.position;
                 UserPositionGameObject.SetActive(true);
@@ -382,7 +416,7 @@ namespace StudioByStorm.Graph {
                 LayerData.nodeTypes = new List<NodeType>();
                 for (int k = 0; k < layerNodeCount; k++) {
                     //we don't want the nodes to be spread out on a 1.0f , 1.0f grid, but rather, 7 times this size
-                    Vector3 scaled = nodePositions[index] * 7.0f;
+                    Vector3 scaled = nodePositions[index] * 12.0f;
                     VectorData pos = new VectorData(scaled);
                     LayerData.nodePositions.Add(pos);
                     LayerData.nodeColors.Add(nodeColors[index]);

@@ -10,6 +10,27 @@ namespace StudioByStorm.UI.Controllers {
     {
         public GameObject MockNodes;
 
+        public void OnEnable()
+        {
+            base.OnEnable();
+            GameEventPublisher.OnViewChange += OnViewChange;
+        }
+
+        public void OnDisable()
+        {
+            base.OnDisable();
+            GameEventPublisher.OnViewChange -= OnViewChange;
+        }
+
+        private void OnViewChange(ViewName currentViewName)
+        {
+            if (currentViewName == ViewName) {
+                MockNodes.SetActive(true);
+            } else {
+                MockNodes.SetActive(false);
+            }
+        }
+
         public void StartLevelSelectButtonClick()
         {
             AudioManager.Singleton.Play(SoundType.ButtonPress);

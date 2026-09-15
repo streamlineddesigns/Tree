@@ -29,6 +29,10 @@ namespace StudioByStorm.PCG {
         private List<List<List<int>>> workingSolutions;
         private List<List<List<int>>> nearSolutions;
         [SerializeField] private bool isUsingMaxDistanceBetweenNodes = false;
+        //stores player start position
+        private Vector3 playerStartPosition;
+        //stores safe path
+        private List<int> safePath;
 
         public void DependencyInjection(GraphConstructionManager gcm)
         {
@@ -64,8 +68,15 @@ namespace StudioByStorm.PCG {
                 DisplayWorkingSolutions();
             }
 
-            GraphConstructionManager.CreateLevelData();
+            //get player position based on randomly placed colors
             SetPlayerPositionToColorNode();
+            //place ordered colors
+            PlaceOrderedColors();
+            //create level data
+            GraphConstructionManager.CreateLevelData();
+            //Set player start position
+            GraphConstructionManager.GlobalLevelData.PlayerStartPosition = playerStartPosition;
+            GraphConstructionManager.GlobalLevelData.safePath = safePath;
         }
 
         private void createAdjacencyList(float maxDistanceBetweenNodesToCreateEdge = 1.2f)
@@ -96,16 +107,8 @@ namespace StudioByStorm.PCG {
             }
         }
 
-        private bool PlaceRandomColors()
+        private bool PlaceOrderedColors()
         {
-            //reset all nodes to grey
-            for (int i = 0; i < GraphConstructionManager.nodeColors.Count; i++) {
-                int nodeIndex = i;
-                GraphConstructionManager.nodeColors[nodeIndex] = NodeColor.GrayScale;
-                GraphConstructionManager.nodeGameObjectReferences[nodeIndex].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)NodeColor.GrayScale];
-            }
-
-            
             //retrieve all available NodeColors
             List<NodeColor> availableColors = new List<NodeColor>();
             foreach (NodeColor nc in Enum.GetValues(typeof(NodeColor))) {
@@ -131,7 +134,7 @@ namespace StudioByStorm.PCG {
             for (int j = 0; j < requiredNumberOfColorsToPlace; j++) {
                 //add 2 of each color
                 colorsBeingUsed.Add(shuffledColors[j]);
-                colorsBeingUsed.Add(shuffledColors[j]);
+                //colorsBeingUsed.Add(shuffledColors[j]);
             }
 
             int colorsPlaced = 0;              //requiredNumberOfColorsToPlace * 2 because 2 of each color gets placed
@@ -141,10 +144,88 @@ namespace StudioByStorm.PCG {
                 //Debug.Log(colorsBeingUsed[k].ToString());
             }
 
+            //2/6 as minimum needs to change to scale up for larger maps
+            int[] numbers = GetRandomNumbersWithSum(requiredNumberOfColorsToPlace, GraphConstructionManager.nodeColors.Count, 2, 8);
+            Debug.Log($"Numbers: {string.Join(", ", numbers)}");
+
+            //GraphConstructionManager.GlobalLevelData.safePath
+
+            int startIndex = 1;
+            int endIndex = 0;
+            int highestIndex = 0;
+
+            for (int i = 0; i < numbers.Length; i++) {
+                if (i != 0) {
+                    startIndex = highestIndex + 1;
+                }
+                endIndex += (numbers[i]);
+                highestIndex += numbers[i];
+
+                //current start/end indexes
+                int currentStartIndex = (startIndex - 1);
+                int currentEndIndex = (endIndex - 1);
+
+                int startNodeID = safePath[currentStartIndex];
+                int endNodeID = safePath[currentEndIndex];
+
+                NodeColor currentColor = colorsBeingUsed[i];
+                //start node in graph manager
+                GraphConstructionManager.nodeColors[startNodeID] = currentColor;
+                GraphConstructionManager.nodeGameObjectReferences[startNodeID].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)currentColor];
+                //end nodes in graph manager
+                GraphConstructionManager.nodeColors[endNodeID] = currentColor;
+                GraphConstructionManager.nodeGameObjectReferences[endNodeID].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)currentColor];
+
+                Debug.Log("StartIndex: " + (currentStartIndex).ToString());
+                Debug.Log("EndIndex: " + (currentEndIndex).ToString());
+            }
+
+            return true;
+        }
+        
+        //get x amount of numbers between target sum between min/max
+        public int[] GetRandomNumbersWithSum(int count, int target, int min, int max)
+        {
+            int[] result = new int[count];
+            bool found = false;
+            
+            while (!found)
+            {
+                int sum = 0;
+                result = new int[count];
+                
+                for (int i = 0; i < count; i++)
+                {
+                    result[i] = UnityEngine.Random.Range(min, max + 1);
+                    sum += result[i];
+                }
+                
+                if (sum == target)
+                {
+                    found = true;
+                }
+            }
+
+            return result;
+        }
+
+        private bool PlaceRandomColors()
+        {
+            //reset all nodes to grey
+            for (int i = 0; i < GraphConstructionManager.nodeColors.Count; i++) {
+                int nodeIndex = i;
+                GraphConstructionManager.nodeColors[nodeIndex] = NodeColor.GrayScale;
+                GraphConstructionManager.nodeGameObjectReferences[nodeIndex].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)NodeColor.GrayScale];
+            }
+
+            int colorsPlaced = 0;
+            int requiredNumberOfColorsToPlace = 1;
+            int totalColorNodesRequiredToPlace = requiredNumberOfColorsToPlace * 2;
+
             while(colorsPlaced < totalColorNodesRequiredToPlace) {
                 int randomNodeID = UnityEngine.Random.Range(0, GraphConstructionManager.nodeColors.Count);
                 if (GraphConstructionManager.nodeColors[randomNodeID] == NodeColor.GrayScale) {
-                    NodeColor currentColor = colorsBeingUsed[colorsPlaced];
+                    NodeColor currentColor = NodeColor.White;//colorsBeingUsed[colorsPlaced];
                     GraphConstructionManager.nodeColors[randomNodeID] = currentColor;
                     GraphConstructionManager.nodeGameObjectReferences[randomNodeID].GetComponent<SpriteRenderer>().color = GraphConstructionManager.ColorModel.lightColor[(int)currentColor];
                     colorsPlaced++;
@@ -272,7 +353,7 @@ namespace StudioByStorm.PCG {
 
         private void CreateAllPotentialSolutionsFromPathIndexCombinations()
         {
-            allPotentialSolutions = new List<List<List<int>>>(100000);
+            allPotentialSolutions = new List<List<List<int>>>(1000000);
 
             //iterate over all possible combinations of solutions
             Parallel.For(0, cartesianPathIndexCombinations.Count, (i, state) => {
@@ -382,9 +463,9 @@ namespace StudioByStorm.PCG {
             //use it to get the position of the node at said index
             Vector3 nodePosition = GraphConstructionManager.nodePositions[randomNodeIndex];
             //scale it to in game size
-            Vector3 playerTargetPosition = nodePosition * 7.0f;
+            Vector3 playerTargetPosition = nodePosition * 12.0f;
             //update it in the level data
-            GraphConstructionManager.GlobalLevelData.PlayerStartPosition = playerTargetPosition;
+            playerStartPosition = playerTargetPosition;
 
             CreateSafePath(randomNodeIndex);
         }
@@ -398,7 +479,7 @@ namespace StudioByStorm.PCG {
                         workingSolutions[0][i].Reverse();
                     }
 
-                    GraphConstructionManager.GlobalLevelData.safePath = workingSolutions[0][i];
+                    safePath = workingSolutions[0][i];
                     Debug.Log("Safe Path: " + string.Join(" -> ", workingSolutions[0][i]));
                 }
             }

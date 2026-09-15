@@ -36,6 +36,7 @@ namespace StudioByStorm.PCG {
 
             ProceduralObstacleSelector.DependencyInjection(ObstacleDataRepository, GraphConstructionManager, LevelConfig);
             yield return StartCoroutine(ProceduralObstacleSelector.SelectObstacles());
+            yield return new WaitUntil(() => GraphConstructionManager.GlobalLevelData.obstacleNames != null);
 
             ProceduralObstaclePlacer.DependencyInjection(ObstacleDataRepository, GraphConstructionManager);
             yield return StartCoroutine(ProceduralObstaclePlacer.PlaceObstacles());

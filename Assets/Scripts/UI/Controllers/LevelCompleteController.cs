@@ -15,8 +15,8 @@ namespace StudioByStorm.UI.Controllers {
     public class LevelCompleteController : Controller
     {
         public static Dictionary<int, LevelCompleteController> instances = new  Dictionary<int, LevelCompleteController>();
-        public TMP_Text headingText;
-        public TMP_Text levelText;
+        public Text headingText;
+        public Text levelText;
         public Image[] starImages;
         public Slider xpSlider;
         public TMP_Text earnedXPText;
@@ -89,6 +89,10 @@ namespace StudioByStorm.UI.Controllers {
             int starsAwarded = (edgePercent >= percentOfLevelCompletedToStarTierMapping[3]) ? 3 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[2]) ? 2 : 
                                (edgePercent >= percentOfLevelCompletedToStarTierMapping[1]) ? 1 : 0;
+            //maps heart count to stars earned for anything other than slingshot
+            if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                starsAwarded = GameManager.Singleton.PlayerController.playerHeartsCount;
+            }
             int previousStarsAwarded = GameManager.Singleton.ProgressManager.GetLevelProgress(key);
             
             //get cells used for xp purposes
@@ -128,8 +132,11 @@ namespace StudioByStorm.UI.Controllers {
             bool isPreviousAwardedLarger = (previousCellsAwarded >= used);
 
             float usedPercent = (isPreviousAwardedLarger) ? (previousCellsAwarded * 1.0f) / (available * 1.0f) : (used * 1.0f) / (available * 1.0f);
+            usedPercent = Mathf.Min(usedPercent, 1.0f);//max at 1.0
             int earnedPercentInt = (int) (usedPercent * 100.0f);
+            
             int remainingPercentInt = 100 - earnedPercentInt;
+            remainingPercentInt = (int) Mathf.Max(remainingPercentInt, 0.0f);//min at 0.0
 
             float easedUsedPercent = 0.0f;
             float easedEarnedPercent = 0.0f;
@@ -249,7 +256,7 @@ namespace StudioByStorm.UI.Controllers {
                 int lastChapterID = GameManager.Singleton.LevelManager.levelChapters.chapters.Count - 1;
                 if (currentChapterID >= lastChapterID) {
                     //Debug.LogError("last level beaten");
-                    HomeButtonClick();
+                    HomeButtonClick(true);
                 } else {
                     StartCoroutine(GoToNextChapter(nextChapterID));
                 }
@@ -267,18 +274,20 @@ namespace StudioByStorm.UI.Controllers {
             StartCoroutine(GoToNextLevel(nextLevelID, currentChapterID));
         }
 
-        public void HomeButtonClick()
+        public void HomeButtonClick(bool needsToCountStars = true)
         {
+            LevelPackSelectController.bNeedsToCountStars = needsToCountStars;
+            
             AudioManager.Singleton.Play(SoundType.ButtonPress);
             
             PauseController PauseController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.PauseView) as PauseController;
-            PauseController.HomeButtonClick();
+            PauseController.HomeButtonClick(needsToCountStars);
         }
 
         IEnumerator GoToNextChapter(int nextChapterID)
         {
             //Debug.Log("GoToNextChapter");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
 
@@ -291,7 +300,7 @@ namespace StudioByStorm.UI.Controllers {
         IEnumerator GoToNextCutScene(int nextLevelID, int chapterID)
         {
             //Debug.Log("GoToNextCutScene");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
 
@@ -302,8 +311,9 @@ namespace StudioByStorm.UI.Controllers {
 
         IEnumerator GoToNextLevel(int nextLevelID, int chapterID)
         {
+            LevelPackSelectController.bNeedsToCountStars = false;
             //Debug.Log("GoToNextLevel");
-            HomeButtonClick();
+            HomeButtonClick(false);
             yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Main");
             yield return StartCoroutine(WaitForFrames(framesToWait));
             

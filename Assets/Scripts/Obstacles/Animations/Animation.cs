@@ -8,7 +8,7 @@ namespace StudioByStorm.Obstacles.Animations {
     public abstract class Animation : MonoBehaviour
     {
         public float time = 0.25f;
-        public Ease easing;
+        public Ease easing = Ease.Linear;
         public int direction = 0;
         public GameObject[] buildingBlocks;
         public int initialPositionTeleport = 0;//allows for customization of similar animations with different starting visual style
@@ -25,6 +25,8 @@ namespace StudioByStorm.Obstacles.Animations {
 
         protected void Awake()
         {
+            easing = Ease.Linear;
+            //if (buildingBlocks != null) buildingBlocks[0].transform.parent.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             int size = (buildingBlocks != null) ? buildingBlocks.Length : 0;
             buildingBlockPositions = new Vector3[size];
             buildingBlockRotations = new Quaternion[size];
@@ -56,6 +58,20 @@ namespace StudioByStorm.Obstacles.Animations {
             //perform initial rotation teleport
             for (int k = 0; k < initialRotationTeleportCount; k++) {
                 TeleportBuildingBlocksRotation();
+            }
+
+            if (GameManager.Singleton != null && GameManager.Singleton.PlayerController.controlType == ControlType.Animate) {
+                time /= 3.0f;
+
+            } else if (GameManager.Singleton != null && GameManager.Singleton.PlayerController.controlType == ControlType.Tap) {
+                float currentLevelID = GameManager.Singleton.LevelManager.displayLevelID * 1.0f;
+                float currentChapterID = GameManager.Singleton.LevelManager.currentChapterID * 15.0f;//will be 0 or 15 for chapter 1 vs chapter 2
+                float actualCurrentLevel = currentLevelID + currentChapterID;
+                float maxLevel = GameManager.Singleton.LevelManager.levelChapters.chapters.Count * 15.0f;
+                float percentage = actualCurrentLevel / maxLevel;
+                float clampedPercent = Mathf.Min(percentage, 1.0f);
+                float divisor = DOVirtual.EasedValue(1.5f, 3.0f, clampedPercent, Ease.Linear);
+                time /= divisor;
             }
         }
 

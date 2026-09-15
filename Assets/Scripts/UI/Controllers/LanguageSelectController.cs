@@ -8,6 +8,8 @@ namespace StudioByStorm.UI.Controllers {
     
     public class LangugageSelectController : Controller
     {
+        public GameObject header;
+
         protected void Start()
         {
             StartCoroutine(DelayedStart());
@@ -20,8 +22,15 @@ namespace StudioByStorm.UI.Controllers {
 
             //players never seen this screen before
             if (playerLanguage == -1) {
+                header.SetActive(false);
                 GameManager.Singleton.UIController.ShowView(ViewName);
             }
+        }
+
+        public void Open()
+        {
+            header.SetActive(true);
+            GameManager.Singleton.UIController.ShowView(ViewName);
         }
 
         public void SelectEnglish()
@@ -39,8 +48,69 @@ namespace StudioByStorm.UI.Controllers {
             SelectLanguagePack(LanguagePackName.Spanish);
         }
 
+        public void SelectMandarin()
+        {
+            SelectLanguagePack(LanguagePackName.Mandarin);
+        }
+
+        public void SelectHindi()
+        {
+            SelectLanguagePack(LanguagePackName.Hindi);
+        }
+
+        public void SelectFrench()
+        {
+            SelectLanguagePack(LanguagePackName.French);
+        }
+
+        public void SelectRussian()
+        {
+            SelectLanguagePack(LanguagePackName.Russian);
+        }
+
+        public void SelectPortuguese()
+        {
+            SelectLanguagePack(LanguagePackName.Portuguese);
+        }
+
+        public void SelectDutch()
+        {
+            SelectLanguagePack(LanguagePackName.Dutch);
+        }
+
+        public void SelectJapanese()
+        {
+            SelectLanguagePack(LanguagePackName.Japanese);
+        }
+
+        public void SelectItalian()
+        {
+            SelectLanguagePack(LanguagePackName.Italian);
+        }
+
+        public void SelectTurkish()
+        {
+            SelectLanguagePack(LanguagePackName.Turkish);
+        }
+
+        public void SelectGreek()
+        {
+            SelectLanguagePack(LanguagePackName.Greek);
+        }
+
+        public void SelectGerman()
+        {
+            SelectLanguagePack(LanguagePackName.German);
+        }
+
+        public void SelectKorean()
+        {
+            SelectLanguagePack(LanguagePackName.Korean);
+        }
+
         private void SelectLanguagePack(LanguagePackName languagePackName)
         {
+            GameManager.Language = (int) languagePackName;
             GameManager.Singleton.ProgressManager.UpdatePlayerLanguage((int) languagePackName);
             GameManager.Singleton.ProgressManager.Save();
             //########################################################################
@@ -50,9 +120,9 @@ namespace StudioByStorm.UI.Controllers {
             View StartView = GameManager.Singleton.ViewRegistry.TryGetValue(ViewName.StartView);
             StartView.gameObject.SetActive(false);
             StartView.gameObject.SetActive(true);
-            //########################################################################
+            //######################################################################## 
 
-            GameManager.Singleton.UIController.Close(ViewName); 
+            GameManager.Singleton.UIController.Back();
 
             //if its the first time we've ever opened this
             if (FTUEManager.singleton.isFirstOpen) {

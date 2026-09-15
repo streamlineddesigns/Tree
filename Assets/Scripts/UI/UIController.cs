@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using StudioByStorm.EventPublishers;
 
 namespace StudioByStorm.UI {
 
@@ -20,6 +21,8 @@ namespace StudioByStorm.UI {
                 CurrentViewScreen = View;
                 PreviousViewScreen.gameObject.SetActive(false);
             }
+
+            GameEventPublisher.PublishViewChange(CurrentViewScreen.ViewName);
         }
 
         public void Close(ViewName ViewName)

@@ -6,8 +6,11 @@ namespace StudioByStorm.Obstacles {
 
     public class ObstaclePart : MonoBehaviour
     {
+        public NodeColor NodeColor;
         public ColorType colorType;
         public bool isBoid;
+        public bool isCameraHitBox;
+        private Material originalMaterial;
 
         public void RegisterViaNodeID(int nodeID)
         {
@@ -22,11 +25,49 @@ namespace StudioByStorm.Obstacles {
 
         protected void Start()
         {
-            SetColor();
+            if (GameManager.Singleton != null) SetColor();
+            originalMaterial = gameObject.GetComponent<SpriteRenderer>().material;
+            gameObject.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+        }
+
+        public void DisableGlow()
+        {
+            gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+        }
+
+        public void EnableGlow()
+        {
+            if (NodeColor == GameManager.Singleton.PlayerController.NodeColor) {
+                gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;
+            } else {
+                gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+            }
+        }
+
+        public void EnableGlow(NodeColor color)
+        {
+            if (NodeColor == color) {
+                gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;
+            } else {
+                gameObject.GetComponent<SpriteRenderer>().material = originalMaterial;
+            }
         }
 
         protected void SetColor()
         {
+            //swap out the color using the current level pack assigned colors
+            NodeColor CurrentNodeColor = NodeColor;
+            int currentNodeColorIndex = GameManager.Singleton.ColorModel.colorsInUse.IndexOf(CurrentNodeColor);
+            if (currentNodeColorIndex != -1) {
+                CurrentNodeColor = GameManager.Singleton.LevelManager.currentLevelPack.colors[currentNodeColorIndex];
+            }
+            NodeColor = CurrentNodeColor;
+
+            int colorIndex = (int) NodeColor;
+            gameObject.GetComponent<SpriteRenderer>().color = GameManager.Singleton.ColorModel.lightColor[colorIndex];
+            return;
+            
+
             if (colorType == ColorType.Light) {
                 gameObject.GetComponent<SpriteRenderer>().color = GameManager.Singleton.PlayerController.lightColor;
                 gameObject.GetComponent<SpriteRenderer>().material = GameManager.Singleton.PlayerController.glowMaterial;

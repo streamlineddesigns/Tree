@@ -45,8 +45,7 @@ namespace StudioByStorm.Tutorials.Animations {
             startPosition = start.transform.position;
             direction = (startPosition - target.transform.position).normalized;
             float magnitude = Vector3.Distance(start.transform.position, target.transform.position);
-            //targetPosition = startPosition + (direction * magnitude);
-            targetPosition = startPosition - (direction * magnitude);
+            targetPosition = startPosition + (direction * magnitude);
         }
 
         public void Animate()
@@ -67,9 +66,7 @@ namespace StudioByStorm.Tutorials.Animations {
                 //reset all the start data
                 spriteTween.Kill();
                 jumpIndicatorTween.Kill();
-                //transform.position = startPosition;
-                //skip to target position
-                transform.position = targetPosition;
+                transform.position = startPosition;
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 fingerIndicatorContainer.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                 spriteRenderer.sprite = swipeSprite;
@@ -86,7 +83,7 @@ namespace StudioByStorm.Tutorials.Animations {
                     spriteRenderer.sprite = swipeSprite;
                     yield return new WaitForSeconds(0.25f);
                 }
-                /*jumpIndicator.SetActive(true);
+                jumpIndicator.SetActive(true);
                 //rotate the object around the Z axis to match the direction
                 jumpIndicator.transform.rotation = Quaternion.Euler(0, 0, angle + 90.0f);
                 //move the hand to the target position
@@ -95,7 +92,7 @@ namespace StudioByStorm.Tutorials.Animations {
                 jumpIndicatorTween = jumpIndicator.transform.DOScale(new Vector3(jumpIndicatorScaling, jumpIndicatorScaling, jumpIndicatorScaling), 1.5f);
                 yield return new WaitForSeconds(1.5f);
                 //deactivate everything
-                jumpIndicator.SetActive(false);*/
+                jumpIndicator.SetActive(false);
                 spriteRenderer.DOFade(0.0f, 0.5f);
                 yield return new WaitForSeconds(0.5f);
             }

@@ -26,7 +26,7 @@ namespace StudioByStorm.UI.Controllers {
         public void Show()
         {
             //requesting to see a level pack
-            if (levelPackName != LevelPackSelectController.currentLevelPackName.ToString()) {
+            if (true/*levelPackName != LevelPackSelectController.currentLevelPackName.ToString()*/) {
                 for (int i = 0; i < ViewportContentSpawnLocation.transform.childCount; i++) {
                     Destroy(ViewportContentSpawnLocation.transform.GetChild(i).gameObject);
                 }
@@ -34,9 +34,9 @@ namespace StudioByStorm.UI.Controllers {
                 StartCoroutine(DelayedShow());
 
             //requesting to see the same level pack multiple times in a row
-            } else if (levelPackName == LevelPackSelectController.currentLevelPackName.ToString()) {
+            }/* else if (levelPackName == LevelPackSelectController.currentLevelPackName.ToString()) {
                 GameManager.Singleton.UIController.ShowView(ViewName.LevelSelectView);
-            }
+            }*/
 
             levelPackName = LevelPackSelectController.currentLevelPackAlias;
             //headingText.text = levelPackName;
@@ -51,6 +51,7 @@ namespace StudioByStorm.UI.Controllers {
         {
             yield return null;
 
+            bool isShowingPlayButton = true;
             bool isCutSceneHighestUnlocked = true;
             CutSceneSelectButtonView highestCutSceneSelectButtonView = null;
             LevelSelectButtonView highestLevelSelectButtonView = null;
@@ -154,6 +155,13 @@ namespace StudioByStorm.UI.Controllers {
                             LevelSelectButtonView.SetLockStatus(false);
                             isCutSceneHighestUnlocked = false;
                             highestLevelSelectButtonView = LevelSelectButtonView;
+
+                            if (levelCompletionValue != 0) {
+                                isShowingPlayButton = false;
+                            } else {
+                                isShowingPlayButton = true;
+                            }
+
                         } else {
                             LevelSelectButtonView.SetLockStatus(true);
                         }
@@ -168,7 +176,7 @@ namespace StudioByStorm.UI.Controllers {
             if (isCutSceneHighestUnlocked) {
                 highestCutSceneSelectButtonView.SetToPlayIndication();
             } else {
-                highestLevelSelectButtonView.SetToPlayIndication();
+                if (isShowingPlayButton) highestLevelSelectButtonView.SetToPlayIndication();
             }
 
             yield return null;

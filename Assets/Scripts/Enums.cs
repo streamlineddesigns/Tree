@@ -13,13 +13,17 @@ namespace StudioByStorm {
 
     public enum NodeColor
     {
-        Blue,
-        Green,
-        Purple,
+        Blue,//blue
+        Green,//yellow
+        Purple,//purple
         Orange,
         GrayScale,
-        White,
+        White,//pink
         Yellow,
+        Pink,
+        Red,
+        Black,
+        
     }
 
     public enum ColorType
@@ -134,10 +138,29 @@ namespace StudioByStorm {
         English,
         Filipino,
         Spanish,
+        Mandarin,
+        Hindi,
+        French,
+        Russian,
+        Portuguese,
+        Dutch,
+        Japanese,
+        Italian,
+        Turkish,
+        Greek,
+        German,
+        Korean
     }
 
     public enum ProjectileType {
         Basic,
+    }
+
+    public enum ControlType {
+        Slingshot,
+        Tap,
+        Animate,
+        Jump,
     }
     
 }

@@ -19,7 +19,7 @@ namespace StudioByStorm.Helpers {
         public LineRenderer[] lineRenderers;
         public float[] distances;
         public float[] tags;
-        public ColorType[] colorTypes;
+        public NodeColor[] colorTypes;
         public GameObject[] hitGameObjects;
         public int layerMask;
 
@@ -29,7 +29,7 @@ namespace StudioByStorm.Helpers {
             distances = new float[objectsToCast.Length];
             tags = new float[objectsToCast.Length];
             lineRenderers = new LineRenderer[objectsToCast.Length];
-            colorTypes = new ColorType[objectsToCast.Length];
+            colorTypes = new NodeColor[objectsToCast.Length];
             hitGameObjects = new GameObject[objectsToCast.Length];
             GenerateLineRenderers();
         }
@@ -43,7 +43,7 @@ namespace StudioByStorm.Helpers {
                 direction.Normalize();
                 float hitDistance = maxDistance;
                 float tag = -1.0f;
-                ColorType colorType = ColorType.Default;
+                NodeColor colorType = NodeColor.GrayScale;
                 GameObject hitGameObject;
 
                 RaycastHit2D hit = (isFlippingDirection) ? Physics2D.CircleCast(objectsToCast[i].transform.position, radius, direction, maxDistance, layerMask) 
@@ -57,7 +57,7 @@ namespace StudioByStorm.Helpers {
 
                     //cehck if we hit part of an obstacle
                     ObstaclePart obstaclePart = hit.collider.gameObject.GetComponent<ObstaclePart>();
-                    colorType = (obstaclePart != null) ? obstaclePart.colorType : ColorType.Default;
+                    colorType = (obstaclePart != null) ? obstaclePart.NodeColor : NodeColor.GrayScale;
 
                     if (isDebugOn) {
                         if (isFlippingDirection) {

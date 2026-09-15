@@ -16,7 +16,10 @@ namespace StudioByStorm {
         public int[] maxNodeDistance;
         public float[] maxNodeDistanceIndexToProjectionSize;
         public Camera Camera;
-        protected float smoothing = 1f;
+        public GameObject CameraHitBox;
+        public Vector3 CameraHitBoxScale;
+        public bool isReady;
+        protected float smoothing = 2.5f;
 
         protected Vector3 offset;
         protected Vector3 originalPosition;
@@ -28,6 +31,8 @@ namespace StudioByStorm {
         private Vector2 swipeStart;
         private bool IsLevelComplete = false;
         private bool isShaking;
+        private bool isCameraMovementOkay;
+        private float originalOrthoSize;
 
         public void MoveToCentroid()
         {
@@ -50,6 +55,11 @@ namespace StudioByStorm {
             GameEventPublisher.OnStateChange -= OnStateChange;
         }
 
+        public void ZoomOutToOriginal(float speed = 1.0f)
+        {
+            Camera.DOOrthoSize(originalOrthoSize, speed).SetEase(Ease.InQuad);
+        }
+
         public void OnStateChange(GameState state)
         {
             switch(state) {
@@ -66,6 +76,7 @@ namespace StudioByStorm {
         IEnumerator GameStart()
         {
             yield return new WaitForSeconds(0.1f);
+            CameraHitBox.SetActive(false);
             List<GameObject> nodes = GameManager.Singleton.NodeRegistry.getAllAsList().Select(x => x.gameObject).ToList();
             bounds = ML.Math.ComputeAABB(nodes.Select(x => x.transform.position).ToList());
 
@@ -121,10 +132,38 @@ namespace StudioByStorm {
                 }
             }
 
+            //Debug.LogError("Used Distance: " + usedDistance);
+            //Debug.LogError("maxNodeDistanceIndex: " + maxNodeDistanceIndex);
 
             Camera.orthographicSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
+            originalOrthoSize = maxNodeDistanceIndexToProjectionSize[maxNodeDistanceIndex];
+
 
             GameManager.Singleton.player.SetActive(true);
+
+            yield return new WaitUntil(()=> (Vector3.Distance(GameManager.Singleton.LevelManager.CurrentLevelData.PlayerStartPosition, GameManager.Singleton.PlayerController.gameObject.transform.position) < 2.0f));
+
+            isCameraMovementOkay = (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot);
+            if (isCameraMovementOkay) {
+                Camera.DOOrthoSize(20, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
+                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Jump) {
+                        CameraHitBox.SetActive(true);
+                        int hitBoxChildrenCount = CameraHitBox.transform.childCount;
+                        for(int i = 0; i < hitBoxChildrenCount; i++)
+                        {
+                            GameObject child = CameraHitBox.transform.GetChild(i).gameObject;
+                            child.transform.localScale = CameraHitBoxScale;
+                        }
+                    }
+                    isReady = true;
+                });
+                
+            } else {
+                //slingshot mechanic only
+                Camera.DOOrthoSize(35, 0.75f).SetEase(Ease.InSine).OnComplete(() => {
+                    isReady = true;
+                });
+            }
         }
     
         private void OnDrawGizmos()
@@ -145,8 +184,8 @@ namespace StudioByStorm {
             if (centroid != null) {
                 SwipeDetection();
             } else {
-                Vector3 targetCamPos = (Vector3) GameManager.Singleton.nearbyNode.GetPosition() - offset;
-                //transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
+                Vector3 targetCamPos = (Vector3) GameManager.Singleton.PlayerController.parentChildCentroid - offset;
+                if (isCameraMovementOkay) transform.position = Vector3.Lerp (transform.position, targetCamPos, smoothing * Time.deltaTime);
             }
         }
 

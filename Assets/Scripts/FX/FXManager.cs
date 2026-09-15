@@ -10,6 +10,8 @@ using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.EventPublishers;
 using StudioByStorm.Tutorials.Animations;
+using StudioByStorm.Obstacles;
+using StudioByStorm.Obstacles.Animations;
 
 namespace StudioByStorm.FX {
 
@@ -41,9 +43,6 @@ namespace StudioByStorm.FX {
         public GameObject EdgeLightPrefab;
         [HideInInspector]
         public Pool EdgeLightPool;
-        //selection indicator fx
-        public GameObject SelectionIndicatorPrefab;
-        public GameObject SelectionIndicatorFX;
         //ConnectionIndicatorFX
         public GameObject ConnectionIndicatorPrefab;
         [HideInInspector]
@@ -79,12 +78,19 @@ namespace StudioByStorm.FX {
         public GameObject PurpleNodeConnectPrefab;
         public GameObject OrangeNodeConnectPrefab;
         public GameObject WhitNodeConnectPrefab;
+        public GameObject PinkNodeConnectPrefab;
+        public GameObject YellowNodeConnectPrefab;
+        public GameObject BlackNodeConnectPrefab;
 
         public Dictionary<NodeColor, GameObject> SuperHeroLandingImpacts = new Dictionary<NodeColor, GameObject>();
         public GameObject BlueImpactPrefab;
         public GameObject GreenImpactPrefab;
         public GameObject WhiteImpactPrefab;
         public GameObject PurpleImpactPrefab;
+        public GameObject OrangeImpactPrefab;
+        public GameObject PinkImpactPrefab;
+        public GameObject YellowImpactPrefab;
+        public GameObject BlackImpactPrefab;
 
         public Dictionary<ProjectileType, Pool> ProjectilePool = new Dictionary<ProjectileType, Pool>();
         public GameObject ProjectileBasicPrefab;
@@ -97,12 +103,14 @@ namespace StudioByStorm.FX {
         protected int boidPoolSize = 5;
         protected int colorCount = 4;
         protected int boidPerColor = 5;
-        protected int nodeConnectPoolSizes = 2;
+        protected int nodeConnectPoolSizes = 1;
         protected int projectilePoolSizes = 1;
         protected int wrongObstacleHitPoolSize = 3;
         protected int correctObstacleHitPoolSize = 3;
         protected int playerTrailPoolSize = 3;
         protected int playerJumpPoolSize = 2;
+
+        private bool canShowConnectionIndicator;
 
         int playerEdgeChangeID = -1;
 
@@ -112,15 +120,38 @@ namespace StudioByStorm.FX {
         void OnEnable()
         {
             GameEventPublisher.OnPlayerEdgeChange += OnPlayerEdgeChange;
+            GameEventPublisher.OnPlayerNodeChange += OnPlayerNodeChange;
+            GameEventPublisher.OnStateChange      += OnStateChange;
         }
 
         void OnDisable()
         {
             GameEventPublisher.OnPlayerEdgeChange -= OnPlayerEdgeChange;
+            GameEventPublisher.OnPlayerNodeChange -= OnPlayerNodeChange;
+            GameEventPublisher.OnStateChange      -= OnStateChange;
+        }
+
+        public void OnStateChange(GameState state)
+        {
+            switch(state) {
+                case GameState.GameStart :
+                    canShowConnectionIndicator = true;
+                    break;
+
+                case GameState.LevelComplete :
+                    ConnectionIndicatorPool.DeactivateAll();
+                    canShowConnectionIndicator = false;
+                    break;
+            }
         }
 
         protected void OnPlayerEdgeChange(int ParentNodeID)
         {
+            //only used for slingshot
+            if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                return;
+            }
+
             //send -1 if deactivating an edge
             if (ParentNodeID == -1) {
                 ConnectionIndicatorPool.DeactivateAll();
@@ -141,6 +172,20 @@ namespace StudioByStorm.FX {
             StartCoroutine(DelayedOnPlayerEdgeChange(ParentNodeID, actionController));
         }
 
+        protected void OnPlayerNodeChange(int ParentNodeID)
+        {
+            //only used for control types besides slingshot
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+                return;
+            }
+
+            ActionController actionController = GameManager.Singleton.ControllerRegistry.TryGetValue(ViewName.ActionView) as ActionController;
+            if (actionController == null) {
+                return;
+            }
+            StartCoroutine(DelayedOnPlayerEdgeChange(ParentNodeID, actionController));
+        }
+
         IEnumerator DelayedOnPlayerEdgeChange(int ParentNodeID, ActionController actionController)
         {
             ConnectionIndicatorPool.DeactivateAll();
@@ -148,24 +193,41 @@ namespace StudioByStorm.FX {
             yield return null;
 
             List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(ParentNodeID);
-            
-            for (int i = 0; i < connectedNodes.Count; i++) {
-                int nid = connectedNodes[i];
-                Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(nid);
 
-                if  (
-                        //the other parent
-                        (nearbyNode.currentEdge.childID == -1 && nearbyNode.NodeColor == actionController.ActionModel.CurrentEdge.EdgeColor) || 
-                        //disjoint
-                        (nearbyNode.NodeType == NodeType.Disjoint)
-                    ){
-                    
-                    //show a connection indicator at the same position of the cell if it can be connected to
-                    GameObject connectionIndicator = ConnectionIndicatorPool.Get();
-                    connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
-                    connectionIndicator.SetActive(true);
+
+            //if slingshot
+            if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+
+                for (int i = 0; i < connectedNodes.Count; i++) {
+                    int nid = connectedNodes[i];
+                    Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(nid);
+
+                    if  (
+                            //the other parent
+                            (nearbyNode.currentEdge.childID == -1 && nearbyNode.NodeColor == actionController.ActionModel.CurrentEdge.EdgeColor) || 
+                            //disjoint
+                            (nearbyNode.NodeType == NodeType.Disjoint)
+                        ){
+                        
+                        //show a connection indicator at the same position of the cell if it can be connected to
+                        GameObject connectionIndicator = ConnectionIndicatorPool.Get();
+                        connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
+                        if (canShowConnectionIndicator) connectionIndicator.SetActive(true);
+                    }
+
                 }
+
+            //all other control types besides slingshot
+            } else {
+                int id = GameManager.Singleton.PlayerController.nextNodeSafePathID;
+                Node nearbyNode = GameManager.Singleton.NodeRegistry.TryGetValue(id);
+                //show a connection indicator at the same position of the cell if it can be connected to
+                GameObject connectionIndicator = ConnectionIndicatorPool.Get();
+                connectionIndicator.transform.position = nearbyNode.gameObject.transform.position;
+                if (canShowConnectionIndicator) connectionIndicator.SetActive(true);
             }
+            
+            
         }
 
         void Awake()
@@ -193,9 +255,6 @@ namespace StudioByStorm.FX {
 
             PlayerLoseFX = Instantiate(PlayerLoseFXPrefab, FXParent);
 
-            SelectionIndicatorFX = Instantiate(SelectionIndicatorPrefab, FXParent);
-            SelectionIndicatorFX.SetActive(false);
-
             fingerSlingShotAnimation = Instantiate(fingerSlingShotAnimationPrefab, tutorialParent).GetComponent<FingerSlingShotAnimation>();
         
             Pool BlueNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
@@ -210,13 +269,25 @@ namespace StudioByStorm.FX {
             PurpleNodeConnectPool.DependencyInjection(PurpleNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.Purple, PurpleNodeConnectPool);
 
-            /*Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            Pool OrangeNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             OrangeNodeConnectPool.DependencyInjection(OrangeNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
-            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);*/
+            nodeConnectPools.Add(NodeColor.Orange, OrangeNodeConnectPool);
 
             Pool WhiteNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
             WhiteNodeConnectPool.DependencyInjection(WhitNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
             nodeConnectPools.Add(NodeColor.White, WhiteNodeConnectPool);
+
+            Pool PinkNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            PinkNodeConnectPool.DependencyInjection(PinkNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Pink, PinkNodeConnectPool);
+
+            Pool YellowNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            YellowNodeConnectPool.DependencyInjection(YellowNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Yellow, YellowNodeConnectPool);
+
+            Pool BlackNodeConnectPool = ScriptableObject.CreateInstance<Pool>();
+            BlackNodeConnectPool.DependencyInjection(BlackNodeConnectPrefab, FXParent, nodeConnectPoolSizes);
+            nodeConnectPools.Add(NodeColor.Black, BlackNodeConnectPool);
 
             WrongObstacleHitPool = ScriptableObject.CreateInstance<Pool>();
             WrongObstacleHitPool.DependencyInjection(WrongObstacleHitFX, FXParent, wrongObstacleHitPoolSize);
@@ -234,6 +305,10 @@ namespace StudioByStorm.FX {
             SuperHeroLandingImpacts.Add(NodeColor.Purple, Instantiate(PurpleImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.Green, Instantiate(GreenImpactPrefab, FXParent));
             SuperHeroLandingImpacts.Add(NodeColor.White, Instantiate(WhiteImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Orange, Instantiate(OrangeImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Pink, Instantiate(PinkImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Yellow, Instantiate(YellowImpactPrefab, FXParent));
+            SuperHeroLandingImpacts.Add(NodeColor.Black, Instantiate(BlackImpactPrefab, FXParent));
 
             Pool BasicProjectilePool = ScriptableObject.CreateInstance<Pool>();
             BasicProjectilePool.DependencyInjection(ProjectileBasicPrefab, FXParent, projectilePoolSizes);
@@ -309,6 +384,7 @@ namespace StudioByStorm.FX {
 
                 firework.transform.position = currentTargetPosition;
                 firework.SetActive(true);
+
                 yield return new WaitForSeconds(timeBetweenLaunches);
             }
         }
@@ -357,6 +433,26 @@ namespace StudioByStorm.FX {
             Vector3 StartNodeTargetRotation = node.gameObject.transform.localEulerAngles;
             StartNodeTargetRotation.z -= 180.0f;
             node.gameObject.transform.DORotate(StartNodeTargetRotation, 0.5f, RotateMode.LocalAxisAdd);
+
+            //light up the corresponding obstacle parts
+            List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(node.ID);
+            if (parts != null) {
+                for (int i = 0; i < parts.Count; i++) {
+                    parts[i].EnableGlow(node.NodeColor);
+                }
+            }
+            
+
+            //play obstacle animation once
+            CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(node.ID);
+            if (currentAnim != null) {
+                currentAnim.Animate();
+            }
+            yield return new WaitForSeconds(0.25f);
+            //disable obstacle animation
+            if (currentAnim != null) {
+                currentAnim.Stop();
+            }
             
             //scale up
             node.gameObject.transform.DOScale(targetScale, 0.25f).OnComplete(() => {
@@ -380,6 +476,7 @@ namespace StudioByStorm.FX {
             
             if (node.currentEdge.gameObject.activeSelf) {
                 //hide lineRendererFX 
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) node.currentEdge.AnimateFabrikShutdown();
                 node.currentEdge.lineRendererFX.SetWidth(0.0f, 0.0f);
                 //show link animation
                 SpriteRenderer[] SpriteRenderers = node.currentEdge.LinkSpriteRenderers.Select(x => x).Take(node.currentEdge.activeLinkIndex).ToArray();
@@ -389,7 +486,7 @@ namespace StudioByStorm.FX {
                 //add to link loop animations
                 edgesWithAnimationsOn.Add(node.currentEdge);
                 //show lineRendererFX
-                node.currentEdge.lineRendererFX.SetWidth(0.2f, 0.2f);
+                node.currentEdge.lineRendererFX.SetWidth(0.3f, 0.3f);
                 //continue for child node
                 Node childNode = GameManager.Singleton.NodeRegistry.TryGetValue(node.currentEdge.childID);
                 StartCoroutine(HighLightCell(childNode));

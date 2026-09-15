@@ -63,6 +63,7 @@ namespace StudioByStorm {
             yield return new WaitUntil(() => ProgressManager.GetPlayerLanguage() != -1);
             Language = ProgressManager.GetPlayerLanguage();
         }
+
                         
         protected void Update()
         {

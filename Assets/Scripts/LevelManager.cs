@@ -16,6 +16,7 @@ using StudioByStorm.EventPublishers;
 using StudioByStorm.Optimizations;
 using StudioByStorm.Graph;
 using StudioByStorm.Data.LevelChapters;
+using StudioByStorm.Data.LevelPacks;
 using StudioByStorm.UI;
 using StudioByStorm.UI.Controllers;
 using StudioByStorm.Obstacles.Animations;
@@ -29,6 +30,11 @@ namespace StudioByStorm {
         public Chapters levelChapters {
             get {
                 return LevelPackSelectController.currentLevelPack.chapters;
+            }
+        }
+        public LevelPack currentLevelPack {
+            get {
+                return LevelPackSelectController.currentLevelPack;
             }
         }
         public List<string> romanNumerals;
@@ -73,6 +79,10 @@ namespace StudioByStorm {
         protected AdjacencyList horizontalVerticalAdjacencyList;
         protected List<int> nodeIDsWithAnimations;
         protected List<int> playingAnimations = new List<int>();
+        private List<int> visitedNodeIDsWithAnimations = new List<int>();
+
+        private bool canUseControlTypes;
+        private bool canUpdateObstacles = false;
 
         void Awake()
         {
@@ -106,12 +116,14 @@ namespace StudioByStorm {
                     GameStart();
                     AudioManager.Singleton.Play(SoundType.GameStart);
                     AnalyticsManager.NewProgressionEvent(GAProgressionStatus.Start, LevelManager.currentLevelPackName, displayChapterID, displayLevelID);
+                    canUpdateObstacles = true;
                     break;
 
                 case GameState.LevelComplete :
                     OnLevelComplete();
                     AudioManager.Singleton.Play(SoundType.LevelComplete);
                     MMVibrationManager.Haptic(HapticTypes.Success);
+                    canUpdateObstacles = false;
                     break;
 
                 case GameState.LevelLost :
@@ -125,8 +137,37 @@ namespace StudioByStorm {
 
         protected void OnPlayerNodeChange(int nodeID)
         {
+            if (nodeID == CurrentLevelData.safePath[0]) {
+                canUseControlTypes = true;
+            }
+
+            if (! canUseControlTypes) {
+                return;
+            }
+
             playerNodeID = nodeID;
-            StartCoroutine(UpdateNearbyObstacles());
+            if (ObstacleContainer.activeSelf && canUpdateObstacles) StartCoroutine(UpdateNearbyObstacles());
+
+            //get current animation associated with node
+            CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(nodeID);
+
+            //if theres an animation at the current node and its not marked as visited
+            if (currentAnim != null && !visitedNodeIDsWithAnimations.Contains(nodeID)) {
+                //mark as visited
+                visitedNodeIDsWithAnimations.Add(nodeID);
+
+                //double check that all nodes that the animation uses have been marked visited
+                bool visitedAllNodesWithSameAnimation = true;
+
+                for (int i = 0; i < currentAnim.nodeIDs.Count; i++) {
+                    if (! visitedNodeIDsWithAnimations.Contains(currentAnim.nodeIDs[i])) {
+                        visitedAllNodesWithSameAnimation = false;
+                    }
+                }
+
+                //if they're all visited, disable the gameObject
+                if ((GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot || GameManager.Singleton.PlayerController.controlType == ControlType.Tap || GameManager.Singleton.PlayerController.controlType == ControlType.Animate) && visitedAllNodesWithSameAnimation) currentAnim.gameObject.SetActive(false);
+            }
         }
 
         protected void OnLevelComplete()
@@ -134,6 +175,8 @@ namespace StudioByStorm {
             GameManager.Singleton.PlayerController.LockMovement(true);
             GameManager.Singleton.FXManager.LaunchFireWork();
             StartCoroutine(GameManager.Singleton.FXManager.LevelCompleteRewardAnimation());
+            StopPlayingAnimations();
+            DisableGlow();
         }
 
         IEnumerator OnLevelLost()
@@ -155,6 +198,7 @@ namespace StudioByStorm {
 
         public void LoadLevel()
         {
+            GameManager.Singleton.PlayerController.controlType = currentLevelPack.ControlType;
             TextAsset currentLevelTextAsset = levelChapters.chapters[currentChapterID].levels[currentLevelID].levelFile;
             CurrentLevelData = JsonConvert.DeserializeObject<LevelData>(currentLevelTextAsset.text);
             //Debug.Log("Loaded Saved LevelData: " + currentLevelTextAsset.name);
@@ -167,11 +211,15 @@ namespace StudioByStorm {
             yield return new WaitUntil(() => Obstacles.Count == CurrentLevelData.obstacleNames.Count && GameManager.Singleton.FullAdjacencyList != null);
             yield return new WaitForSeconds(0.1f);   
 
-            if (nodeIDsWithAnimations != null) {
+            if (nodeIDsWithAnimations != null && canUpdateObstacles) {
                 //get any connected nodes to the players current node
                 List<int> connectedNodes = GameManager.Singleton.FullAdjacencyList.Get(playerNodeID);
                 //reduce that to the list of nodes that have obstacles to animate
                 List<int> connectedNodesWithAnimations = (connectedNodes != null) ? connectedNodes.Where(x => nodeIDsWithAnimations.Contains(x)).ToList() : new List<int>();
+                //if not slingshot only use next node animations
+                if (GameManager.Singleton.PlayerController.controlType != ControlType.Slingshot) {
+                    connectedNodesWithAnimations = connectedNodesWithAnimations.Where(x => x == GameManager.Singleton.PlayerController.nextNodeSafePathID).ToList();
+                }
                 //also add the current node if it has an animation too
                 if (nodeIDsWithAnimations.Contains(playerNodeID)) {
                     connectedNodesWithAnimations.Add(playerNodeID);
@@ -181,26 +229,34 @@ namespace StudioByStorm {
 
                 connectedNodesWithAnimations.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
-                    int count = 0;
-                    for (int j = 0; j < currentAnim.nodeIDs.Count; j++) {
-                        //if the node ID isn't a "connected node" then its redundant
-                        if (!connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
-                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
-                        } else if (connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
-                            count++;
-                        }
-                        //if another one was all ready counted, then this one is redundant
-                        if (count > 1) {
-                            RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                    if (currentAnim != null) {
+                        int count = 0;
+                        for (int j = 0; j < currentAnim.nodeIDs.Count; j++) {
+                            //if the node ID isn't a "connected node" then its redundant
+                            if (!connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                                RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                            } else if (connectedNodesWithAnimations.Contains(currentAnim.nodeIDs[j])) {
+                                count++;
+                            }
+                            //if another one was all ready counted, then this one is redundant
+                            if (count > 1) {
+                                RedundantNodesWithAnimations.Add(currentAnim.nodeIDs[j]);
+                            }
                         }
                     }
+                    
                 });
 
                 //Debug.Log("Connected nodes with animations: " + connectedNodesWithAnimations.Count);
 
                 //any animation id that is not in the playing animations list needs to be animated
                 List<int> animationsToEnable = connectedNodesWithAnimations.Where(x => !playingAnimations.Contains(x)).ToList();
-                animationsToEnable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Animate());
+                animationsToEnable.ForEach(x => {
+                    CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                    if (currentAnim != null) {
+                        if (GameManager.Singleton.PlayerController.controlType != ControlType.Animate) currentAnim.Animate();
+                    }
+                });
                 //any animation id in the playing animations list that is NOT in the connectedNodesWithAnimations list needs to be disabled
                 List<int> animationsToDisable = playingAnimations.Where(x => !connectedNodesWithAnimations.Contains(x)).ToList();
                 //animationsToDisable.ForEach(x => GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x).Stop());
@@ -208,8 +264,17 @@ namespace StudioByStorm {
                 //If we want animations connected to more than one node (which are in connectedNodesWithAnimations) to stay active too
                 animationsToDisable.ForEach(x => {
                     CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
-                    bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
-                    if (! hasMatch) currentAnim.Stop();
+                    if (currentAnim != null) {
+                        bool hasMatch = connectedNodesWithAnimations.Any(x => currentAnim.nodeIDs.Contains(x));
+                        if (! hasMatch) {
+                            List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                            for (int i = 0; i < parts.Count; i++) {
+                                parts[i].DisableGlow();
+                            }
+                            currentAnim.Stop();
+                        }
+                    }
+                    
                 });
 
                 //Debug.Log("animationsToEnable: " + animationsToEnable.Count);
@@ -225,13 +290,49 @@ namespace StudioByStorm {
                         if (!RedundantNodesWithAnimations.Contains(x)) {
                             List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
                             for (int i = 0; i < parts.Count; i++) {
-                                parts[i].SwapColor();
+                                parts[i].EnableGlow();
                             }
                         }
                     });
                 }
                 
             }
+        }
+
+        private void DisableGlow()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    List<ObstaclePart> parts = GameManager.Singleton.ObstaclePartRegistry.TryGetValue(x);
+                    if (parts != null) {
+                        for (int i = 0; i < parts.Count; i++) {
+                            parts[i].DisableGlow();
+                        }
+                    }
+                    
+                }
+            });
+        }
+
+        public void StopPlayingAnimations()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    currentAnim.Stop();
+                }
+            });
+        }
+
+        public void StartPlayingAnimations()
+        {
+            playingAnimations.ForEach(x => {
+                CompositeAnimation currentAnim = GameManager.Singleton.CompositeAnimationRegistry.TryGetValue(x);
+                if (currentAnim != null) {
+                    currentAnim.Animate();
+                }
+            });
         }
 
         protected void UnloadObstacles()
@@ -310,7 +411,12 @@ namespace StudioByStorm {
                     currentNode.gameObject.transform.position = new Vector2(CurrentLevelData.Layers[i].nodePositions[j].x, CurrentLevelData.Layers[i].nodePositions[j].y);
                     nodePositions.Add(new float[2]{currentNode.gameObject.transform.position.x, currentNode.gameObject.transform.position.y});
                     currentNode.ID = ID;
-                    currentNode.NodeColor = CurrentLevelData.Layers[i].nodeColors[j];
+                    NodeColor CurrentNodeColor = CurrentLevelData.Layers[i].nodeColors[j];
+                    int currentNodeColorIndex = GameManager.Singleton.ColorModel.colorsInUse.IndexOf(CurrentNodeColor);
+                    if (currentNodeColorIndex != -1) {
+                        CurrentNodeColor = currentLevelPack.colors[currentNodeColorIndex];
+                    }
+                    currentNode.NodeColor = CurrentNodeColor;
                     if (! parentColorsConnected.ContainsKey(currentNode.NodeColor) && currentNode.NodeColor != NodeColor.GrayScale) {
                         parentColorsConnected.Add(currentNode.NodeColor, false);
                     }
@@ -321,6 +427,9 @@ namespace StudioByStorm {
                     currentLevelParentCount = (currentNode.NodeType == NodeType.Parent) ? currentLevelParentCount + 1 : currentLevelParentCount;
                     currentLevelNodeCount++;
                     ID++;
+                    if (GameManager.Singleton.PlayerController.controlType == ControlType.Slingshot) {
+                        currentNode.UseSlingShotSizedCollider();
+                    }
                 }
             }
 

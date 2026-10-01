@@ -16,7 +16,7 @@ limitations under the License.
 
 **A Unity/C# architecture case study for game developers**
 
-Color Flow is a connect-the-colors puzzle played as physics traversal. You slingshot a ball between colored nodes, connecting matching parent pairs from inside the graph. The shortest description is Flow Free's "connect the pairs" wearing a physics skin: the player is both the pen drawing the solution and the traveler moving through it.
+Color Flow is a connect-the-colors puzzle played as physics traversal. You slingshot a ball between colored nodes, connecting matching parent pairs from inside the graph. The shortest description is "connect the pairs" wearing a physics skin: the player is both the pen drawing the solution and the traveler moving through it.
 
 Formerly **Color Flow Arcade Puzzles**, the project lives in the `Tree` repository, uses the `StudioByStorm` namespace, and contains roughly 476 C# files.
 
